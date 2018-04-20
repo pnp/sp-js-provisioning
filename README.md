@@ -1,2 +1,2 @@
 # sp-js-provisioning
-PnP Provisinig Library
+PnP Provisioning Library
