@@ -1,0 +1,67 @@
+{
+  "name": "sp-js-provisioning",
+  "version": "0.8.0",
+  "description": "A reusable JavaScript library targeting SharePoint provisioning.",
+  "main": "./lib/provisioning.js",
+  "typings": "./lib/provisioning",
+  "dependencies": {
+    "object.omit": "^3.0.0",
+    "sp-pnp-js": "^3.0.4",
+    "xml-js": "^1.4.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^8.0.28",
+    "babel-core": "6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "6.24.1",
+    "chai": "4.1.2",
+    "chai-as-promised": "7.1.1",
+    "del": "3.0.0",
+    "gulp": "3.9.1",
+    "gulp-if": "2.0.2",
+    "gulp-istanbul": "1.1.2",
+    "gulp-jsdoc3": "^1.0.1",
+    "gulp-mocha": "^4.3.1",
+    "gulp-sourcemaps": "2.6.1",
+    "gulp-tslint": "8.1.2",
+    "gulp-typescript": "3.2.2",
+    "gulp-util": "3.0.8",
+    "jsdoc": "3.5.5",
+    "merge": "1.2.0",
+    "merge2": "^1.0.2",
+    "mocha": "3.5.3",
+    "node-fetch": "1.7.3",
+    "semver": "5.4.1",
+    "ts-loader": "^2.3.7",
+    "tslint": "^5.7.0",
+    "typescript": "2.5.2",
+    "webpack": "3.6.0",
+    "yargs": "9.0.1"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sharepoint/pnp-js-provisioning"
+  },
+  "author": {
+    "name": "Microsoft and other contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "sharepoint",
+    "office365",
+    "tools",
+    "spfx",
+    "sharepoint framework",
+    "sharepoint provisioning"
+  ],
+  "bugs": {
+    "url": "https://github.com/pnp/sp-js-provisioning/issues"
+  },
+  "homepage": "https://github.com/pnp/sp-js-provisioning"
+}
