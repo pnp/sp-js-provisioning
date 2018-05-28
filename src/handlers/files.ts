@@ -36,6 +36,19 @@ export class Files extends HandlerBase {
     }
 
     /**
+     * Get blob for a file
+     * 
+     * @param {IFile} file The file
+     */
+    private async getFileBlob(file: IFile): Promise<Blob> {
+        const fileSrcWithoutTokens = ReplaceTokens(file.Src);
+        const response = await fetch(fileSrcWithoutTokens, { credentials: "include", method: "GET" })
+        const fileContents = await response.text();
+        const blob = new Blob([fileContents], { type: "text/plain" });
+        return blob;
+    }
+
+    /**
      * Procceses a file
      *
      * @param {Web} web The web
@@ -44,19 +57,22 @@ export class Files extends HandlerBase {
      */
     private async processFile(web: Web, file: IFile, serverRelativeUrl: string): Promise<void> {
         Logger.log({ data: file, level: LogLevel.Info, message: `Processing file ${file.Folder}/${file.Url}` });
-        const fileSrcWithoutTokens = ReplaceTokens(file.Src);
         try {
-            const response = await fetch(fileSrcWithoutTokens, { credentials: "include", method: "GET" })
-            const fileContents = await response.text();
-            const blob = new Blob([fileContents], { type: "text/plain" });
+            const blob = await this.getFileBlob(file);
             const folderServerRelativeUrl = Util.combinePaths("/", serverRelativeUrl, file.Folder);
             const folder = web.getFolderByServerRelativeUrl(folderServerRelativeUrl);
-            const result = await folder.files.add(file.Url, blob, file.Overwrite);
+
+            let fileAddResult;
+            try {
+                fileAddResult = await folder.files.add(file.Url, blob, file.Overwrite);
+            } catch (fileAddError) {
+                // Handle fileAddError
+            }
             await Promise.all([
-                this.processWebParts(file, serverRelativeUrl, result.data.ServerRelativeUrl),
-                this.processProperties(web, result, file.Properties),
+                this.processWebParts(file, serverRelativeUrl, fileAddResult.data.ServerRelativeUrl),
+                this.processProperties(web, fileAddResult, file.Properties),
             ])
-            await this.processPageListViews(web, file.WebParts, result.data.ServerRelativeUrl);
+            await this.processPageListViews(web, file.WebParts, fileAddResult.data.ServerRelativeUrl);
         } catch (err) {
             throw err;
         }

@@ -17,6 +17,12 @@ export declare class Files extends HandlerBase {
      */
     ProvisionObjects(web: Web, files: IFile[]): Promise<void>;
     /**
+     * Get blob for a file
+     *
+     * @param {IFile} file The file
+     */
+    private getFileBlob(file);
+    /**
      * Procceses a file
      *
      * @param {Web} web The web
