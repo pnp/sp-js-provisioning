@@ -68,6 +68,7 @@ export class Files extends HandlerBase {
             } catch (fileAddError) {
                 // Handle fileAddError
             }
+            console.log(fileAddResult);
             await Promise.all([
                 this.processWebParts(file, webServerRelativeUrl, fileAddResult.data.ServerRelativeUrl),
                 this.processProperties(web, fileAddResult.file, file.Properties),
