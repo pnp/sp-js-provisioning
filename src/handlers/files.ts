@@ -1,7 +1,7 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IFile, IWebPart } from "../schema";
-import { Web, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
+import { Web, File, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
 import { ReplaceTokens } from "../util";
 
 /**
@@ -37,7 +37,7 @@ export class Files extends HandlerBase {
 
     /**
      * Get blob for a file
-     * 
+     *
      * @param {IFile} file The file
      */
     private async getFileBlob(file: IFile): Promise<Blob> {
@@ -71,7 +71,7 @@ export class Files extends HandlerBase {
             await Promise.all([
                 this.processWebParts(file, serverRelativeUrl, fileAddResult.data.ServerRelativeUrl),
                 this.processProperties(web, fileAddResult, file.Properties),
-            ])
+            ]);
             await this.processPageListViews(web, file.WebParts, fileAddResult.data.ServerRelativeUrl);
         } catch (err) {
             throw err;
@@ -344,23 +344,14 @@ export class Files extends HandlerBase {
      * Process list item properties for the file
      *
      * @param {Web} web The web
-     * @param {FileAddResuylt} result The file add result
+     * @param {File} pnpFile The PnP file
      * @param {Object} properties The properties to set
      */
-    private processProperties(web: Web, result: FileAddResult, properties: { [key: string]: string | number }) {
-        return new Promise((resolve, reject) => {
-            if (properties && Object.keys(properties).length > 0) {
-                result.file.listItemAllFields.select("ID", "ParentList/ID").expand("ParentList").get()
-                    .then(({ ID, ParentList }) => {
-                        web.lists.getById(ParentList.Id).items.getById(ID).update(properties)
-                            .then(resolve)
-                            .catch(reject);
-                    })
-                    .catch(reject);
-            } else {
-                resolve();
-            }
-        });
+    private async processProperties(web: Web, pnpFile: File, properties: { [key: string]: string | number }) {
+        if (properties && Object.keys(properties).length > 0) {
+            const listItemAllFields = await pnpFile.listItemAllFields.select("ID", "ParentList/ID").expand("ParentList").get();
+            await web.lists.getById(listItemAllFields.ParentList.Id).items.getById(listItemAllFields.ID).update(properties);
+        }
     }
 
     /**
