@@ -27,9 +27,9 @@ export declare class Files extends HandlerBase {
      *
      * @param {Web} web The web
      * @param {IFile} file The file
-     * @param {string} serverRelativeUrl ServerRelativeUrl for the web
+     * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
-    private processFile(web, file, serverRelativeUrl);
+    private processFile(web, file, webServerRelativeUrl);
     /**
      * Remove exisiting webparts if specified
      *

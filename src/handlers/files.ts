@@ -53,24 +53,24 @@ export class Files extends HandlerBase {
      *
      * @param {Web} web The web
      * @param {IFile} file The file
-     * @param {string} serverRelativeUrl ServerRelativeUrl for the web
+     * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
-    private async processFile(web: Web, file: IFile, serverRelativeUrl: string): Promise<void> {
+    private async processFile(web: Web, file: IFile, webServerRelativeUrl: string): Promise<void> {
         Logger.log({ data: file, level: LogLevel.Info, message: `Processing file ${file.Folder}/${file.Url}` });
         try {
             const blob = await this.getFileBlob(file);
-            const folderServerRelativeUrl = Util.combinePaths("/", serverRelativeUrl, file.Folder);
+            const folderServerRelativeUrl = Util.combinePaths("/", webServerRelativeUrl, file.Folder);
             const folder = web.getFolderByServerRelativeUrl(folderServerRelativeUrl);
 
-            let fileAddResult;
+            let fileAddResult: FileAddResult;
             try {
                 fileAddResult = await folder.files.add(file.Url, blob, file.Overwrite);
             } catch (fileAddError) {
                 // Handle fileAddError
             }
             await Promise.all([
-                this.processWebParts(file, serverRelativeUrl, fileAddResult.data.ServerRelativeUrl),
-                this.processProperties(web, fileAddResult, file.Properties),
+                this.processWebParts(file, webServerRelativeUrl, fileAddResult.data.ServerRelativeUrl),
+                this.processProperties(web, fileAddResult.file, file.Properties),
             ]);
             await this.processPageListViews(web, file.WebParts, fileAddResult.data.ServerRelativeUrl);
         } catch (err) {
