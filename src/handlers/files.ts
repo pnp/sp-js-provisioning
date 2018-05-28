@@ -42,7 +42,7 @@ export class Files extends HandlerBase {
      */
     private async getFileBlob(file: IFile): Promise<Blob> {
         const fileSrcWithoutTokens = ReplaceTokens(file.Src);
-        const response = await fetch(fileSrcWithoutTokens, { credentials: "include", method: "GET" })
+        const response = await fetch(fileSrcWithoutTokens, { credentials: "include", method: "GET" });
         const fileContents = await response.text();
         const blob = new Blob([fileContents], { type: "text/plain" });
         return blob;
@@ -62,18 +62,22 @@ export class Files extends HandlerBase {
             const folderServerRelativeUrl = Util.combinePaths("/", webServerRelativeUrl, file.Folder);
             const folder = web.getFolderByServerRelativeUrl(folderServerRelativeUrl);
 
+            let fileServerRelativeUrl: string;
             let fileAddResult: FileAddResult;
+            let pnpFile: File;
             try {
-                fileAddResult = await folder.files.add(file.Url, blob, file.Overwrite);
+                fileAddResult = await folder.files.add(file.Url, blob, file.Overwrite);¨
+                pnpFile = fileAddResult.file;
+                fileServerRelativeUrl = fileAddResult.data.ServerRelativeUrl;
             } catch (fileAddError) {
                 // Handle fileAddError
             }
             console.log(fileAddResult);
             await Promise.all([
-                this.processWebParts(file, webServerRelativeUrl, fileAddResult.data.ServerRelativeUrl),
-                this.processProperties(web, fileAddResult.file, file.Properties),
+                this.processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl),
+                this.processProperties(web, pnpFile, file.Properties),
             ]);
-            await this.processPageListViews(web, file.WebParts, fileAddResult.data.ServerRelativeUrl);
+            await this.processPageListViews(web, file.WebParts, fileServerRelativeUrl);
         } catch (err) {
             throw err;
         }
