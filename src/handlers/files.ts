@@ -60,13 +60,13 @@ export class Files extends HandlerBase {
         try {
             const blob = await this.getFileBlob(file);
             const folderServerRelativeUrl = Util.combinePaths("/", webServerRelativeUrl, file.Folder);
-            const folder = web.getFolderByServerRelativeUrl(folderServerRelativeUrl);
+            const pnpFolder = web.getFolderByServerRelativeUrl(folderServerRelativeUrl);
 
-            let fileServerRelativeUrl = Util.combinePaths(folderServerRelativeUrl, file.Url);
+            let fileServerRelativeUrl = Util.combinePaths("/", folderServerRelativeUrl, file.Url);
             let fileAddResult: FileAddResult;
             let pnpFile: File;
             try {
-                fileAddResult = await folder.files.add(file.Url, blob, file.Overwrite);
+                fileAddResult = await pnpFolder.files.add(file.Url, blob, file.Overwrite);
                 pnpFile = fileAddResult.file;
                 fileServerRelativeUrl = fileAddResult.data.ServerRelativeUrl;
             } catch (fileAddError) {
