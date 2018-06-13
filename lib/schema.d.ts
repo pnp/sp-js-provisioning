@@ -153,6 +153,8 @@ export interface IListView {
         Paged?: boolean;
         Hidden?: boolean;
         Scope?: 0 | 1;
+        DefaultView?: boolean;
+        JSLink?: string;
     };
 }
 export interface IPropertyBagEntry {
