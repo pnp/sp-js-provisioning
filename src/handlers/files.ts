@@ -138,7 +138,7 @@ export class Files extends HandlerBase {
                     })
                         .then(() => {
                             file.WebParts.forEach(wp => {
-                                let def = lwpm.importWebPart(this.replaceXmlTokens(wp.Contents.Xml, ctx)),
+                                let def = lwpm.importWebPart(ReplaceTokens(wp.Contents.Xml)),
                                     inst = def.get_webPart();
                                 Logger.log({ data: wp, level: LogLevel.Info, message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}` });
                                 lwpm.addWebPart(inst, wp.Zone, wp.Order);
@@ -346,14 +346,4 @@ export class Files extends HandlerBase {
         }
     }
 
-    /**
-     * Replaces tokens in a string, e.g. {site}
-     *
-     * @param {string} str The string
-     * @param {SP.ClientContext} ctx Client context
-     */
-    private replaceXmlTokens(str: string, ctx: SP.ClientContext): string {
-        let site = Util.combinePaths(document.location.protocol, "//", document.location.host, ctx.get_url());
-        return str.replace(/{site}/g, site);
-    }
 }

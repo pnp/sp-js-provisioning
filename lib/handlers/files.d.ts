@@ -77,11 +77,4 @@ export declare class Files extends HandlerBase {
      * @param {Object} properties The properties to set
      */
     private processProperties(web, pnpFile, properties);
-    /**
-     * Replaces tokens in a string, e.g. {site}
-     *
-     * @param {string} str The string
-     * @param {SP.ClientContext} ctx Client context
-     */
-    private replaceXmlTokens(str, ctx);
 }
