@@ -2,7 +2,7 @@ import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IFile, IWebPart } from "../schema";
 import { Web, File, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
-import { replaceTokens, executeQuery } from "../util";
+import { replaceTokens } from "../util";
 
 /**
  * Describes the Features Object Handler
@@ -57,7 +57,6 @@ export class Files extends HandlerBase {
      */
     private async processFile(web: Web, file: IFile, webServerRelativeUrl: string): Promise<void> {
         Logger.log({
-            data: { file },
             level: LogLevel.Info,
             message: `Processing file ${file.Folder}/${file.Url}`,
         });
@@ -126,41 +125,37 @@ export class Files extends HandlerBase {
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
-    private async processWebParts(file: IFile, webServerRelativeUrl: string, fileServerRelativeUrl: string) {
-        Logger.log({ level: LogLevel.Info, message: `Processing webparts for file ${file.Folder}/${file.Url}` });
-        await this.removeExistingWebParts(webServerRelativeUrl, fileServerRelativeUrl, file.RemoveExistingWebParts);
-        if (file.WebParts && file.WebParts.length > 0) {
-            let ctx = new SP.ClientContext(webServerRelativeUrl),
-                spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
-                webPartManager = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
-            await this.fetchWebPartContents(file.WebParts, (index, xml) => { file.WebParts[index].Contents.Xml = xml; });
-            file.WebParts.forEach(wp => {
-                const webPartXml = replaceTokens(wp.Contents.Xml);
-                const webPartDef = webPartManager.importWebPart(webPartXml);
-                const webPartInstance = webPartDef.get_webPart();
-                Logger.log({
-                    data: { wp, webPartXml },
-                    level: LogLevel.Info,
-                    message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}`,
+    private processWebParts(file: IFile, webServerRelativeUrl: string, fileServerRelativeUrl: string) {
+        return new Promise(async (resolve, reject) => {
+            Logger.log({ level: LogLevel.Info, message: `Processing webparts for file ${file.Folder}/${file.Url}` });
+            await this.removeExistingWebParts(webServerRelativeUrl, fileServerRelativeUrl, file.RemoveExistingWebParts);
+            if (file.WebParts && file.WebParts.length > 0) {
+                let ctx = new SP.ClientContext(webServerRelativeUrl),
+                    spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
+                    webPartManager = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
+                await this.fetchWebPartContents(file.WebParts, (index, xml) => { file.WebParts[index].Contents.Xml = xml; });
+                file.WebParts.forEach(wp => {
+                    const webPartXml = replaceTokens(wp.Contents.Xml);
+                    const webPartDef = webPartManager.importWebPart(webPartXml);
+                    const webPartInstance = webPartDef.get_webPart();
+                    Logger.log({
+                        data: { wp, webPartXml },
+                        level: LogLevel.Info,
+                        message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}`,
+                    });
+                    webPartManager.addWebPart(webPartInstance, wp.Zone, wp.Order);
+                    ctx.load(webPartInstance);
                 });
-                webPartManager.addWebPart(webPartInstance, wp.Zone, wp.Order);
-                ctx.load(webPartInstance);
-            });
-            try {
-                await executeQuery(ctx);
-                Logger.log({
-                    level: LogLevel.Info,
-                    message: `Successfully processed webparts for file ${file.Folder}/${file.Url}`,
+                ctx.executeQueryAsync(resolve, (sender, args) => {
+                    Logger.log({
+                        data: { error: args.get_message() },
+                        level: LogLevel.Error,
+                        message: `Failed to process webparts for file ${file.Folder}/${file.Url}`,
+                    });
+                    reject({ sender, args });
                 });
-            } catch (err) {
-                Logger.log({
-                    data: { error: err.args.get_message() },
-                    level: LogLevel.Error,
-                    message: `Failed to process webparts for file ${file.Folder}/${file.Url}`,
-                });
-                throw { sender: err.sender, args: err.args };
             }
-        }
+        });
     }
 
 

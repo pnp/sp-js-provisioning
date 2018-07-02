@@ -23,8 +23,3 @@ export function isNode(): boolean {
     return typeof window === "undefined";
 }
 
-export function executeQuery(ctx: SP.ClientContext) {
-    return new Promise((resolve, reject) => {
-        ctx.executeQueryAsync(resolve, reject);
-    });
-}
