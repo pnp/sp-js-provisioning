@@ -127,11 +127,7 @@ export class Files extends HandlerBase {
                     const webPartXml = replaceTokens(this.replaceWebPartXmlTokens(wp.Contents.Xml, clientContext));
                     const webPartDef = webPartManager.importWebPart(webPartXml);
                     const webPartInstance = webPartDef.get_webPart();
-                    Logger.log({
-                        data: { wp, webPartXml },
-                        level: LogLevel.Info,
-                        message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}`,
-                    });
+                    Logger.log({ data: { webPartXml }, level: LogLevel.Info, message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}` });
                     webPartManager.addWebPart(webPartInstance, wp.Zone, wp.Order);
                     clientContext.load(webPartInstance);
                 });
@@ -153,10 +149,10 @@ export class Files extends HandlerBase {
     /**
      * Fetches web part contents
      *
-     * @param {IWebPart[]} webParts Web parts
+     * @param {Array<IWebPart>} webParts Web parts
      * @param {Function} callbackFunc Callback function that takes index of the the webpart and the retrieved XML
      */
-    private fetchWebPartContents = (webParts: IWebPart[], callbackFunc: (index, xml) => void) => {
+    private fetchWebPartContents = (webParts: Array<IWebPart>, callbackFunc: (index, xml) => void) => {
         return new Promise<any>((resolve, reject) => {
             let fileFetchPromises = webParts.map((wp, index) => {
                 return (() => {
@@ -207,10 +203,10 @@ export class Files extends HandlerBase {
      * Processes page list views
      *
      * @param {Web} web The web
-     * @param {IWebPart[]} webParts Web parts
+     * @param {Array<IWebPart>} webParts Web parts
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
-    private processPageListViews(web: Web, webParts: IWebPart[], fileServerRelativeUrl: string): Promise<void> {
+    private processPageListViews(web: Web, webParts: Array<IWebPart>, fileServerRelativeUrl: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             if (webParts) {
                 Logger.log({

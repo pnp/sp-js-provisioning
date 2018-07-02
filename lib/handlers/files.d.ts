@@ -49,7 +49,7 @@ export declare class Files extends HandlerBase {
     /**
      * Fetches web part contents
      *
-     * @param {IWebPart[]} webParts Web parts
+     * @param {Array<IWebPart>} webParts Web parts
      * @param {Function} callbackFunc Callback function that takes index of the the webpart and the retrieved XML
      */
     private fetchWebPartContents;
@@ -57,7 +57,7 @@ export declare class Files extends HandlerBase {
      * Processes page list views
      *
      * @param {Web} web The web
-     * @param {IWebPart[]} webParts Web parts
+     * @param {Array<IWebPart>} webParts Web parts
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
     private processPageListViews(web, webParts, fileServerRelativeUrl);
