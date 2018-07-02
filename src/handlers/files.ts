@@ -126,7 +126,7 @@ export class Files extends HandlerBase {
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
     private async processWebParts(file: IFile, webServerRelativeUrl: string, fileServerRelativeUrl: string) {
-        Logger.log({ data: file.WebParts, level: LogLevel.Info, message: `Processing webparts for file ${file.Folder}/${file.Url}` });
+        Logger.log({ level: LogLevel.Info, message: `Processing webparts for file ${file.Folder}/${file.Url}` });
         await this.removeExistingWebParts(webServerRelativeUrl, fileServerRelativeUrl, file.RemoveExistingWebParts);
         if (file.WebParts && file.WebParts.length > 0) {
             let ctx = new SP.ClientContext(webServerRelativeUrl),
