@@ -56,10 +56,7 @@ export class Files extends HandlerBase {
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
     private async processFile(web: Web, file: IFile, webServerRelativeUrl: string): Promise<void> {
-        Logger.log({
-            level: LogLevel.Info,
-            message: `Processing file ${file.Folder}/${file.Url}`,
-        });
+        Logger.log({ level: LogLevel.Info, message: `Processing file ${file.Folder}/${file.Url}` });
         try {
             const blob = await this.getFileBlob(file);
             const folderServerRelativeUrl = Util.combinePaths("/", webServerRelativeUrl, file.Folder);
@@ -93,11 +90,7 @@ export class Files extends HandlerBase {
     private removeExistingWebParts(webServerRelativeUrl: string, fileServerRelativeUrl: string, shouldRemove: boolean) {
         return new Promise((resolve, reject) => {
             if (shouldRemove) {
-                Logger.log({
-                    data: { webServerRelativeUrl, fileServerRelativeUrl },
-                    level: LogLevel.Info,
-                    message: `Deleting existing webpart from file ${fileServerRelativeUrl}`,
-                });
+                Logger.log({ level: LogLevel.Info, message: `Deleting existing webpart from file ${fileServerRelativeUrl}` });
                 let ctx = new SP.ClientContext(webServerRelativeUrl),
                     spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
                     lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared),
@@ -109,9 +102,8 @@ export class Files extends HandlerBase {
                 }, reject);
             } else {
                 Logger.log({
-                    data: { webServerRelativeUrl, fileServerRelativeUrl },
                     level: LogLevel.Info,
-                    message: `Web parts should not be removed from file ${fileServerRelativeUrl}. Resolving.`,
+                    message: `Web parts should not be removed from file ${fileServerRelativeUrl}.`,
                 });
                 resolve();
             }
@@ -130,12 +122,12 @@ export class Files extends HandlerBase {
             Logger.log({ level: LogLevel.Info, message: `Processing webparts for file ${file.Folder}/${file.Url}` });
             await this.removeExistingWebParts(webServerRelativeUrl, fileServerRelativeUrl, file.RemoveExistingWebParts);
             if (file.WebParts && file.WebParts.length > 0) {
-                let ctx = new SP.ClientContext(webServerRelativeUrl),
-                    spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
+                let clientContext = new SP.ClientContext(webServerRelativeUrl),
+                    spFile = clientContext.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
                     webPartManager = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
                 await this.fetchWebPartContents(file.WebParts, (index, xml) => { file.WebParts[index].Contents.Xml = xml; });
                 file.WebParts.forEach(wp => {
-                    const webPartXml = replaceTokens(wp.Contents.Xml);
+                    const webPartXml = replaceTokens(this.replaceWebPartXmlTokens(wp.Contents.Xml, clientContext));
                     const webPartDef = webPartManager.importWebPart(webPartXml);
                     const webPartInstance = webPartDef.get_webPart();
                     Logger.log({
@@ -144,9 +136,9 @@ export class Files extends HandlerBase {
                         message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}`,
                     });
                     webPartManager.addWebPart(webPartInstance, wp.Zone, wp.Order);
-                    ctx.load(webPartInstance);
+                    clientContext.load(webPartInstance);
                 });
-                ctx.executeQueryAsync(resolve, (sender, args) => {
+                clientContext.executeQueryAsync(resolve, (sender, args) => {
                     Logger.log({
                         data: { error: args.get_message() },
                         level: LogLevel.Error,
@@ -344,4 +336,14 @@ export class Files extends HandlerBase {
         }
     }
 
+    /**
+    * Replaces tokens in a string, e.g. {site}
+    *
+    * @param {string} str The string
+    * @param {SP.ClientContext} ctx Client context
+    */
+    private replaceWebPartXmlTokens(str: string, ctx: SP.ClientContext): string {
+        let site = Util.combinePaths(document.location.protocol, "//", document.location.host, ctx.get_url());
+        return str.replace(/{site}/g, site);
+    }
 }
