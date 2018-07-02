@@ -1,6 +1,6 @@
 {
   "name": "sp-js-provisioning",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "A reusable JavaScript library targeting SharePoint provisioning.",
   "main": "./lib/provisioning.js",
   "typings": "./lib/provisioning",
