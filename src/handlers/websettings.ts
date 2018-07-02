@@ -2,7 +2,7 @@ import { HandlerBase } from "./handlerbase";
 import { IWebSettings } from "../schema";
 import { Web } from "sp-pnp-js";
 import * as omit from "object.omit";
-import { ReplaceTokens } from "../util";
+import { replaceTokens } from "../util";
 
 /**
  * Describes the WebSettings Object Handler
@@ -28,7 +28,7 @@ export class WebSettings extends HandlerBase {
                 .filter(key => typeof (settings[key]) === "string")
                 .forEach(key => {
                     let value: string = <any>settings[key];
-                    settings[key] = ReplaceTokens(value);
+                    settings[key] = replaceTokens(value);
                 });
             Promise.all([
                 web.rootFolder.update({ WelcomePage: settings.WelcomePage }),

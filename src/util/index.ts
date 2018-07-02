@@ -1,11 +1,11 @@
-export function ReplaceTokens(str: string): string {
+export function replaceTokens(str: string): string {
     return str.replace(/{sitecollection}/g, _spPageContextInfo.siteAbsoluteUrl)
         .replace(/{wpgallery}/g, `${_spPageContextInfo.siteAbsoluteUrl}/_catalogs/wp`)
         .replace(/{hosturl}/g, `${window.location.protocol}//${window.location.host}:${window.location.port}`)
         .replace(/{themegallery}/g, `${_spPageContextInfo.siteAbsoluteUrl}/_catalogs/theme/15`);
 }
 
-export function MakeUrlRelative(absUrl: string): string {
+export function makeUrlRelative(absUrl: string): string {
     return absUrl.replace(`${document.location.protocol}//${document.location.hostname}`, "");
 }
 
@@ -21,4 +21,10 @@ export function base64EncodeString(str: string): string {
 
 export function isNode(): boolean {
     return typeof window === "undefined";
+}
+
+export function executeQuery(ctx: SP.ClientContext) {
+    return new Promise((resolve, reject) => {
+        ctx.executeQueryAsync(resolve, reject);
+    });
 }

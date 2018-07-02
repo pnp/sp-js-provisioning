@@ -2,7 +2,7 @@ import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IFile, IWebPart } from "../schema";
 import { Web, File, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
-import { ReplaceTokens } from "../util";
+import { replaceTokens, executeQuery } from "../util";
 
 /**
  * Describes the Features Object Handler
@@ -41,7 +41,7 @@ export class Files extends HandlerBase {
      * @param {IFile} file The file
      */
     private async getFileBlob(file: IFile): Promise<Blob> {
-        const fileSrcWithoutTokens = ReplaceTokens(file.Src);
+        const fileSrcWithoutTokens = replaceTokens(file.Src);
         const response = await fetch(fileSrcWithoutTokens, { credentials: "include", method: "GET" });
         const fileContents = await response.text();
         const blob = new Blob([fileContents], { type: "text/plain" });
@@ -56,12 +56,15 @@ export class Files extends HandlerBase {
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
     private async processFile(web: Web, file: IFile, webServerRelativeUrl: string): Promise<void> {
-        Logger.log({ data: file, level: LogLevel.Info, message: `Processing file ${file.Folder}/${file.Url}` });
+        Logger.log({
+            data: { file },
+            level: LogLevel.Info,
+            message: `Processing file ${file.Folder}/${file.Url}`,
+        });
         try {
             const blob = await this.getFileBlob(file);
             const folderServerRelativeUrl = Util.combinePaths("/", webServerRelativeUrl, file.Folder);
             const pnpFolder = web.getFolderByServerRelativeUrl(folderServerRelativeUrl);
-
             let fileServerRelativeUrl = Util.combinePaths("/", folderServerRelativeUrl, file.Url);
             let fileAddResult: FileAddResult;
             let pnpFile: File;
@@ -72,10 +75,8 @@ export class Files extends HandlerBase {
             } catch (fileAddError) {
                 pnpFile = web.getFileByServerRelativePath(fileServerRelativeUrl);
             }
-            await Promise.all([
-                this.processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl),
-                this.processProperties(web, pnpFile, file.Properties),
-            ]);
+            await this.processProperties(web, pnpFile, file.Properties);
+            await this.processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl);
             await this.processPageListViews(web, file.WebParts, fileServerRelativeUrl);
         } catch (err) {
             throw err;
@@ -131,33 +132,34 @@ export class Files extends HandlerBase {
         if (file.WebParts && file.WebParts.length > 0) {
             let ctx = new SP.ClientContext(webServerRelativeUrl),
                 spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
-                lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
+                webPartManager = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
             await this.fetchWebPartContents(file.WebParts, (index, xml) => { file.WebParts[index].Contents.Xml = xml; });
             file.WebParts.forEach(wp => {
-                const webPartXml = ReplaceTokens(wp.Contents.Xml);
-                const webPartDef = lwpm.importWebPart(webPartXml);
+                const webPartXml = replaceTokens(wp.Contents.Xml);
+                const webPartDef = webPartManager.importWebPart(webPartXml);
                 const webPartInstance = webPartDef.get_webPart();
                 Logger.log({
                     data: { wp, webPartXml },
                     level: LogLevel.Info,
                     message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}`,
                 });
-                lwpm.addWebPart(webPartInstance, wp.Zone, wp.Order);
+                webPartManager.addWebPart(webPartInstance, wp.Zone, wp.Order);
                 ctx.load(webPartInstance);
             });
-            ctx.executeQueryAsync(() => {
+            try {
+                await executeQuery(ctx);
                 Logger.log({
                     level: LogLevel.Info,
                     message: `Successfully processed webparts for file ${file.Folder}/${file.Url}`,
                 });
-            }, (sender, args) => {
+            } catch (err) {
                 Logger.log({
-                    data: { error: args.get_message() },
+                    data: { error: err.args.get_message() },
                     level: LogLevel.Error,
                     message: `Failed to process webparts for file ${file.Folder}/${file.Url}`,
                 });
-                throw { sender, args };
-            });
+                throw { sender: err.sender, args: err.args };
+            }
         }
     }
 
@@ -173,7 +175,7 @@ export class Files extends HandlerBase {
             return (() => {
                 return new Promise<any>(async (_res, _rej) => {
                     if (wp.Contents.FileSrc) {
-                        const fileSrc = ReplaceTokens(wp.Contents.FileSrc);
+                        const fileSrc = replaceTokens(wp.Contents.FileSrc);
                         Logger.log({ data: null, level: LogLevel.Info, message: `Retrieving contents from file '${fileSrc}'.` });
                         const response = await fetch(fileSrc, { credentials: "include", method: "GET" });
                         const xml = await response.text();
