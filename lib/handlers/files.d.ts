@@ -17,28 +17,19 @@ export declare class Files extends HandlerBase {
      */
     ProvisionObjects(web: Web, files: IFile[]): Promise<void>;
     /**
-<<<<<<< HEAD
-=======
      * Get blob for a file
      *
      * @param {IFile} file The file
      */
     private getFileBlob(file);
     /**
->>>>>>> cd8cc30c728a0a98cea63fe411d9a6d8b23c4308
      * Procceses a file
      *
      * @param {Web} web The web
      * @param {IFile} file The file
-<<<<<<< HEAD
-     * @param {string} serverRelativeUrl ServerRelativeUrl for the web
-     */
-    private processFile(web, file, serverRelativeUrl);
-=======
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
     private processFile(web, file, webServerRelativeUrl);
->>>>>>> cd8cc30c728a0a98cea63fe411d9a6d8b23c4308
     /**
      * Remove exisiting webparts if specified
      *
@@ -82,22 +73,8 @@ export declare class Files extends HandlerBase {
      * Process list item properties for the file
      *
      * @param {Web} web The web
-<<<<<<< HEAD
-     * @param {FileAddResuylt} result The file add result
-     * @param {Object} properties The properties to set
-     */
-    private processProperties(web, result, properties);
-    /**
-     * Replaces tokens in a string, e.g. {site}
-     *
-     * @param {string} str The string
-     * @param {SP.ClientContext} ctx Client context
-     */
-    private replaceXmlTokens(str, ctx);
-=======
      * @param {File} pnpFile The PnP file
      * @param {Object} properties The properties to set
      */
     private processProperties(web, pnpFile, properties);
->>>>>>> cd8cc30c728a0a98cea63fe411d9a6d8b23c4308
 }
