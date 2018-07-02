@@ -1,7 +1,7 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IFile, IWebPart } from "../schema";
-import { Web, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
+import { Web, File, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
 import { ReplaceTokens } from "../util";
 
 /**
@@ -36,27 +36,47 @@ export class Files extends HandlerBase {
     }
 
     /**
+     * Get blob for a file
+     *
+     * @param {IFile} file The file
+     */
+    private async getFileBlob(file: IFile): Promise<Blob> {
+        const fileSrcWithoutTokens = ReplaceTokens(file.Src);
+        const response = await fetch(fileSrcWithoutTokens, { credentials: "include", method: "GET" });
+        const fileContents = await response.text();
+        const blob = new Blob([fileContents], { type: "text/plain" });
+        return blob;
+    }
+
+    /**
      * Procceses a file
      *
      * @param {Web} web The web
      * @param {IFile} file The file
-     * @param {string} serverRelativeUrl ServerRelativeUrl for the web
+     * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
-    private async processFile(web: Web, file: IFile, serverRelativeUrl: string): Promise<void> {
+    private async processFile(web: Web, file: IFile, webServerRelativeUrl: string): Promise<void> {
         Logger.log({ data: file, level: LogLevel.Info, message: `Processing file ${file.Folder}/${file.Url}` });
-        const fileSrcWithoutTokens = ReplaceTokens(file.Src);
         try {
-            const response = await fetch(fileSrcWithoutTokens, { credentials: "include", method: "GET" })
-            const fileContents = await response.text();
-            const blob = new Blob([fileContents], { type: "text/plain" });
-            const folderServerRelativeUrl = Util.combinePaths("/", serverRelativeUrl, file.Folder);
-            const folder = web.getFolderByServerRelativeUrl(folderServerRelativeUrl);
-            const result = await folder.files.add(file.Url, blob, file.Overwrite);
+            const blob = await this.getFileBlob(file);
+            const folderServerRelativeUrl = Util.combinePaths("/", webServerRelativeUrl, file.Folder);
+            const pnpFolder = web.getFolderByServerRelativeUrl(folderServerRelativeUrl);
+
+            let fileServerRelativeUrl = Util.combinePaths("/", folderServerRelativeUrl, file.Url);
+            let fileAddResult: FileAddResult;
+            let pnpFile: File;
+            try {
+                fileAddResult = await pnpFolder.files.add(file.Url, blob, file.Overwrite);
+                pnpFile = fileAddResult.file;
+                fileServerRelativeUrl = fileAddResult.data.ServerRelativeUrl;
+            } catch (fileAddError) {
+                pnpFile = web.getFileByServerRelativePath(fileServerRelativeUrl);
+            }
             await Promise.all([
-                this.processWebParts(file, serverRelativeUrl, result.data.ServerRelativeUrl),
-                this.processProperties(web, result, file.Properties),
-            ])
-            await this.processPageListViews(web, file.WebParts, result.data.ServerRelativeUrl);
+                this.processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl),
+                this.processProperties(web, pnpFile, file.Properties),
+            ]);
+            await this.processPageListViews(web, file.WebParts, fileServerRelativeUrl);
         } catch (err) {
             throw err;
         }
@@ -118,7 +138,7 @@ export class Files extends HandlerBase {
                     })
                         .then(() => {
                             file.WebParts.forEach(wp => {
-                                let def = lwpm.importWebPart(this.replaceXmlTokens(wp.Contents.Xml, ctx)),
+                                let def = lwpm.importWebPart(ReplaceTokens(wp.Contents.Xml)),
                                     inst = def.get_webPart();
                                 Logger.log({ data: wp, level: LogLevel.Info, message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}` });
                                 lwpm.addWebPart(inst, wp.Zone, wp.Order);
@@ -150,62 +170,50 @@ export class Files extends HandlerBase {
     private fetchWebPartContents = (webParts: IWebPart[], cb: (index, xml) => void) => new Promise<any>((resolve, reject) => {
         let fileFetchPromises = webParts.map((wp, index) => {
             return (() => {
-                return new Promise<any>((_res, _rej) => {
+                return new Promise<any>(async (_res, _rej) => {
                     if (wp.Contents.FileSrc) {
                         const fileSrc = ReplaceTokens(wp.Contents.FileSrc);
                         Logger.log({ data: null, level: LogLevel.Info, message: `Retrieving contents from file '${fileSrc}'.` });
-                        fetch(fileSrc, { credentials: "include", method: "GET" })
-                            .then(res => {
-                                res.text()
-                                    .then(xml => {
-                                        if (Util.isArray(wp.PropertyOverrides)) {
-                                            let obj = xmljs.xml2js(xml);
-                                            if (obj.elements[0].name === "webParts") {
-                                                const existingProperties = obj.elements[0].elements[0].elements[1].elements[0].elements;
-                                                let updatedProperties = [];
-                                                existingProperties.forEach(prop => {
-                                                    let hasOverride = wp.PropertyOverrides.filter(po => po.name === prop.attributes.name).length > 0;
-                                                    if (!hasOverride) {
-                                                        updatedProperties.push(prop);
-                                                    }
-                                                });
-                                                wp.PropertyOverrides.forEach(({ name, type, value }) => {
-                                                    updatedProperties.push({
-                                                        attributes: {
-                                                            name,
-                                                            type,
-                                                        },
-                                                        elements: [
-                                                            {
-                                                                text: value,
-                                                                type: "text",
-                                                            },
-                                                        ],
-                                                        name: "property",
-                                                        type: "element",
-                                                    });
-                                                });
-                                                obj.elements[0].elements[0].elements[1].elements[0].elements = updatedProperties;
-                                                cb(index, xmljs.js2xml(obj));
-                                                _res();
-                                            } else {
-                                                cb(index, xml);
-                                                _res();
-                                            }
-                                        } else {
-                                            cb(index, xml);
-                                            _res();
-                                        }
-                                    })
-                                    .catch(err => {
-                                        Logger.log({ data: err, level: LogLevel.Error, message: `Failed to retrieve contents from file '${fileSrc}'.` });
-                                        reject(err);
+                        const response = await fetch(fileSrc, { credentials: "include", method: "GET" });
+                        const xml = await response.text();
+                        if (Util.isArray(wp.PropertyOverrides)) {
+                            let obj: any = xmljs.xml2js(xml);
+                            if (obj.elements[0].name === "webParts") {
+                                const existingProperties = obj.elements[0].elements[0].elements[1].elements[0].elements;
+                                let updatedProperties = [];
+                                existingProperties.forEach(prop => {
+                                    let hasOverride = wp.PropertyOverrides.filter(po => po.name === prop.attributes.name).length > 0;
+                                    if (!hasOverride) {
+                                        updatedProperties.push(prop);
+                                    }
+                                });
+                                wp.PropertyOverrides.forEach(({ name, type, value }) => {
+                                    updatedProperties.push({
+                                        attributes: {
+                                            name,
+                                            type,
+                                        },
+                                        elements: [
+                                            {
+                                                text: value,
+                                                type: "text",
+                                            },
+                                        ],
+                                        name: "property",
+                                        type: "element",
                                     });
-                            })
-                            .catch(err => {
-                                Logger.log({ data: err, level: LogLevel.Error, message: `Failed to retrieve contents from file '${fileSrc}'.` });
-                                reject(err);
-                            });
+                                });
+                                obj.elements[0].elements[0].elements[1].elements[0].elements = updatedProperties;
+                                cb(index, xmljs.js2xml(obj));
+                                _res();
+                            } else {
+                                cb(index, xml);
+                                _res();
+                            }
+                        } else {
+                            cb(index, xml);
+                            _res();
+                        }
                     } else {
                         _res();
                     }
@@ -328,33 +336,14 @@ export class Files extends HandlerBase {
      * Process list item properties for the file
      *
      * @param {Web} web The web
-     * @param {FileAddResuylt} result The file add result
+     * @param {File} pnpFile The PnP file
      * @param {Object} properties The properties to set
      */
-    private processProperties(web: Web, result: FileAddResult, properties: { [key: string]: string | number }) {
-        return new Promise((resolve, reject) => {
-            if (properties && Object.keys(properties).length > 0) {
-                result.file.listItemAllFields.select("ID", "ParentList/ID").expand("ParentList").get()
-                    .then(({ ID, ParentList }) => {
-                        web.lists.getById(ParentList.Id).items.getById(ID).update(properties)
-                            .then(resolve)
-                            .catch(reject);
-                    })
-                    .catch(reject);
-            } else {
-                resolve();
-            }
-        });
+    private async processProperties(web: Web, pnpFile: File, properties: { [key: string]: string | number }) {
+        if (properties && Object.keys(properties).length > 0) {
+            const listItemAllFields = await pnpFile.listItemAllFields.select("ID", "ParentList/ID").expand("ParentList").get();
+            await web.lists.getById(listItemAllFields.ParentList.Id).items.getById(listItemAllFields.ID).update(properties);
+        }
     }
 
-    /**
-     * Replaces tokens in a string, e.g. {site}
-     *
-     * @param {string} str The string
-     * @param {SP.ClientContext} ctx Client context
-     */
-    private replaceXmlTokens(str: string, ctx: SP.ClientContext): string {
-        let site = Util.combinePaths(document.location.protocol, "//", document.location.host, ctx.get_url());
-        return str.replace(/{site}/g, site);
-    }
 }
