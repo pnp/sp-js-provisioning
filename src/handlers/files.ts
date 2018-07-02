@@ -91,20 +91,17 @@ export class Files extends HandlerBase {
         return new Promise((resolve, reject) => {
             if (shouldRemove) {
                 Logger.log({ level: LogLevel.Info, message: `Deleting existing webpart from file ${fileServerRelativeUrl}` });
-                let ctx = new SP.ClientContext(webServerRelativeUrl),
-                    spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
-                    lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared),
-                    webParts = lwpm.get_webParts();
-                ctx.load(webParts);
-                ctx.executeQueryAsync(() => {
+                const clientContext = new SP.ClientContext(webServerRelativeUrl);
+                const spFile = clientContext.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl);
+                const webPartManager = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
+                const webParts = webPartManager.get_webParts();
+                clientContext.load(webParts);
+                clientContext.executeQueryAsync(() => {
                     webParts.get_data().forEach(wp => wp.deleteWebPart());
-                    ctx.executeQueryAsync(resolve, reject);
+                    clientContext.executeQueryAsync(resolve, reject);
                 }, reject);
             } else {
-                Logger.log({
-                    level: LogLevel.Info,
-                    message: `Web parts should not be removed from file ${fileServerRelativeUrl}.`,
-                });
+                Logger.log({ level: LogLevel.Info, message: `Web parts should not be removed from file ${fileServerRelativeUrl}.` });
                 resolve();
             }
         });
@@ -146,6 +143,8 @@ export class Files extends HandlerBase {
                     });
                     reject({ sender, args });
                 });
+            } else {
+                resolve();
             }
         });
     }
