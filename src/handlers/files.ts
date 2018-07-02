@@ -154,65 +154,54 @@ export class Files extends HandlerBase {
      * Fetches web part contents
      *
      * @param {IWebPart[]} webParts Web parts
-     * @param {Function} cb Callback function that takes index of the the webpart and the retrieved XML
+     * @param {Function} callbackFunc Callback function that takes index of the the webpart and the retrieved XML
      */
-    private fetchWebPartContents = (webParts: IWebPart[], cb: (index, xml) => void) => new Promise<any>((resolve, reject) => {
-        let fileFetchPromises = webParts.map((wp, index) => {
-            return (() => {
-                return new Promise<any>(async (_res, _rej) => {
-                    if (wp.Contents.FileSrc) {
-                        const fileSrc = replaceTokens(wp.Contents.FileSrc);
-                        Logger.log({ data: null, level: LogLevel.Info, message: `Retrieving contents from file '${fileSrc}'.` });
-                        const response = await fetch(fileSrc, { credentials: "include", method: "GET" });
-                        const xml = await response.text();
-                        if (Util.isArray(wp.PropertyOverrides)) {
-                            let obj: any = xmljs.xml2js(xml);
-                            if (obj.elements[0].name === "webParts") {
-                                const existingProperties = obj.elements[0].elements[0].elements[1].elements[0].elements;
-                                let updatedProperties = [];
-                                existingProperties.forEach(prop => {
-                                    let hasOverride = wp.PropertyOverrides.filter(po => po.name === prop.attributes.name).length > 0;
-                                    if (!hasOverride) {
-                                        updatedProperties.push(prop);
-                                    }
-                                });
-                                wp.PropertyOverrides.forEach(({ name, type, value }) => {
-                                    updatedProperties.push({
-                                        attributes: {
-                                            name,
-                                            type,
-                                        },
-                                        elements: [
-                                            {
-                                                text: value,
-                                                type: "text",
-                                            },
-                                        ],
-                                        name: "property",
-                                        type: "element",
+    private fetchWebPartContents = (webParts: IWebPart[], callbackFunc: (index, xml) => void) => {
+        return new Promise<any>((resolve, reject) => {
+            let fileFetchPromises = webParts.map((wp, index) => {
+                return (() => {
+                    return new Promise<any>(async (_res, _rej) => {
+                        if (wp.Contents.FileSrc) {
+                            const fileSrc = replaceTokens(wp.Contents.FileSrc);
+                            Logger.log({ data: null, level: LogLevel.Info, message: `Retrieving contents from file '${fileSrc}'.` });
+                            const response = await fetch(fileSrc, { credentials: "include", method: "GET" });
+                            const xml = await response.text();
+                            if (Util.isArray(wp.PropertyOverrides)) {
+                                let obj: any = xmljs.xml2js(xml);
+                                if (obj.elements[0].name === "webParts") {
+                                    const existingProperties = obj.elements[0].elements[0].elements[1].elements[0].elements;
+                                    let updatedProperties = [];
+                                    existingProperties.forEach(prop => {
+                                        let hasOverride = wp.PropertyOverrides.filter(po => po.name === prop.attributes.name).length > 0;
+                                        if (!hasOverride) {
+                                            updatedProperties.push(prop);
+                                        }
                                     });
-                                });
-                                obj.elements[0].elements[0].elements[1].elements[0].elements = updatedProperties;
-                                cb(index, xmljs.js2xml(obj));
-                                _res();
+                                    wp.PropertyOverrides.forEach(({ name, type, value }) => {
+                                        updatedProperties.push({ attributes: { name, type }, elements: [{ text: value, type: "text" }], name: "property", type: "element" });
+                                    });
+                                    obj.elements[0].elements[0].elements[1].elements[0].elements = updatedProperties;
+                                    callbackFunc(index, xmljs.js2xml(obj));
+                                    _res();
+                                } else {
+                                    callbackFunc(index, xml);
+                                    _res();
+                                }
                             } else {
-                                cb(index, xml);
+                                callbackFunc(index, xml);
                                 _res();
                             }
                         } else {
-                            cb(index, xml);
                             _res();
                         }
-                    } else {
-                        _res();
-                    }
-                });
-            })();
+                    });
+                })();
+            });
+            Promise.all(fileFetchPromises)
+                .then(resolve)
+                .catch(reject);
         });
-        Promise.all(fileFetchPromises)
-            .then(resolve)
-            .catch(reject);
-    })
+    }
 
     /**
      * Processes page list views

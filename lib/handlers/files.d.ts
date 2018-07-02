@@ -50,7 +50,7 @@ export declare class Files extends HandlerBase {
      * Fetches web part contents
      *
      * @param {IWebPart[]} webParts Web parts
-     * @param {Function} cb Callback function that takes index of the the webpart and the retrieved XML
+     * @param {Function} callbackFunc Callback function that takes index of the the webpart and the retrieved XML
      */
     private fetchWebPartContents;
     /**
