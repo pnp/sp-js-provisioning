@@ -76,7 +76,7 @@ export declare class Files extends HandlerBase {
      * @param {File} pnpFile The PnP file
      * @param {Object} properties The properties to set
      */
-    private processProperties(web, pnpFile, properties);
+    private processProperties(web, pnpFile, file);
     /**
     * Replaces tokens in a string, e.g. {site}
     *

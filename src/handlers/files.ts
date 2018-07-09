@@ -71,7 +71,7 @@ export class Files extends HandlerBase {
             } catch (fileAddError) {
                 pnpFile = web.getFileByServerRelativePath(fileServerRelativeUrl);
             }
-            await this.processProperties(web, pnpFile, file.Properties);
+            await this.processProperties(web, pnpFile, file);
             await this.processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl);
             await this.processPageListViews(web, file.WebParts, fileServerRelativeUrl);
         } catch (err) {
@@ -313,10 +313,14 @@ export class Files extends HandlerBase {
      * @param {File} pnpFile The PnP file
      * @param {Object} properties The properties to set
      */
-    private async processProperties(web: Web, pnpFile: File, properties: { [key: string]: string | number }) {
-        if (properties && Object.keys(properties).length > 0) {
-            const listItemAllFields = await pnpFile.listItemAllFields.select("ID", "ParentList/ID").expand("ParentList").get();
-            await web.lists.getById(listItemAllFields.ParentList.Id).items.getById(listItemAllFields.ID).update(properties);
+    private async processProperties(web: Web, pnpFile: File, file: IFile) {
+        const hasProperties = file.Properties && Object.keys(file.Properties).length > 0;
+        if (hasProperties) {
+            Logger.log({ level: LogLevel.Info, message: `Processing properties for ${file.Folder}/${file.Url}` });
+            const listItemAllFields = await pnpFile.listItemAllFields.select("ID", "ParentList/ID", "ParentList/Title").expand("ParentList").get();
+            console.log(listItemAllFields);
+            await web.lists.getById(listItemAllFields.ParentList.Id).items.getById(listItemAllFields.ID).update(file.Properties);
+            Logger.log({ level: LogLevel.Info, message: `Successfully processed properties for ${file.Folder}/${file.Url}` });
         }
     }
 
