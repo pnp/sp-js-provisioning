@@ -318,7 +318,6 @@ export class Files extends HandlerBase {
         if (hasProperties) {
             Logger.log({ level: LogLevel.Info, message: `Processing properties for ${file.Folder}/${file.Url}` });
             const listItemAllFields = await pnpFile.listItemAllFields.select("ID", "ParentList/ID", "ParentList/Title").expand("ParentList").get();
-            console.log(listItemAllFields);
             await web.lists.getById(listItemAllFields.ParentList.Id).items.getById(listItemAllFields.ID).update(file.Properties);
             Logger.log({ level: LogLevel.Info, message: `Successfully processed properties for ${file.Folder}/${file.Url}` });
         }
