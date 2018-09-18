@@ -1,7 +1,7 @@
 import { IComposedLook } from "../schema";
 import { HandlerBase } from "./handlerbase";
 import { Web } from "sp-pnp-js";
-import { replaceTokens, makeUrlRelative } from "../util";
+import { makeUrlRelative, replaceUrlTokens } from "../util";
 
 /**
  * Describes the Composed Look Object Handler
@@ -24,9 +24,9 @@ export class ComposedLook extends HandlerBase {
         super.scope_started();
         return new Promise<void>((resolve, reject) => {
             web.applyTheme(
-                makeUrlRelative(replaceTokens(composedLook.ColorPaletteUrl)),
-                makeUrlRelative(replaceTokens(composedLook.FontSchemeUrl)),
-                composedLook.BackgroundImageUrl ? makeUrlRelative(replaceTokens(composedLook.BackgroundImageUrl)) : null,
+                makeUrlRelative(replaceUrlTokens(composedLook.ColorPaletteUrl)),
+                makeUrlRelative(replaceUrlTokens(composedLook.FontSchemeUrl)),
+                composedLook.BackgroundImageUrl ? makeUrlRelative(replaceUrlTokens(composedLook.BackgroundImageUrl)) : null,
                 false).then(_ => {
                     super.scope_ended();
                     resolve();

@@ -1,12 +1,12 @@
 import { HandlerBase } from "./handlerbase";
 import { IList } from "../schema";
 import { Web } from "sp-pnp-js";
+import { ProvisioningContext } from "../provisioningcontext";
 /**
  * Describes the Lists Object Handler
  */
 export declare class Lists extends HandlerBase {
-    private lists;
-    private tokenRegex;
+    private context;
     /**
      * Creates a new instance of the Lists class
      */
@@ -17,7 +17,7 @@ export declare class Lists extends HandlerBase {
      * @param {Web} web The web
      * @param {Array<IList>} lists The lists to provision
      */
-    ProvisionObjects(web: Web, lists: IList[]): Promise<void>;
+    ProvisionObjects(web: Web, lists: IList[], context: ProvisioningContext): Promise<void>;
     /**
      * Processes a list
      *
@@ -95,10 +95,4 @@ export declare class Lists extends HandlerBase {
      * @param {IListView} lvc The view configuration
      */
     private processViewFields(view, lvc);
-    /**
-     * Replaces tokens in field xml
-     *
-     * @param {string} fieldXml The field xml
-     */
-    private replaceFieldXmlTokens(fieldXml);
 }

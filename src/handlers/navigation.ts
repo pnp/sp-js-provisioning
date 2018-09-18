@@ -1,7 +1,7 @@
 import { HandlerBase } from "./handlerbase";
 import { INavigation, INavigationNode } from "../schema";
 import { Web, NavigationNodes, Util } from "sp-pnp-js";
-import { replaceTokens } from "../util";
+import { replaceUrlTokens } from "../util";
 
 /**
  * Describes the Navigation Object Handler
@@ -55,7 +55,7 @@ export class Navigation extends HandlerBase {
             if (existingNode.length === 1 && node.IgnoreExisting !== true) {
                 node.Url = existingNode[0].Url;
             }
-            target.add(node.Title, replaceTokens(node.Url)).then(result => {
+            target.add(node.Title, replaceUrlTokens(node.Url)).then(result => {
                 if (Util.isArray(node.Children)) {
                     this.processNavTree(result.node.children, node.Children).then(resolve, reject);
                 } else {

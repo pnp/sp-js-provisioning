@@ -1,10 +1,12 @@
 import { HandlerBase } from "./handlerbase";
 import { IFile } from "../schema";
 import { Web } from "sp-pnp-js";
+import { ProvisioningContext } from "../provisioningcontext";
 /**
  * Describes the Features Object Handler
  */
 export declare class Files extends HandlerBase {
+    private context;
     /**
      * Creates a new instance of the Files class
      */
@@ -15,7 +17,7 @@ export declare class Files extends HandlerBase {
      * @param {Web} web The web
      * @param {IFile[]} files The files  to provision
      */
-    ProvisionObjects(web: Web, files: IFile[]): Promise<void>;
+    ProvisionObjects(web: Web, files: IFile[], context: ProvisioningContext): Promise<void>;
     /**
      * Get blob for a file
      *
