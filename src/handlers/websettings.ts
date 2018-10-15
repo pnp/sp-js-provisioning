@@ -1,6 +1,6 @@
 import { HandlerBase } from "./handlerbase";
 import { IWebSettings } from "../schema";
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
 import * as omit from "object.omit";
 import { replaceUrlTokens } from "../util";
 

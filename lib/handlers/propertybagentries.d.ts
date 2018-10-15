@@ -1,6 +1,6 @@
 import { HandlerBase } from "./handlerbase";
 import { IPropertyBagEntry } from "../schema";
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
 /**
  * Describes the PropertyBagEntries Object Handler
  */

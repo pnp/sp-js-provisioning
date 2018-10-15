@@ -1,6 +1,7 @@
 import { HandlerBase } from "./handlerbase";
 import { INavigation, INavigationNode } from "../schema";
-import { Web, NavigationNodes, Util } from "sp-pnp-js";
+import { Web, NavigationNodes } from "@pnp/sp";
+import { isArray } from "@pnp/common";
 import { replaceUrlTokens } from "../util";
 
 /**
@@ -23,10 +24,10 @@ export class Navigation extends HandlerBase {
         super.scope_started();
         return new Promise<void>((resolve, reject) => {
             let promises = [];
-            if (Util.isArray(navigation.QuickLaunch)) {
+            if (isArray(navigation.QuickLaunch)) {
                 promises.push(this.processNavTree(web.navigation.quicklaunch, navigation.QuickLaunch));
             }
-            if (Util.isArray(navigation.TopNavigationBar)) {
+            if (isArray(navigation.TopNavigationBar)) {
                 promises.push(this.processNavTree(web.navigation.topNavigationBar, navigation.TopNavigationBar));
             }
             Promise.all(promises).then(() => {
@@ -56,7 +57,7 @@ export class Navigation extends HandlerBase {
                 node.Url = existingNode[0].Url;
             }
             target.add(node.Title, replaceUrlTokens(node.Url)).then(result => {
-                if (Util.isArray(node.Children)) {
+                if (isArray(node.Children)) {
                     this.processNavTree(result.node.children, node.Children).then(resolve, reject);
                 } else {
                     resolve();

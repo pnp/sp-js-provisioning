@@ -1,6 +1,6 @@
 import { HandlerBase } from "./handlerbase";
 import { IFile } from "../schema";
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
 /**
  * Describes the Features Object Handler
@@ -23,15 +23,15 @@ export declare class Files extends HandlerBase {
      *
      * @param {IFile} file The file
      */
-    private getFileBlob(file);
+    private getFileBlob;
     /**
      * Procceses a file
      *
      * @param {Web} web The web
-     * @param {IFile} file The file
+     * @param {IFile} file The fileAddError
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
-    private processFile(web, file, webServerRelativeUrl);
+    private processFile;
     /**
      * Remove exisiting webparts if specified
      *
@@ -39,7 +39,7 @@ export declare class Files extends HandlerBase {
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      * @param {boolean} shouldRemove Should web parts be removed
      */
-    private removeExistingWebParts(webServerRelativeUrl, fileServerRelativeUrl, shouldRemove);
+    private removeExistingWebParts;
     /**
      * Processes web parts
      *
@@ -47,7 +47,7 @@ export declare class Files extends HandlerBase {
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
-    private processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl);
+    private processWebParts;
     /**
      * Fetches web part contents
      *
@@ -62,7 +62,7 @@ export declare class Files extends HandlerBase {
      * @param {Array<IWebPart>} webParts Web parts
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
-    private processPageListViews(web, webParts, fileServerRelativeUrl);
+    private processPageListViews;
     /**
      * Processes page list view
      *
@@ -70,7 +70,7 @@ export declare class Files extends HandlerBase {
      * @param {any} listView List view
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
-    private processPageListView(web, listView, fileServerRelativeUrl);
+    private processPageListView;
     /**
      * Process list item properties for the file
      *
@@ -78,12 +78,12 @@ export declare class Files extends HandlerBase {
      * @param {File} pnpFile The PnP file
      * @param {Object} properties The properties to set
      */
-    private processProperties(web, pnpFile, file);
+    private processProperties;
     /**
     * Replaces tokens in a string, e.g. {site}
     *
     * @param {string} str The string
     * @param {SP.ClientContext} ctx Client context
     */
-    private replaceWebPartXmlTokens(str, ctx);
+    private replaceWebPartXmlTokens;
 }

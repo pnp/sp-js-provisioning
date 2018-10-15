@@ -1,4 +1,5 @@
-import { Web, Logger, LogLevel } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
+import { Logger, LogLevel } from "@pnp/logging";
 import { ProvisioningContext } from "../provisioningcontext";
 
 /**

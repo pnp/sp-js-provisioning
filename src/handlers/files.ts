@@ -1,7 +1,9 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IFile, IWebPart } from "../schema";
-import { Web, File, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
+import { Web, File, FileAddResult } from "@pnp/sp";
+import { combine, isArray } from "@pnp/common";
+import { Logger, LogLevel } from "@pnp/logging";
 import { replaceUrlTokens } from "../util";
 import { ProvisioningContext } from "../provisioningcontext";
 
@@ -56,16 +58,16 @@ export class Files extends HandlerBase {
      * Procceses a file
      *
      * @param {Web} web The web
-     * @param {IFile} file The file
+     * @param {IFile} file The fileAddError
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
     private async processFile(web: Web, file: IFile, webServerRelativeUrl: string): Promise<void> {
         Logger.log({ level: LogLevel.Info, message: `Processing file ${file.Folder}/${file.Url}` });
         try {
             const blob = await this.getFileBlob(file);
-            const folderServerRelativeUrl = Util.combinePaths("/", webServerRelativeUrl, file.Folder);
+            const folderServerRelativeUrl = combine("/", webServerRelativeUrl, file.Folder);
             const pnpFolder = web.getFolderByServerRelativeUrl(folderServerRelativeUrl);
-            let fileServerRelativeUrl = Util.combinePaths("/", folderServerRelativeUrl, file.Url);
+            let fileServerRelativeUrl = combine("/", folderServerRelativeUrl, file.Url);
             let fileAddResult: FileAddResult;
             let pnpFile: File;
             try {
@@ -166,7 +168,7 @@ export class Files extends HandlerBase {
                             Logger.log({ data: null, level: LogLevel.Info, message: `Retrieving contents from file '${fileSrc}'.` });
                             const response = await fetch(fileSrc, { credentials: "include", method: "GET" });
                             const xml = await response.text();
-                            if (Util.isArray(wp.PropertyOverrides)) {
+                            if (isArray(wp.PropertyOverrides)) {
                                 let obj: any = xmljs.xml2js(xml);
                                 if (obj.elements[0].name === "webParts") {
                                     const existingProperties = obj.elements[0].elements[0].elements[1].elements[0].elements;
@@ -334,7 +336,7 @@ export class Files extends HandlerBase {
     * @param {SP.ClientContext} ctx Client context
     */
     private replaceWebPartXmlTokens(str: string, ctx: SP.ClientContext): string {
-        let site = Util.combinePaths(document.location.protocol, "//", document.location.host, ctx.get_url());
+        let site = combine(document.location.protocol, "//", document.location.host, ctx.get_url());
         return str.replace(/{site}/g, site);
     }
 }

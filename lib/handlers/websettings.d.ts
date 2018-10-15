@@ -1,6 +1,6 @@
 import { HandlerBase } from "./handlerbase";
 import { IWebSettings } from "../schema";
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
 /**
  * Describes the WebSettings Object Handler
  */

@@ -1,6 +1,7 @@
 import { Schema } from "./schema";
 import { HandlerBase } from "./handlers/handlerbase";
-import { TypedHash, Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
+import { TypedHash } from "@pnp/common";
 import { ProvisioningContext } from "./provisioningcontext";
 /**
  * Root class of Provisioning

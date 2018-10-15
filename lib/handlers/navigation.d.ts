@@ -1,6 +1,6 @@
 import { HandlerBase } from "./handlerbase";
 import { INavigation } from "../schema";
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
 /**
  * Describes the Navigation Object Handler
  */
@@ -15,8 +15,8 @@ export declare class Navigation extends HandlerBase {
      * @param {Navigation} navigation The navigation to provision
      */
     ProvisionObjects(web: Web, navigation: INavigation): Promise<void>;
-    private processNavTree(target, nodes);
-    private processNode(target, node, existingNodes);
-    private deleteExistingNodes(target);
-    private deleteNode(target, id);
+    private processNavTree;
+    private processNode;
+    private deleteExistingNodes;
+    private deleteNode;
 }

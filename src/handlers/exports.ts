@@ -1,4 +1,4 @@
-import { TypedHash } from "sp-pnp-js";
+import { TypedHash } from "@pnp/common";
 import { HandlerBase } from "./handlerbase";
 import { ComposedLook } from "./composedlook";
 import { CustomActions } from "./customactions";

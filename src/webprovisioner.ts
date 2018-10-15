@@ -1,7 +1,9 @@
 // we need to import HandlerBase & TypedHash to avoid naming issues in ts transpile
 import { Schema } from "./schema";
 import { HandlerBase } from "./handlers/handlerbase";
-import { TypedHash, Web, Logger, LogLevel } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
+import { TypedHash } from "@pnp/common";
+import { Logger, LogLevel } from "@pnp/logging";
 import { DefaultHandlerMap, DefaultHandlerSort } from "./handlers/exports";
 import { ProvisioningContext } from "./provisioningcontext";
 

@@ -1,7 +1,8 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from "../schema";
-import { Web, List, Logger, LogLevel } from "sp-pnp-js";
+import { Logger, LogLevel } from "@pnp/logging";
+import { Web, List } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
 
 /**

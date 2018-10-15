@@ -1,4 +1,4 @@
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
 /**
  * Describes the Object Handler Base

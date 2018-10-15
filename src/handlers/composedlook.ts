@@ -1,7 +1,7 @@
 import { IComposedLook } from "../schema";
 import { HandlerBase } from "./handlerbase";
-import { Web } from "sp-pnp-js";
-import { makeUrlRelative, replaceUrlTokens } from "../util";
+import { Web } from "@pnp/sp";
+import { replaceUrlTokens, makeUrlRelative } from "../util";
 
 /**
  * Describes the Composed Look Object Handler
