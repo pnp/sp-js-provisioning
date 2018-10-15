@@ -1,13 +1,18 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IFile, IWebPart } from "../schema";
-import { Web, File, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
-import { replaceTokens } from "../util";
+import { Web, File, FileAddResult } from "@pnp/sp";
+import { combine, isArray } from "@pnp/common";
+import { Logger, LogLevel } from "@pnp/logging";
+import { replaceUrlTokens } from "../util";
+import { ProvisioningContext } from "../provisioningcontext";
 
 /**
  * Describes the Features Object Handler
  */
 export class Files extends HandlerBase {
+    private context: ProvisioningContext;
+
     /**
      * Creates a new instance of the Files class
      */
@@ -21,7 +26,8 @@ export class Files extends HandlerBase {
      * @param {Web} web The web
      * @param {IFile[]} files The files  to provision
      */
-    public async ProvisionObjects(web: Web, files: IFile[]): Promise<void> {
+    public async ProvisionObjects(web: Web, files: IFile[], context: ProvisioningContext): Promise<void> {
+        this.context = context;
         super.scope_started();
         if (typeof window === "undefined") {
             throw "Files Handler not supported in Node.";
@@ -41,7 +47,7 @@ export class Files extends HandlerBase {
      * @param {IFile} file The file
      */
     private async getFileBlob(file: IFile): Promise<Blob> {
-        const fileSrcWithoutTokens = replaceTokens(file.Src);
+        const fileSrcWithoutTokens = replaceUrlTokens(this.context.replaceTokens(file.Src));
         const response = await fetch(fileSrcWithoutTokens, { credentials: "include", method: "GET" });
         const fileContents = await response.text();
         const blob = new Blob([fileContents], { type: "text/plain" });
@@ -52,16 +58,16 @@ export class Files extends HandlerBase {
      * Procceses a file
      *
      * @param {Web} web The web
-     * @param {IFile} file The file
+     * @param {IFile} file The fileAddError
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
     private async processFile(web: Web, file: IFile, webServerRelativeUrl: string): Promise<void> {
         Logger.log({ level: LogLevel.Info, message: `Processing file ${file.Folder}/${file.Url}` });
         try {
             const blob = await this.getFileBlob(file);
-            const folderServerRelativeUrl = Util.combinePaths("/", webServerRelativeUrl, file.Folder);
+            const folderServerRelativeUrl = combine("/", webServerRelativeUrl, file.Folder);
             const pnpFolder = web.getFolderByServerRelativeUrl(folderServerRelativeUrl);
-            let fileServerRelativeUrl = Util.combinePaths("/", folderServerRelativeUrl, file.Url);
+            let fileServerRelativeUrl = combine("/", folderServerRelativeUrl, file.Url);
             let fileAddResult: FileAddResult;
             let pnpFile: File;
             try {
@@ -71,7 +77,7 @@ export class Files extends HandlerBase {
             } catch (fileAddError) {
                 pnpFile = web.getFileByServerRelativePath(fileServerRelativeUrl);
             }
-            await this.processProperties(web, pnpFile, file.Properties);
+            await this.processProperties(web, pnpFile, file);
             await this.processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl);
             await this.processPageListViews(web, file.WebParts, fileServerRelativeUrl);
         } catch (err) {
@@ -124,7 +130,7 @@ export class Files extends HandlerBase {
                     webPartManager = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
                 await this.fetchWebPartContents(file.WebParts, (index, xml) => { file.WebParts[index].Contents.Xml = xml; });
                 file.WebParts.forEach(wp => {
-                    const webPartXml = replaceTokens(this.replaceWebPartXmlTokens(wp.Contents.Xml, clientContext));
+                    const webPartXml = this.context.replaceTokens(this.replaceWebPartXmlTokens(wp.Contents.Xml, clientContext));
                     const webPartDef = webPartManager.importWebPart(webPartXml);
                     const webPartInstance = webPartDef.get_webPart();
                     Logger.log({ data: { webPartXml }, level: LogLevel.Info, message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}` });
@@ -158,11 +164,11 @@ export class Files extends HandlerBase {
                 return (() => {
                     return new Promise<any>(async (_res, _rej) => {
                         if (wp.Contents.FileSrc) {
-                            const fileSrc = replaceTokens(wp.Contents.FileSrc);
+                            const fileSrc = replaceUrlTokens(this.context.replaceTokens(wp.Contents.FileSrc));
                             Logger.log({ data: null, level: LogLevel.Info, message: `Retrieving contents from file '${fileSrc}'.` });
                             const response = await fetch(fileSrc, { credentials: "include", method: "GET" });
                             const xml = await response.text();
-                            if (Util.isArray(wp.PropertyOverrides)) {
+                            if (isArray(wp.PropertyOverrides)) {
                                 let obj: any = xmljs.xml2js(xml);
                                 if (obj.elements[0].name === "webParts") {
                                     const existingProperties = obj.elements[0].elements[0].elements[1].elements[0].elements;
@@ -313,10 +319,13 @@ export class Files extends HandlerBase {
      * @param {File} pnpFile The PnP file
      * @param {Object} properties The properties to set
      */
-    private async processProperties(web: Web, pnpFile: File, properties: { [key: string]: string | number }) {
-        if (properties && Object.keys(properties).length > 0) {
-            const listItemAllFields = await pnpFile.listItemAllFields.select("ID", "ParentList/ID").expand("ParentList").get();
-            await web.lists.getById(listItemAllFields.ParentList.Id).items.getById(listItemAllFields.ID).update(properties);
+    private async processProperties(web: Web, pnpFile: File, file: IFile) {
+        const hasProperties = file.Properties && Object.keys(file.Properties).length > 0;
+        if (hasProperties) {
+            Logger.log({ level: LogLevel.Info, message: `Processing properties for ${file.Folder}/${file.Url}` });
+            const listItemAllFields = await pnpFile.listItemAllFields.select("ID", "ParentList/ID", "ParentList/Title").expand("ParentList").get();
+            await web.lists.getById(listItemAllFields.ParentList.Id).items.getById(listItemAllFields.ID).update(file.Properties);
+            Logger.log({ level: LogLevel.Info, message: `Successfully processed properties for ${file.Folder}/${file.Url}` });
         }
     }
 
@@ -327,7 +336,7 @@ export class Files extends HandlerBase {
     * @param {SP.ClientContext} ctx Client context
     */
     private replaceWebPartXmlTokens(str: string, ctx: SP.ClientContext): string {
-        let site = Util.combinePaths(document.location.protocol, "//", document.location.host, ctx.get_url());
+        let site = combine(document.location.protocol, "//", document.location.host, ctx.get_url());
         return str.replace(/{site}/g, site);
     }
 }

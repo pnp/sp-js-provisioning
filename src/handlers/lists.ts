@@ -1,21 +1,21 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from "../schema";
-import { Web, List, Logger, LogLevel } from "sp-pnp-js";
+import { Logger, LogLevel } from "@pnp/logging";
+import { Web, List } from "@pnp/sp";
+import { ProvisioningContext } from "../provisioningcontext";
 
 /**
  * Describes the Lists Object Handler
  */
 export class Lists extends HandlerBase {
-    private lists: any[];
-    private tokenRegex = /{[a-z]*:[ÆØÅæøåA-za-z ]*}/g;
+    private context: ProvisioningContext;
 
     /**
      * Creates a new instance of the Lists class
      */
     constructor() {
         super("Lists");
-        this.lists = [];
     }
 
     /**
@@ -24,7 +24,8 @@ export class Lists extends HandlerBase {
      * @param {Web} web The web
      * @param {Array<IList>} lists The lists to provision
      */
-    public async ProvisionObjects(web: Web, lists: IList[]): Promise<void> {
+    public async ProvisionObjects(web: Web, lists: IList[], context: ProvisioningContext): Promise<void> {
+        this.context = context;
         super.scope_started();
         try {
             await lists.reduce((chain, list) => chain.then(_ => this.processList(web, list)), Promise.resolve());
@@ -46,7 +47,7 @@ export class Lists extends HandlerBase {
      */
     private async processList(web: Web, lc: IList): Promise<void> {
         const { created, list, data } = await web.lists.ensure(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
-        this.lists.push(data);
+        this.context.lists.push(data);
         if (created) {
             Logger.log({ data: list, level: LogLevel.Info, message: `List ${lc.Title} created successfully.` });
         }
@@ -139,7 +140,7 @@ export class Lists extends HandlerBase {
 
         // Looks like e.g. lookup fields can't be updated, so we'll need to re-create the field
         try {
-            let fieldAddResult = await list.fields.createFieldAsXml(this.replaceFieldXmlTokens(fieldXml));
+            let fieldAddResult = await list.fields.createFieldAsXml(this.context.replaceTokens(fieldXml));
             await fieldAddResult.field.update({ Title: fieldDisplayName });
             Logger.log({ message: `Field '${fieldDisplayName}' added successfully to list ${lc.Title}.`, level: LogLevel.Info });
         } catch (err) {
@@ -226,31 +227,5 @@ export class Lists extends HandlerBase {
         } catch (err) {
             Logger.log({ message: `Failed to process view fields for view ${lvc.Title}.`, level: LogLevel.Info });
         }
-    }
-
-    /**
-     * Replaces tokens in field xml
-     *
-     * @param {string} fieldXml The field xml
-     */
-    private replaceFieldXmlTokens(fieldXml: string) {
-        let m;
-        while ((m = this.tokenRegex.exec(fieldXml)) !== null) {
-            if (m.index === this.tokenRegex.lastIndex) {
-                this.tokenRegex.lastIndex++;
-            }
-            m.forEach((match) => {
-                let [Type, Value] = match.replace(/[\{\}]/g, "").split(":");
-                switch (Type) {
-                    case "listid": {
-                        let list = this.lists.filter(l => l.Title === Value);
-                        if (list.length === 1) {
-                            fieldXml = fieldXml.replace(match, list[0].Id);
-                        }
-                    }
-                }
-            });
-        }
-        return fieldXml;
     }
 }

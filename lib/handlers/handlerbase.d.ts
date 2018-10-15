@@ -1,4 +1,5 @@
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
+import { ProvisioningContext } from "../provisioningcontext";
 /**
  * Describes the Object Handler Base
  */
@@ -11,7 +12,7 @@ export declare class HandlerBase {
     /**
      * Provisioning objects
      */
-    ProvisionObjects(web: Web, templatePart: any): Promise<void>;
+    ProvisionObjects(web: Web, templatePart: any, _context?: ProvisioningContext): Promise<void>;
     /**
      * Writes to Logger when scope has started
      */

@@ -1,6 +1,6 @@
 import { IComposedLook } from "../schema";
 import { HandlerBase } from "./handlerbase";
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
 /**
  * Describes the Composed Look Object Handler
  */

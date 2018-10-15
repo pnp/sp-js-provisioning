@@ -1,5 +1,6 @@
-export function replaceTokens(str: string): string {
-    return str.replace(/{sitecollection}/g, _spPageContextInfo.siteAbsoluteUrl)
+export function replaceUrlTokens(str: string): string {
+    return str
+        .replace(/{sitecollection}/g, _spPageContextInfo.siteAbsoluteUrl)
         .replace(/{wpgallery}/g, `${_spPageContextInfo.siteAbsoluteUrl}/_catalogs/wp`)
         .replace(/{hosturl}/g, `${window.location.protocol}//${window.location.host}:${window.location.port}`)
         .replace(/{themegallery}/g, `${_spPageContextInfo.siteAbsoluteUrl}/_catalogs/theme/15`);

@@ -1,14 +1,16 @@
 // we need to import HandlerBase & TypedHash to avoid naming issues in ts transpile
 import { Schema } from "./schema";
 import { HandlerBase } from "./handlers/handlerbase";
-import { TypedHash, Web, Logger, LogLevel } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
+import { TypedHash } from "@pnp/common";
+import { Logger, LogLevel } from "@pnp/logging";
 import { DefaultHandlerMap, DefaultHandlerSort } from "./handlers/exports";
+import { ProvisioningContext } from "./provisioningcontext";
 
 /**
  * Root class of Provisioning
  */
 export class WebProvisioner {
-
     /**
      * Creates a new instance of the Provisioner class
      *
@@ -17,6 +19,7 @@ export class WebProvisioner {
      */
     constructor(
         private web: Web,
+        private context: ProvisioningContext = new ProvisioningContext(),
         public handlerMap: TypedHash<HandlerBase> = DefaultHandlerMap,
         public handlerSort: TypedHash<number> = DefaultHandlerSort) { }
 
@@ -27,7 +30,6 @@ export class WebProvisioner {
      * @param {Function} progressCallback Callback for progress updates
      */
     public applyTemplate(template: Schema, progressCallback?: (msg: string) => void): Promise<void> {
-
         Logger.write(`Beginning processing of web [${this.web.toUrl()}]`, LogLevel.Info);
 
         let operations = Object.getOwnPropertyNames(template).sort((name1: string, name2: string) => {
@@ -42,7 +44,7 @@ export class WebProvisioner {
                 if (progressCallback) {
                     progressCallback(name);
                 }
-                return handler.ProvisionObjects(this.web, template[name]);
+                return handler.ProvisionObjects(this.web, template[name], this.context);
             });
         }, Promise.resolve()).then(_ => {
             Logger.write(`Done processing of web [${this.web.toUrl()}]`, LogLevel.Info);

@@ -1,6 +1,6 @@
 import { HandlerBase } from "./handlerbase";
 import { ICustomAction } from "../schema";
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
 
 /**
  * Describes the Custom Actions Object Handler
@@ -24,7 +24,7 @@ export class CustomActions extends HandlerBase {
 
         return new Promise<void>((resolve, reject) => {
 
-            web.userCustomActions.select("Title").getAs<{ Title: string }[]>().then(existingActions => {
+            web.userCustomActions.select("Title").get<{ Title: string }[]>().then(existingActions => {
 
                 let batch = web.createBatch();
 
