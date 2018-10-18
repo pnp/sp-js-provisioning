@@ -1,12 +1,12 @@
 {
   "name": "sp-js-provisioning",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "description": "A reusable JavaScript library targeting SharePoint provisioning.",
   "main": "./lib/provisioning.js",
   "typings": "./lib/provisioning",
   "dependencies": {
     "object.omit": "^3.0.0",
-    "xml-js": "^1.4.2",    
+    "xml-js": "^1.4.2",
     "@pnp/common": "^1.2.3",
     "@pnp/logging": "^1.2.3",
     "@pnp/nodejs": "^1.2.3",
