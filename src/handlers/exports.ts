@@ -30,7 +30,7 @@ export const DefaultHandlerMap = (config: IProvisioningConfig): TypedHash<Handle
 export const DefaultHandlerSort: TypedHash<number> = {
     ClientSidePages: 7,
     ComposedLook: 6,
-    ContentTypes: 0,
+    ContentTypes: 1,
     CustomActions: 5,
     Features: 2,
     Files: 4,
