@@ -81,7 +81,7 @@ export class ContentTypes extends HandlerBase {
      */
     private async processContentTypeFieldRefs(web: Web, contentType: IContentType, contentTypeAddResult: ContentTypeAddResult): Promise<void> {
         try {
-            super.log_info("addContentType", `Processing field refs for content type ${contentType.Name}`, { data: contentTypeAddResult.data });
+            super.log_info("processContentTypeFieldRefs", `Processing field refs for content type ${contentType.Name}`);
             const _contentType = this.jsomContext.web.get_contentTypes().getById(contentTypeAddResult.data.Id);
             const fieldLinks: SP.FieldLink[] = contentType.FieldRefs.map((fieldRef, i) => {
                 const siteField = this.jsomContext.web.get_fields().getByInternalNameOrTitle(fieldRef.Name);
@@ -94,13 +94,8 @@ export class ContentTypes extends HandlerBase {
             });
             _contentType.update(true);
             await ExecuteJsomQuery(this.jsomContext, fieldLinks.map(fieldLink => ({ clientObject: fieldLink })));
-            // fieldLinks.forEach((fieldLink, i) => {
-            //     fieldLink.set_required(contentType.FieldRefs[i].Required);
-            //     fieldLink.set_hidden(contentType.FieldRefs[i].Hidden);
-            // });
-            // await ExecuteJsomQuery(this.jsomContext);
-        } catch (err) {
-            throw err;
+        } catch (error) {
+            super.log_info("processContentTypeFieldRefs", `Failed to process field refs for content type ${contentType.Name}`, { error });
         }
     }
 }
