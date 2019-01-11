@@ -24,6 +24,7 @@ export class WebProvisioner {
         private config?: IProvisioningConfig,
         private context: ProvisioningContext = new ProvisioningContext(),
         public handlerSort: TypedHash<number> = DefaultHandlerSort) {
+        this.setup(config);
         this.handlerMap = DefaultHandlerMap(this.config);
     }
 
@@ -66,9 +67,9 @@ export class WebProvisioner {
     */
     public setup(config: IProvisioningConfig) {
         this.config = config;
-        if (this.config && this.config.activeLogLevel) {
+        if (this.config && this.config.logging) {
             Logger.subscribe(new ConsoleListener());
-            Logger.activeLogLevel = this.config.activeLogLevel;
+            Logger.activeLogLevel = this.config.logging.activeLogLevel;
         }
     }
 }

@@ -25,13 +25,24 @@ export class HandlerBase {
      * Writes to Logger when scope has started
      */
     public scope_started() {
-        Logger.write(`${this.name}: Code execution scope started`);
+        this.log_info("ProvisionObjects", "Code execution scope started");
     }
 
     /**
      * Writes to Logger when scope has stopped
      */
     public scope_ended() {
-        Logger.write(`${this.name}: Code execution scope stopped`);
+        this.log_info("ProvisionObjects", "Code execution scope ended");
+    }
+
+    /**
+     * Writes to Logger
+     *
+     * @param {string} scope Scope
+     * @param {string} message Message
+     */
+    public log_info(scope: string, message: string) {
+        let prefix = (this.config.logging && this.config.logging.prefix) ? `(${this.config.logging.prefix}) ` : "";
+        Logger.write(`${prefix}${this.name}: ${scope}: ${message}`);
     }
 }
