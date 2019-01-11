@@ -2,6 +2,7 @@ import { HandlerBase } from "./handlerbase";
 import { IList } from "../schema";
 import { Web } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
+import { IProvisioningConfig } from "../provisioningconfig";
 /**
  * Describes the Lists Object Handler
  */
@@ -9,8 +10,10 @@ export declare class Lists extends HandlerBase {
     private context;
     /**
      * Creates a new instance of the Lists class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor();
+    constructor(config: IProvisioningConfig);
     /**
      * Provisioning lists
      *

@@ -1,14 +1,17 @@
 import { HandlerBase } from "./handlerbase";
 import { INavigation } from "../schema";
 import { Web } from "@pnp/sp";
+import { IProvisioningConfig } from "../provisioningconfig";
 /**
  * Describes the Navigation Object Handler
  */
 export declare class Navigation extends HandlerBase {
     /**
      * Creates a new instance of the Navigation class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor();
+    constructor(config: IProvisioningConfig);
     /**
      * Provisioning navigation
      *

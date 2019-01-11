@@ -3,14 +3,16 @@ import { Schema } from "./schema";
 import { HandlerBase } from "./handlers/handlerbase";
 import { Web } from "@pnp/sp";
 import { TypedHash } from "@pnp/common";
-import { Logger, LogLevel } from "@pnp/logging";
+import { Logger, LogLevel, ConsoleListener } from "@pnp/logging";
 import { DefaultHandlerMap, DefaultHandlerSort } from "./handlers/exports";
 import { ProvisioningContext } from "./provisioningcontext";
+import { IProvisioningConfig } from "./provisioningconfig";
 
 /**
  * Root class of Provisioning
  */
 export class WebProvisioner {
+    public handlerMap: TypedHash<HandlerBase>;
     /**
      * Creates a new instance of the Provisioner class
      *
@@ -19,9 +21,11 @@ export class WebProvisioner {
      */
     constructor(
         private web: Web,
+        private config?: IProvisioningConfig,
         private context: ProvisioningContext = new ProvisioningContext(),
-        public handlerMap: TypedHash<HandlerBase> = DefaultHandlerMap,
-        public handlerSort: TypedHash<number> = DefaultHandlerSort) { }
+        public handlerSort: TypedHash<number> = DefaultHandlerSort) {
+        this.handlerMap = DefaultHandlerMap(this.config);
+    }
 
     /**
      * Applies the supplied template to the web used to create this Provisioner instance
@@ -49,5 +53,18 @@ export class WebProvisioner {
         }, Promise.resolve()).then(_ => {
             Logger.write(`Done processing of web [${this.web.toUrl()}]`, LogLevel.Info);
         });
+    }
+
+    /**
+    * Sets up the web provisioner
+    *
+    * @param {IProvisioningConfig} config Provisioning config
+    */
+    public setup(config: IProvisioningConfig) {
+        this.config = config;
+        if (this.config && this.config.activeLogLevel) {
+            Logger.subscribe(new ConsoleListener());
+            Logger.activeLogLevel = this.config.activeLogLevel;
+        }
     }
 }

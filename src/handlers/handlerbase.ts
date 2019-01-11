@@ -1,6 +1,7 @@
 import { Web } from "@pnp/sp";
 import { Logger, LogLevel } from "@pnp/logging";
 import { ProvisioningContext } from "../provisioningcontext";
+import { IProvisioningConfig } from "../provisioningconfig";
 
 /**
  * Describes the Object Handler Base
@@ -10,7 +11,7 @@ export class HandlerBase {
     /**
      * Creates a new instance of the ObjectHandlerBase class
      */
-    constructor(private name: string) {}
+    constructor(private name: string, public config: IProvisioningConfig = {}) { }
 
     /**
      * Provisioning objects

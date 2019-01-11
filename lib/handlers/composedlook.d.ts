@@ -1,6 +1,7 @@
 import { IComposedLook } from "../schema";
 import { HandlerBase } from "./handlerbase";
 import { Web } from "@pnp/sp";
+import { IProvisioningConfig } from "../provisioningconfig";
 /**
  * Describes the Composed Look Object Handler
  */
@@ -8,7 +9,7 @@ export declare class ComposedLook extends HandlerBase {
     /**
      * Creates a new instance of the ObjectComposedLook class
      */
-    constructor();
+    constructor(config: IProvisioningConfig);
     /**
      * Provisioning Composed Look
      *

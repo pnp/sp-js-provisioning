@@ -4,6 +4,7 @@ import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from "..
 import { Logger, LogLevel } from "@pnp/logging";
 import { Web, List } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
+import { IProvisioningConfig} from "../provisioningconfig";
 
 /**
  * Describes the Lists Object Handler
@@ -13,9 +14,11 @@ export class Lists extends HandlerBase {
 
     /**
      * Creates a new instance of the Lists class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor() {
-        super("Lists");
+    constructor(config: IProvisioningConfig) {
+        super("Lists", config);
     }
 
     /**

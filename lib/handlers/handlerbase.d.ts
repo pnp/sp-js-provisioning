@@ -1,14 +1,16 @@
 import { Web } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
+import { IProvisioningConfig } from "../provisioningconfig";
 /**
  * Describes the Object Handler Base
  */
 export declare class HandlerBase {
     private name;
+    config: IProvisioningConfig;
     /**
      * Creates a new instance of the ObjectHandlerBase class
      */
-    constructor(name: string);
+    constructor(name: string, config?: IProvisioningConfig);
     /**
      * Provisioning objects
      */

@@ -3,6 +3,7 @@ import { INavigation, INavigationNode } from "../schema";
 import { Web, NavigationNodes } from "@pnp/sp";
 import { isArray } from "@pnp/common";
 import { replaceUrlTokens } from "../util";
+import { IProvisioningConfig} from "../provisioningconfig";
 
 /**
  * Describes the Navigation Object Handler
@@ -10,9 +11,11 @@ import { replaceUrlTokens } from "../util";
 export class Navigation extends HandlerBase {
     /**
      * Creates a new instance of the Navigation class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor() {
-        super("Navigation");
+    constructor(config: IProvisioningConfig) {
+        super("Navigation", config);
     }
 
     /**
@@ -54,7 +57,7 @@ export class Navigation extends HandlerBase {
             node.Url = existingNode[0].Url;
         }
         try {
-            const result = await target.add(node.Title, replaceUrlTokens(node.Url));
+            const result = await target.add(node.Title, replaceUrlTokens(node.Url, this.config));
             if (isArray(node.Children)) {
                 await this.processNavTree(result.node.children, node.Children);
             }

@@ -8,17 +8,18 @@ import { Navigation } from "./navigation";
 import { Lists } from "./lists";
 import { Files } from "./files";
 import { PropertyBagEntries } from "./propertybagentries";
+import { IProvisioningConfig} from "../provisioningconfig";
 
-export const DefaultHandlerMap: TypedHash<HandlerBase> = {
-    ComposedLook: new ComposedLook(),
-    CustomActions: new CustomActions(),
-    Features: new Features(),
-    Files: new Files(),
-    Lists: new Lists(),
-    Navigation: new Navigation(),
-    PropertyBagEntries: new PropertyBagEntries(),
-    WebSettings: new WebSettings(),
-};
+export const DefaultHandlerMap = (config: IProvisioningConfig): TypedHash<HandlerBase> => ({
+    ComposedLook: new ComposedLook(config),
+    CustomActions: new CustomActions(config),
+    Features: new Features(config),
+    Files: new Files(config),
+    Lists: new Lists(config),
+    Navigation: new Navigation(config),
+    PropertyBagEntries: new PropertyBagEntries(config),
+    WebSettings: new WebSettings(config),
+});
 
 export const DefaultHandlerSort: TypedHash<number> = {
     ComposedLook: 6,

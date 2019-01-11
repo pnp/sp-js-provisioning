@@ -3,6 +3,7 @@ import { IWebSettings } from "../schema";
 import { Web } from "@pnp/sp";
 import * as omit from "object.omit";
 import { replaceUrlTokens } from "../util";
+import { IProvisioningConfig} from "../provisioningconfig";
 
 /**
  * Describes the WebSettings Object Handler
@@ -10,9 +11,11 @@ import { replaceUrlTokens } from "../util";
 export class WebSettings extends HandlerBase {
     /**
      * Creates a new instance of the WebSettings class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor() {
-        super("WebSettings");
+    constructor(config: IProvisioningConfig) {
+        super("WebSettings", config);
     }
 
     /**
@@ -27,7 +30,7 @@ export class WebSettings extends HandlerBase {
             .filter(key => typeof (settings[key]) === "string")
             .forEach(key => {
                 let value: string = <any>settings[key];
-                settings[key] = replaceUrlTokens(value);
+                settings[key] = replaceUrlTokens(value, this.config);
             });
         try {
             await Promise.all([

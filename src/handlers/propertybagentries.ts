@@ -3,6 +3,7 @@ import { IPropertyBagEntry } from "../schema";
 import * as Util from "../util";
 import { Logger, LogLevel } from "@pnp/logging";
 import { Web } from "@pnp/sp";
+import { IProvisioningConfig} from "../provisioningconfig";
 
 /**
  * Describes the PropertyBagEntries Object Handler
@@ -10,9 +11,11 @@ import { Web } from "@pnp/sp";
 export class PropertyBagEntries extends HandlerBase {
     /**
      * Creates a new instance of the PropertyBagEntries class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor() {
-        super("PropertyBagEntries");
+    constructor(config: IProvisioningConfig) {
+        super("PropertyBagEntries", config);
     }
 
     /**
@@ -27,8 +30,8 @@ export class PropertyBagEntries extends HandlerBase {
             if (Util.isNode()) {
                 Logger.write("PropertyBagEntries Handler not supported in Node.", LogLevel.Error);
                 reject();
-            } else if (!SP) {
-                Logger.write("JSOM is not supported on this page.", LogLevel.Error);
+            } else if (this.config.spfxContext) {
+                Logger.write("PropertyBagEntries Handler not supported in SPFx.", LogLevel.Error);
                 reject();
             } else {
                 web.get().then(({ ServerRelativeUrl }) => {

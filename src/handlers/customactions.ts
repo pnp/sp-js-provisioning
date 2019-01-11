@@ -1,6 +1,7 @@
 import { HandlerBase } from "./handlerbase";
 import { ICustomAction } from "../schema";
 import { Web } from "@pnp/sp";
+import { IProvisioningConfig} from "../provisioningconfig";
 
 /**
  * Describes the Custom Actions Object Handler
@@ -8,9 +9,11 @@ import { Web } from "@pnp/sp";
 export class CustomActions extends HandlerBase {
     /**
      * Creates a new instance of the ObjectCustomActions class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor() {
-        super("CustomActions");
+    constructor(config: IProvisioningConfig) {
+        super("CustomActions", config);
     }
 
     /**
