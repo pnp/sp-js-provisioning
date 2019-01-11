@@ -10,6 +10,7 @@ import { Files } from "./files";
 import { ClientSidePages } from "./clientsidepages";
 import { PropertyBagEntries } from "./propertybagentries";
 import { IProvisioningConfig} from "../provisioningconfig";
+import { SiteFields } from "./sitefields";
 
 export const DefaultHandlerMap = (config: IProvisioningConfig): TypedHash<HandlerBase> => ({
     ClientSidePages: new ClientSidePages(config),
@@ -21,6 +22,7 @@ export const DefaultHandlerMap = (config: IProvisioningConfig): TypedHash<Handle
     Navigation: new Navigation(config),
     PropertyBagEntries: new PropertyBagEntries(config),
     WebSettings: new WebSettings(config),
+    SiteFields: new SiteFields(config),
 });
 
 export const DefaultHandlerSort: TypedHash<number> = {
@@ -33,5 +35,6 @@ export const DefaultHandlerSort: TypedHash<number> = {
     Navigation: 9,
     PropertyBagEntries: 8,
     WebSettings: 10,
+    SiteFields: 0,
 };
 

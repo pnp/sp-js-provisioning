@@ -7,7 +7,7 @@ import { IProvisioningConfig } from "../provisioningconfig";
  * Describes the Features Object Handler
  */
 export declare class Files extends HandlerBase {
-    private context;
+    private tokenHelper;
     /**
      * Creates a new instance of the Files class
      *

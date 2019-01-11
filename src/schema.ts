@@ -9,10 +9,27 @@ export interface Schema {
     Files?: IFile[];
     PropertyBagEntries?: IPropertyBagEntry[];
     ClientSidePages?: IClientSidePage[];
+    SiteFields?: string[];
+    ContentTypes: IContentType[];
     [key: string]: any;
 }
 
 export default Schema;
+
+export interface IFieldRef {
+    ID: string;
+    Name?: string;
+    Required?: boolean;
+    Hidden?: boolean;
+}
+
+export interface IContentType {
+    ID: string;
+    Name: string;
+    Description: string; 
+    Group: string;
+    FieldRefs: IFieldRef[];
+}
 
 export interface IClientSideControl {
     Title: string;
@@ -177,11 +194,10 @@ export interface IList {
     };
 }
 
-export interface IListInstanceFieldRef {
-    ID: string;
+
+
+export interface IListInstanceFieldRef extends IFieldRef {
     DisplayName?: string;
-    Required?: boolean;
-    Hidden?: boolean;
 }
 
 export interface IContentTypeBinding {

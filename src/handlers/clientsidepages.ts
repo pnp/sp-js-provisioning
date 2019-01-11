@@ -3,12 +3,13 @@ import { HandlerBase } from "./handlerbase";
 import { Web, ClientSideWebpart } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
 import { IProvisioningConfig } from "../provisioningconfig";
+import { TokenHelper } from '../util/tokenhelper';
 
 /**
  * Describes the Composed Look Object Handler
  */
 export class ClientSidePages extends HandlerBase {
-    private context: ProvisioningContext;
+    private tokenHelper: TokenHelper;
 
     /**
      * Creates a new instance of the ObjectClientSidePages class
@@ -25,7 +26,7 @@ export class ClientSidePages extends HandlerBase {
      * @param {ProvisioningContext} context Provisioning context
      */
     public async ProvisionObjects(web: Web, clientSidePages: IClientSidePage[], context: ProvisioningContext): Promise<void> {
-        this.context = context;
+        this.tokenHelper = new TokenHelper(context, this.config);
         super.scope_started();
         try {
             await clientSidePages.reduce((chain: any, clientSidePage) => chain.then(() => this.processClientSidePage(web, clientSidePage)), Promise.resolve());
@@ -50,7 +51,7 @@ export class ClientSidePages extends HandlerBase {
                 s.Columns.forEach(col => {
                     const column = section.addColumn(col.Factor);
                     col.Controls.forEach(control => {
-                        let controlJsonString = this.context.replaceTokens(JSON.stringify(control));
+                        let controlJsonString = this.tokenHelper.replaceTokens(JSON.stringify(control));
                         control = JSON.parse(controlJsonString);
                         super.log_info("processClientSidePage", `Adding ${control.Title} to client side page ${clientSidePage.Name}`, { controlJsonString });
                         column.addControl(new ClientSideWebpart(control.Title, control.Description, control.ClientSideComponentProperties, control.ClientSideComponentId));

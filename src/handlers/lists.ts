@@ -4,11 +4,13 @@ import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from '..
 import { Web, List } from '@pnp/sp';
 import { ProvisioningContext } from '../provisioningcontext';
 import { IProvisioningConfig } from '../provisioningconfig';
+import { TokenHelper } from '../util/tokenhelper';
 
 /**
  * Describes the Lists Object Handler
  */
 export class Lists extends HandlerBase {
+    private tokenHelper: TokenHelper;
     private context: ProvisioningContext;
 
     /**
@@ -28,6 +30,7 @@ export class Lists extends HandlerBase {
      */
     public async ProvisionObjects(web: Web, lists: IList[], context: ProvisioningContext): Promise<void> {
         this.context = context;
+        this.tokenHelper = new TokenHelper(this.context, this.config);
         super.scope_started();
         try {
             await lists.reduce((chain: any, list) => chain.then(() => this.processList(web, list)), Promise.resolve());
@@ -142,7 +145,7 @@ export class Lists extends HandlerBase {
 
         // Looks like e.g. lookup fields can't be updated, so we'll need to re-create the field
         try {
-            let fieldAddResult = await list.fields.createFieldAsXml(this.context.replaceTokens(fieldXml));
+            let fieldAddResult = await list.fields.createFieldAsXml(this.tokenHelper.replaceTokens(fieldXml));
             await fieldAddResult.field.update({ Title: fieldDisplayName });
             super.log_info('processField', `Field '${fieldDisplayName}' added successfully to list ${lc.Title}.`);
         } catch (err) {

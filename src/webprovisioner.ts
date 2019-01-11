@@ -13,6 +13,8 @@ import { IProvisioningConfig } from "./provisioningconfig";
  */
 export class WebProvisioner {
     public handlerMap: TypedHash<HandlerBase>;
+    private context: ProvisioningContext = new ProvisioningContext();
+    private config: IProvisioningConfig;
     /**
      * Creates a new instance of the Provisioner class
      *
@@ -21,10 +23,15 @@ export class WebProvisioner {
      */
     constructor(
         private web: Web,
-        private config?: IProvisioningConfig,
-        private context: ProvisioningContext = new ProvisioningContext(),
-        public handlerSort: TypedHash<number> = DefaultHandlerSort) {
-        this.setup(config);
+        public handlerSort: TypedHash<number> = DefaultHandlerSort) { }
+
+    private async onSetup() {
+        if (this.config && this.config.logging) {
+            Logger.subscribe(new ConsoleListener());
+            Logger.activeLogLevel = this.config.logging.activeLogLevel;
+        }
+        this.handlerMap = DefaultHandlerMap(this.config);
+        this.context.web = await this.web.get();
     }
 
     /**
@@ -34,7 +41,7 @@ export class WebProvisioner {
      * @param {Function} progressCallback Callback for progress updates
      */
     public async applyTemplate(template: Schema, progressCallback?: (msg: string) => void): Promise<any> {
-        Logger.write(`Beginning processing of web [${this.web.toUrl()}]`, LogLevel.Info);
+        await this.onSetup();
 
         let operations = Object.getOwnPropertyNames(template).sort((name1: string, name2: string) => {
             let sort1 = this.handlerSort.hasOwnProperty(name1) ? this.handlerSort[name1] : 99;
@@ -52,9 +59,7 @@ export class WebProvisioner {
                     return handler.ProvisionObjects(this.web, template[name], this.context);
                 });
             }, Promise.resolve());
-            Logger.write(`Done processing of web [${this.web.toUrl()}]`, LogLevel.Info);
         } catch (error) {
-            Logger.write(`Processing of web [${this.web.toUrl()}] failed`, LogLevel.Error);
             throw error;
         }
     }
@@ -66,10 +71,5 @@ export class WebProvisioner {
     */
     public setup(config: IProvisioningConfig) {
         this.config = config;
-        if (this.config && this.config.logging) {
-            Logger.subscribe(new ConsoleListener());
-            Logger.activeLogLevel = this.config.logging.activeLogLevel;
-        }
-        this.handlerMap = DefaultHandlerMap(this.config);
     }
 }

@@ -7,6 +7,7 @@ import { IProvisioningConfig } from '../provisioningconfig';
  * Describes the Lists Object Handler
  */
 export declare class Lists extends HandlerBase {
+    private tokenHelper;
     private context;
     /**
      * Creates a new instance of the Lists class
