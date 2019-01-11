@@ -34,7 +34,7 @@ export class WebProvisioner {
      * @param {Schema} template The template to apply
      * @param {Function} progressCallback Callback for progress updates
      */
-    public applyTemplate(template: Schema, progressCallback?: (msg: string) => void): Promise<void> {
+    public applyTemplate(template: Schema, progressCallback?: (msg: string) => void): Promise<any> {
         Logger.write(`Beginning processing of web [${this.web.toUrl()}]`, LogLevel.Info);
 
         let operations = Object.getOwnPropertyNames(template).sort((name1: string, name2: string) => {
@@ -43,9 +43,9 @@ export class WebProvisioner {
             return sort1 - sort2;
         });
 
-        return operations.reduce((chain, name) => {
+        return operations.reduce((chain: any, name: string) => {
             let handler = this.handlerMap[name];
-            return chain.then(_ => {
+            return chain.then(() => {
                 if (progressCallback) {
                     progressCallback(name);
                 }

@@ -41,7 +41,7 @@ export class Files extends HandlerBase {
         }
         const { ServerRelativeUrl } = await web.get();
         try {
-            await files.reduce((chain, file) => chain.then(_ => this.processFile(web, file, ServerRelativeUrl)), Promise.resolve());
+            await files.reduce((chain: any, file) => chain.then(() => this.processFile(web, file, ServerRelativeUrl)), Promise.resolve());
             super.scope_ended();
         } catch (err) {
             super.scope_ended();
@@ -230,7 +230,7 @@ export class Files extends HandlerBase {
                 let listViewWebParts = webParts.filter(wp => wp.ListView);
                 if (listViewWebParts.length > 0) {
                     listViewWebParts
-                        .reduce((chain, wp) => chain.then(_ => this.processPageListView(web, wp.ListView, fileServerRelativeUrl)), Promise.resolve())
+                        .reduce((chain: any, wp) => chain.then(() => this.processPageListView(web, wp.ListView, fileServerRelativeUrl)), Promise.resolve())
                         .then(() => {
                             Logger.log({
                                 data: {},

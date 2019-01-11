@@ -26,5 +26,5 @@ export declare class ClientSidePages extends HandlerBase {
      * @param {Web} web The web
      * @param {IClientSidePage} clientSidePage Cient side page
      */
-    private processClientSidePage;
+    private processClientSidePage(web, clientSidePage);
 }

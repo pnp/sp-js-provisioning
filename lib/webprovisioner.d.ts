@@ -9,7 +9,7 @@ import { IProvisioningConfig } from "./provisioningconfig";
  */
 export declare class WebProvisioner {
     private web;
-    private config?;
+    private config;
     private context;
     handlerSort: TypedHash<number>;
     handlerMap: TypedHash<HandlerBase>;
@@ -26,7 +26,7 @@ export declare class WebProvisioner {
      * @param {Schema} template The template to apply
      * @param {Function} progressCallback Callback for progress updates
      */
-    applyTemplate(template: Schema, progressCallback?: (msg: string) => void): Promise<void>;
+    applyTemplate(template: Schema, progressCallback?: (msg: string) => void): Promise<any>;
     /**
     * Sets up the web provisioner
     *

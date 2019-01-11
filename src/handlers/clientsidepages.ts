@@ -28,7 +28,7 @@ export class ClientSidePages extends HandlerBase {
         this.context = context;
         super.scope_started();
         try {
-            await clientSidePages.reduce((chain, clientSidePage) => chain.then(_ => this.processClientSidePage(web, clientSidePage)), Promise.resolve());
+            await clientSidePages.reduce((chain: any, clientSidePage) => chain.then(() => this.processClientSidePage(web, clientSidePage)), Promise.resolve());
         } catch (err) {
             super.scope_ended();
             throw err;

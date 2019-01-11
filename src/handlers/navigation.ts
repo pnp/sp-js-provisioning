@@ -3,7 +3,7 @@ import { INavigation, INavigationNode } from "../schema";
 import { Web, NavigationNodes } from "@pnp/sp";
 import { isArray } from "@pnp/common";
 import { replaceUrlTokens } from "../util";
-import { IProvisioningConfig} from "../provisioningconfig";
+import { IProvisioningConfig } from "../provisioningconfig";
 
 /**
  * Describes the Navigation Object Handler
@@ -45,7 +45,7 @@ export class Navigation extends HandlerBase {
         try {
             const existingNodes = await target.get();
             await this.deleteExistingNodes(target);
-            await nodes.reduce((chain, node) => chain.then(_ => this.processNode(target, node, existingNodes)), Promise.resolve());
+            await nodes.reduce((chain: any, node) => chain.then(() => this.processNode(target, node, existingNodes)), Promise.resolve());
         } catch (err) {
             throw err;
         }

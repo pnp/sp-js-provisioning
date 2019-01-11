@@ -30,10 +30,10 @@ export class Lists extends HandlerBase {
         this.context = context;
         super.scope_started();
         try {
-            await lists.reduce((chain, list) => chain.then(_ => this.processList(web, list)), Promise.resolve());
-            await lists.reduce((chain, list) => chain.then(_ => this.processListFields(web, list)), Promise.resolve());
-            await lists.reduce((chain, list) => chain.then(_ => this.processListFieldRefs(web, list)), Promise.resolve());
-            await lists.reduce((chain, list) => chain.then(_ => this.processListViews(web, list)), Promise.resolve());
+            await lists.reduce((chain: any, list) => chain.then(() => this.processList(web, list)), Promise.resolve());
+            await lists.reduce((chain: any, list) => chain.then(() => this.processListFields(web, list)), Promise.resolve());
+            await lists.reduce((chain: any, list) => chain.then(() => this.processListFieldRefs(web, list)), Promise.resolve());
+            await lists.reduce((chain: any, list) => chain.then(() => this.processListViews(web, list)), Promise.resolve());
             super.scope_ended();
         } catch (err) {
             super.scope_ended();
@@ -155,7 +155,7 @@ export class Lists extends HandlerBase {
    */
     private async processListFieldRefs(web: Web, list: IList): Promise<any> {
         if (list.FieldRefs) {
-            await list.FieldRefs.reduce((chain, fieldRef) => chain.then(_ => this.processFieldRef(web, list, fieldRef)), Promise.resolve());
+            await list.FieldRefs.reduce((chain: any, fieldRef) => chain.then(() => this.processFieldRef(web, list, fieldRef)), Promise.resolve());
         }
     }
 
@@ -186,7 +186,7 @@ export class Lists extends HandlerBase {
      */
     private async processListViews(web: Web, lc: IList): Promise<any> {
         if (lc.Views) {
-            await lc.Views.reduce((chain, view) => chain.then(_ => this.processView(web, lc, view)), Promise.resolve());
+            await lc.Views.reduce((chain: any, view) => chain.then(() => this.processView(web, lc, view)), Promise.resolve());
         }
     }
 
