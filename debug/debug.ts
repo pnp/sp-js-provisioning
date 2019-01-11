@@ -26,7 +26,7 @@ Logger.activeLogLevel = LogLevel.Verbose;
 
 import { Example } from "./example";
 
-cleanUpAllSubsites().then(_ => {
+cleanUpAllSubsites().then(() => {
 
     // importing the example debug scenario and running it
     // adding your debugging to other files and importing them will keep them out of git
@@ -61,7 +61,7 @@ function cleanUpAllSubsites(): Promise<void> {
 
         }).catch(e => {
             reject(e);
-        }).then(_ => {
+        }).then(() => {
             resolve();
         });
     });

@@ -69,7 +69,7 @@ export class Navigation extends HandlerBase {
     private async deleteExistingNodes(target: NavigationNodes) {
         try {
             const existingNodes = await target.get();
-            await existingNodes.reduce((chain: Promise<void>, n: any) => chain.then(_ => this.deleteNode(target, n.Id)), Promise.resolve());
+            await existingNodes.reduce((chain: Promise<void>, n: any) => chain.then(() => this.deleteNode(target, n.Id)), Promise.resolve());
         } catch (err) {
             throw err;
         }

@@ -13,7 +13,7 @@ export declare class HandlerBase {
      * @param {string} name Name
      * @param {IProvisioningConfig} config Config
      */
-    constructor(name: string, config: IProvisioningConfig);
+    constructor(name: string, config?: IProvisioningConfig);
     /**
      * Provisioning objects
      */
@@ -31,6 +31,7 @@ export declare class HandlerBase {
      *
      * @param {string} scope Scope
      * @param {string} message Message
+     * @param {any} data Data
      */
-    log_info(scope: string, message: string): void;
+    log_info(scope: string, message: string, data?: any): void;
 }

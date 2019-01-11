@@ -275,7 +275,7 @@ export class Files extends HandlerBase {
                         view.update(settings)
                             .then(() => {
                                 view.fields.removeAll()
-                                    .then(_ => {
+                                    .then(() => {
                                         listView.View.ViewFields.reduce((chain, viewField) => chain.then(() => view.fields.add(viewField)), Promise.resolve())
                                             .then(resolve)
                                             .catch(err => {

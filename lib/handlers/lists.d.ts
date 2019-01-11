@@ -1,8 +1,8 @@
-import { HandlerBase } from "./handlerbase";
-import { IList } from "../schema";
-import { Web } from "@pnp/sp";
-import { ProvisioningContext } from "../provisioningcontext";
-import { IProvisioningConfig } from "../provisioningconfig";
+import { HandlerBase } from './handlerbase';
+import { IList } from '../schema';
+import { Web } from '@pnp/sp';
+import { ProvisioningContext } from '../provisioningcontext';
+import { IProvisioningConfig } from '../provisioningconfig';
 /**
  * Describes the Lists Object Handler
  */

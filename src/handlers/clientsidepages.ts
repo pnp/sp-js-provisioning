@@ -42,7 +42,7 @@ export class ClientSidePages extends HandlerBase {
      * @param {IClientSidePage} clientSidePage Cient side page
      */
     private async processClientSidePage(web: Web, clientSidePage: IClientSidePage) {
-        super.log_info("processClientSidePage", `Processing client side page ${clientSidePage.Name}.`);
+        super.log_info("processClientSidePage", `Processing client side page ${clientSidePage.Name}`);
         const page = await web.addClientSidePage(clientSidePage.Name, clientSidePage.Title, clientSidePage.LibraryTitle);
         if (clientSidePage.Sections) {
             clientSidePage.Sections.forEach(s => {
@@ -52,6 +52,7 @@ export class ClientSidePages extends HandlerBase {
                     col.Controls.forEach(control => {
                         let controlJsonString = this.context.replaceTokens(JSON.stringify(control));
                         control = JSON.parse(controlJsonString);
+                        super.log_info("processClientSidePage", `Adding ${control.Title} to client side page ${clientSidePage.Name}`, { controlJsonString });
                         column.addControl(new ClientSideWebpart(control.Title, control.Description, control.ClientSideComponentProperties, control.ClientSideComponentId));
                     });
                 });
@@ -60,9 +61,11 @@ export class ClientSidePages extends HandlerBase {
         }
         await page.publish();
         if (clientSidePage.CommentsDisabled) {
+            super.log_info("processClientSidePage", `Disabling comments for client side page ${clientSidePage.Name}`);
             await page.disableComments();
         }
         if (clientSidePage.PageLayoutType) {
+            super.log_info("processClientSidePage", `Setting page layout ${clientSidePage.PageLayoutType} for client side page ${clientSidePage.Name}`);
             const pageItem = await page.getItem();
             await pageItem.update({ PageLayoutType: clientSidePage.PageLayoutType });
         }

@@ -1,9 +1,9 @@
-import * as xmljs from "xml-js";
-import { HandlerBase } from "./handlerbase";
-import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from "../schema";
-import { Web, List } from "@pnp/sp";
-import { ProvisioningContext } from "../provisioningcontext";
-import { IProvisioningConfig } from "../provisioningconfig";
+import * as xmljs from 'xml-js';
+import { HandlerBase } from './handlerbase';
+import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from '../schema';
+import { Web, List } from '@pnp/sp';
+import { ProvisioningContext } from '../provisioningcontext';
+import { IProvisioningConfig } from '../provisioningconfig';
 
 /**
  * Describes the Lists Object Handler
@@ -17,7 +17,7 @@ export class Lists extends HandlerBase {
      * @param {IProvisioningConfig} config Provisioning config
      */
     constructor(config: IProvisioningConfig) {
-        super("Lists", config);
+        super('Lists', config);
     }
 
     /**
@@ -34,6 +34,10 @@ export class Lists extends HandlerBase {
             await lists.reduce((chain: any, list) => chain.then(() => this.processListFields(web, list)), Promise.resolve());
             await lists.reduce((chain: any, list) => chain.then(() => this.processListFieldRefs(web, list)), Promise.resolve());
             await lists.reduce((chain: any, list) => chain.then(() => this.processListViews(web, list)), Promise.resolve());
+            this.context.lists = (await web.lists.select('Id', 'Title').get<Array<{ Id: String, Title: string }>>()).reduce((obj, l) => {
+                obj[l.Title] = l.Id;
+                return obj;
+            }, {});
             super.scope_ended();
         } catch (err) {
             super.scope_ended();
@@ -48,11 +52,10 @@ export class Lists extends HandlerBase {
      * @param {IList} lc The list
      */
     private async processList(web: Web, lc: IList): Promise<void> {
-        super.log_info("processList", `Processing list ${lc.Title}`);
-        const { list, data } = await web.lists.ensure(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
-        this.context.lists.push(data);
+        super.log_info('processList', `Processing list ${lc.Title}`);
+        const listEnsureResult = await web.lists.ensure(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
         if (lc.ContentTypeBindings) {
-            await this.processContentTypeBindings(lc, list, lc.ContentTypeBindings, lc.RemoveExistingContentTypes);
+            await this.processContentTypeBindings(lc, listEnsureResult.list, lc.ContentTypeBindings, lc.RemoveExistingContentTypes);
         }
     }
 
@@ -65,15 +68,15 @@ export class Lists extends HandlerBase {
      * @param {boolean} removeExisting Remove existing content type bindings
      */
     private async processContentTypeBindings(lc: IList, list: List, contentTypeBindings: IContentTypeBinding[], removeExisting: boolean): Promise<any> {
-        await contentTypeBindings.reduce((chain, ct) => chain.then(_ => this.processContentTypeBinding(lc, list, ct.ContentTypeID)), Promise.resolve());
+        await contentTypeBindings.reduce((chain, ct) => chain.then(() => this.processContentTypeBinding(lc, list, ct.ContentTypeID)), Promise.resolve());
         if (removeExisting) {
             let promises = [];
             const contentTypes = await list.contentTypes.get();
             contentTypes.forEach(({ Id: { StringValue: ContentTypeId } }) => {
                 let shouldRemove = (contentTypeBindings.filter(ctb => ContentTypeId.indexOf(ctb.ContentTypeID) !== -1).length === 0)
-                    && (ContentTypeId.indexOf("0x0120") === -1);
+                    && (ContentTypeId.indexOf('0x0120') === -1);
                 if (shouldRemove) {
-                    super.log_info("processContentTypeBindings", `Removing content type ${ContentTypeId} from list ${lc.Title}`);
+                    super.log_info('processContentTypeBindings', `Removing content type ${ContentTypeId} from list ${lc.Title}`);
                     promises.push(list.contentTypes.getById(ContentTypeId).delete());
                 }
             });
@@ -91,9 +94,9 @@ export class Lists extends HandlerBase {
     private async processContentTypeBinding(lc: IList, list: List, contentTypeID: string): Promise<any> {
         try {
             await list.contentTypes.addAvailableContentType(contentTypeID);
-            super.log_info("processContentTypeBinding", `Content Type ${contentTypeID} added successfully to list ${lc.Title}.`);
+            super.log_info('processContentTypeBinding', `Content Type ${contentTypeID} added successfully to list ${lc.Title}.`);
         } catch (err) {
-            super.log_info("processContentTypeBinding", `Failed to add Content Type ${contentTypeID} to list ${lc.Title}.`);
+            super.log_info('processContentTypeBinding', `Failed to add Content Type ${contentTypeID} to list ${lc.Title}.`);
         }
     }
 
@@ -106,7 +109,7 @@ export class Lists extends HandlerBase {
      */
     private async processListFields(web: Web, list: IList): Promise<any> {
         if (list.Fields) {
-            await list.Fields.reduce((chain, field) => chain.then(_ => this.processField(web, list, field)), Promise.resolve());
+            await list.Fields.reduce((chain, field) => chain.then(() => this.processField(web, list, field)), Promise.resolve());
         }
     }
 
@@ -124,7 +127,7 @@ export class Lists extends HandlerBase {
         const fieldName = fieldAttr.Name;
         const fieldDisplayName = fieldAttr.DisplayName;
 
-        super.log_info("processField", `Processing field ${fieldName} (${fieldDisplayName}) for list ${lc.Title}.`);
+        super.log_info('processField', `Processing field ${fieldName} (${fieldDisplayName}) for list ${lc.Title}.`);
         fXmlJson.elements[0].attributes.DisplayName = fieldName;
         fieldXml = xmljs.json2xml(fXmlJson);
 
@@ -132,18 +135,18 @@ export class Lists extends HandlerBase {
         try {
             let field = await list.fields.getById(fieldAttr.ID);
             await field.delete();
-            super.log_info("processField", `Field ${fieldName} (${fieldDisplayName}) successfully deleted from list ${lc.Title}.`);
+            super.log_info('processField', `Field ${fieldName} (${fieldDisplayName}) successfully deleted from list ${lc.Title}.`);
         } catch (err) {
-            super.log_info("processField", `Field ${fieldName} (${fieldDisplayName}) does not exist in list ${lc.Title}.`);
+            super.log_info('processField', `Field ${fieldName} (${fieldDisplayName}) does not exist in list ${lc.Title}.`);
         }
 
         // Looks like e.g. lookup fields can't be updated, so we'll need to re-create the field
         try {
             let fieldAddResult = await list.fields.createFieldAsXml(this.context.replaceTokens(fieldXml));
             await fieldAddResult.field.update({ Title: fieldDisplayName });
-            super.log_info("processField", `Field '${fieldDisplayName}' added successfully to list ${lc.Title}.`);
+            super.log_info('processField', `Field '${fieldDisplayName}' added successfully to list ${lc.Title}.`);
         } catch (err) {
-            super.log_info("processField", `Failed to add field '${fieldDisplayName}' to list ${lc.Title}.`);
+            super.log_info('processField', `Failed to add field '${fieldDisplayName}' to list ${lc.Title}.`);
         }
     }
 
@@ -172,9 +175,9 @@ export class Lists extends HandlerBase {
 
         try {
             await list.fields.getById(fieldRef.ID).update({ Hidden: fieldRef.Hidden, Required: fieldRef.Required, Title: fieldRef.DisplayName });
-            super.log_info("processFieldRef", `Field '${fieldRef.ID}' updated for list ${lc.Title}.`);
+            super.log_info('processFieldRef', `Field '${fieldRef.ID}' updated for list ${lc.Title}.`);
         } catch (err) {
-            super.log_info("processFieldRef", `Failed to update field '${fieldRef.ID}' for list ${lc.Title}.`);
+            super.log_info('processFieldRef', `Failed to update field '${fieldRef.ID}' for list ${lc.Title}.`);
         }
     }
 
@@ -198,7 +201,7 @@ export class Lists extends HandlerBase {
      * @param {IListView} lvc The view configuration
      */
     private async processView(web: Web, lc: IList, lvc: IListView): Promise<void> {
-        super.log_info("processView", `Processing view ${lvc.Title} for list ${lc.Title}.`);
+        super.log_info('processView', `Processing view ${lvc.Title} for list ${lc.Title}.`);
         let view = web.lists.getByTitle(lc.Title).views.getByTitle(lvc.Title);
         try {
             await view.get();
@@ -206,7 +209,7 @@ export class Lists extends HandlerBase {
             await this.processViewFields(view, lvc);
         } catch (err) {
             const result = await web.lists.getByTitle(lc.Title).views.add(lvc.Title, lvc.PersonalView, lvc.AdditionalSettings);
-            super.log_info("processView", `View ${lvc.Title} added successfully to list ${lc.Title}.`);
+            super.log_info('processView', `View ${lvc.Title} added successfully to list ${lc.Title}.`);
             await this.processViewFields(result.view, lvc);
         }
     }
@@ -219,12 +222,12 @@ export class Lists extends HandlerBase {
      */
     private async processViewFields(view, lvc: IListView): Promise<void> {
         try {
-            super.log_info("processViewFields", `Processing view fields for view ${lvc.Title}.`);
+            super.log_info('processViewFields', `Processing view fields for view ${lvc.Title}.`);
             await view.fields.removeAll();
-            await lvc.ViewFields.reduce((chain, viewField) => chain.then(_ => view.fields.add(viewField)), Promise.resolve());
-            super.log_info("processViewFields", `View fields successfully processed for view ${lvc.Title}.`);
+            await lvc.ViewFields.reduce((chain, viewField) => chain.then(() => view.fields.add(viewField)), Promise.resolve());
+            super.log_info('processViewFields', `View fields successfully processed for view ${lvc.Title}.`);
         } catch (err) {
-            super.log_info("processViewFields", `Failed to process view fields for view ${lvc.Title}.`);
+            super.log_info('processViewFields', `Failed to process view fields for view ${lvc.Title}.`);
         }
     }
 }

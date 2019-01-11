@@ -6,7 +6,7 @@ export class ProvisioningContext {
      * Creates a new instance of the ProvisioningContext class
      */
     constructor(
-        public lists: Array<any> = [],
+        public lists: { [key: string]: string } = {},
         public tokenRegex = /{[a-z]*:[ÆØÅæøåA-za-z ]*}/g,
     ) { }
 
@@ -20,9 +20,8 @@ export class ProvisioningContext {
                 let [tokenType, tokenValue] = match.replace(/[\{\}]/g, "").split(":");
                 switch (tokenType) {
                     case "listid": {
-                        let [list] = this.lists.filter(lst => lst.Title === tokenValue);
-                        if (list) {
-                            str = str.replace(match, list.Id);
+                        if (this.lists[tokenValue]) {
+                            str = str.replace(match, this.lists[tokenValue]);
                         }
                     }
                 }

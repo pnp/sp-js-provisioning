@@ -16,7 +16,7 @@ export class HandlerBase {
      * @param {string} name Name
      * @param {IProvisioningConfig} config Config
      */
-    constructor(name: string, config: IProvisioningConfig) {
+    constructor(name: string, config: IProvisioningConfig = {}) {
         this.name = name;
         this.config = config;
     }
@@ -48,9 +48,10 @@ export class HandlerBase {
      *
      * @param {string} scope Scope
      * @param {string} message Message
+     * @param {any} data Data
      */
-    public log_info(scope: string, message: string) {
-        let prefix = (this.config.logging && this.config.logging.prefix) ? `(${this.config.logging.prefix}) ` : "";
-        Logger.write(`${prefix}${this.name}: ${scope}: ${message}`);
+    public log_info(scope: string, message: string, data?: any) {
+        let prefix = (this.config.logging && this.config.logging.prefix) ? `${this.config.logging.prefix} ` : "";
+        Logger.log({ message: `${prefix}(${this.name}): ${scope}: ${message}`, data: data, level: LogLevel.Info });
     }
 }

@@ -2,11 +2,15 @@
  * Describes the Provisioning Context
  */
 export declare class ProvisioningContext {
-    lists: Array<any>;
+    lists: {
+        [key: string]: string;
+    };
     tokenRegex: RegExp;
     /**
      * Creates a new instance of the ProvisioningContext class
      */
-    constructor(lists?: Array<any>, tokenRegex?: RegExp);
+    constructor(lists?: {
+        [key: string]: string;
+    }, tokenRegex?: RegExp);
     replaceTokens(str: string): string;
 }

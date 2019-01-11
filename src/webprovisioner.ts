@@ -25,7 +25,6 @@ export class WebProvisioner {
         private context: ProvisioningContext = new ProvisioningContext(),
         public handlerSort: TypedHash<number> = DefaultHandlerSort) {
         this.setup(config);
-        this.handlerMap = DefaultHandlerMap(this.config);
     }
 
     /**
@@ -34,7 +33,7 @@ export class WebProvisioner {
      * @param {Schema} template The template to apply
      * @param {Function} progressCallback Callback for progress updates
      */
-    public applyTemplate(template: Schema, progressCallback?: (msg: string) => void): Promise<any> {
+    public async applyTemplate(template: Schema, progressCallback?: (msg: string) => void): Promise<any> {
         Logger.write(`Beginning processing of web [${this.web.toUrl()}]`, LogLevel.Info);
 
         let operations = Object.getOwnPropertyNames(template).sort((name1: string, name2: string) => {
@@ -43,21 +42,21 @@ export class WebProvisioner {
             return sort1 - sort2;
         });
 
-        return operations.reduce((chain: any, name: string) => {
-            let handler = this.handlerMap[name];
-            return chain.then(() => {
-                if (progressCallback) {
-                    progressCallback(name);
-                }
-                return handler.ProvisionObjects(this.web, template[name], this.context);
-            });
-        }, Promise.resolve())
-            .then(_ => {
-                Logger.write(`Done processing of web [${this.web.toUrl()}]`, LogLevel.Info);
-            })
-            .catch(_ => {
-                Logger.write(`Processing of web [${this.web.toUrl()}] failed`, LogLevel.Error);
-            });
+        try {
+            await operations.reduce((chain: any, name: string) => {
+                let handler = this.handlerMap[name];
+                return chain.then(() => {
+                    if (progressCallback) {
+                        progressCallback(name);
+                    }
+                    return handler.ProvisionObjects(this.web, template[name], this.context);
+                });
+            }, Promise.resolve());
+            Logger.write(`Done processing of web [${this.web.toUrl()}]`, LogLevel.Info);
+        } catch (error) {
+            Logger.write(`Processing of web [${this.web.toUrl()}] failed`, LogLevel.Error);
+            throw error;
+        }
     }
 
     /**
@@ -71,5 +70,6 @@ export class WebProvisioner {
             Logger.subscribe(new ConsoleListener());
             Logger.activeLogLevel = this.config.logging.activeLogLevel;
         }
+        this.handlerMap = DefaultHandlerMap(this.config);
     }
 }
