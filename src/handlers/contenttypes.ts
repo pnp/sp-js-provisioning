@@ -95,7 +95,7 @@ export class ContentTypes extends HandlerBase {
             _contentType.update(true);
             await ExecuteJsomQuery(this.jsomContext, fieldLinks.map(fieldLink => ({ clientObject: fieldLink })));
         } catch (error) {
-            super.log_info("processContentTypeFieldRefs", `Failed to process field refs for content type ${contentType.Name}`, { error });
+            super.log_info("processContentTypeFieldRefs", `Failed to process field refs for content type ${contentType.Name}`);
         }
     }
 }
