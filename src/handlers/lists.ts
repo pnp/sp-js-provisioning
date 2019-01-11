@@ -49,7 +49,7 @@ export class Lists extends HandlerBase {
      */
     private async processList(web: Web, lc: IList): Promise<void> {
         super.log_info("processList", `Processing list ${lc.Title}`);
-        const { list, data } = await web.lists.add(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
+        const { list, data } = await web.lists.ensure(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
         this.context.lists.push(data);
         if (lc.ContentTypeBindings) {
             await this.processContentTypeBindings(lc, list, lc.ContentTypeBindings, lc.RemoveExistingContentTypes);

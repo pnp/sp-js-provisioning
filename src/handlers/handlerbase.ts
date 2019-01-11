@@ -7,11 +7,19 @@ import { IProvisioningConfig } from "../provisioningconfig";
  * Describes the Object Handler Base
  */
 export class HandlerBase {
+    public config: IProvisioningConfig = {};
+    private name: string;
 
     /**
      * Creates a new instance of the ObjectHandlerBase class
+     *
+     * @param {string} name Name
+     * @param {IProvisioningConfig} config Config
      */
-    constructor(private name: string, public config: IProvisioningConfig = {}) { }
+    constructor(name: string, config: IProvisioningConfig) {
+        this.name = name;
+        this.config = config;
+    }
 
     /**
      * Provisioning objects

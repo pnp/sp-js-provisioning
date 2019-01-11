@@ -5,12 +5,15 @@ import { IProvisioningConfig } from "../provisioningconfig";
  * Describes the Object Handler Base
  */
 export declare class HandlerBase {
-    private name;
     config: IProvisioningConfig;
+    private name;
     /**
      * Creates a new instance of the ObjectHandlerBase class
+     *
+     * @param {string} name Name
+     * @param {IProvisioningConfig} config Config
      */
-    constructor(name: string, config?: IProvisioningConfig);
+    constructor(name: string, config: IProvisioningConfig);
     /**
      * Provisioning objects
      */
