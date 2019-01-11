@@ -32,6 +32,6 @@ export const DefaultHandlerSort: TypedHash<number> = {
     Lists: 3,
     Navigation: 9,
     PropertyBagEntries: 8,
-    WebSettings: 1,
+    WebSettings: 10,
 };
 
