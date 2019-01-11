@@ -50,9 +50,13 @@ export class WebProvisioner {
                 }
                 return handler.ProvisionObjects(this.web, template[name], this.context);
             });
-        }, Promise.resolve()).then(_ => {
-            Logger.write(`Done processing of web [${this.web.toUrl()}]`, LogLevel.Info);
-        });
+        }, Promise.resolve())
+            .then(_ => {
+                Logger.write(`Done processing of web [${this.web.toUrl()}]`, LogLevel.Info);
+            })
+            .catch(_ => {
+                Logger.write(`Processing of web [${this.web.toUrl()}] failed`, LogLevel.Error);
+            });
     }
 
     /**
