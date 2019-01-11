@@ -25,7 +25,7 @@ gulp.task("build:lib", () => {
     ]);
 });
 
-gulp.task("build:testing", [], () => {
+gulp.task("build:testing", ["clean"], () => {
     var projectSrc = tsc.createProject("tsconfig.json");
     var projectTests = tsc.createProject("tsconfig.json");
 
@@ -48,7 +48,7 @@ gulp.task("build:testing", [], () => {
     ]);
 });
 
-gulp.task("build:debug", [], () => {
+gulp.task("build:debug", ["clean"], () => {
 
     var srcProject = tsc.createProject("tsconfig.json");
     var debugProject = tsc.createProject("tsconfig.json");
@@ -81,4 +81,4 @@ gulp.task("build:debug", [], () => {
 });
 
 // run the build chain for lib
-gulp.task("build", ["lint", "build:lib"]);
+gulp.task("build", ["clean", "lint", "build:lib"]);
