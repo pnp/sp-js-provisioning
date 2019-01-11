@@ -19,33 +19,27 @@ export class CustomActions extends HandlerBase {
      * @param {Web} web The web
      * @param {Array<ICustomAction>} customactions The Custom Actions to provision
      */
-    public ProvisionObjects(web: Web, customActions: ICustomAction[]): Promise<void> {
+    public async ProvisionObjects(web: Web, customActions: ICustomAction[]): Promise<void> {
         super.scope_started();
+        try {
+            const existingActions = await web.userCustomActions.select("Title").get<{ Title: string }[]>();
 
-        return new Promise<void>((resolve, reject) => {
+            let batch = web.createBatch();
 
-            web.userCustomActions.select("Title").get<{ Title: string }[]>().then(existingActions => {
-
-                let batch = web.createBatch();
-
-                customActions.filter(action => {
+            customActions
+                .filter(action => {
                     return !existingActions.some(existingAction => existingAction.Title === action.Title);
-                }).map(action => {
-
+                })
+                .map(action => {
                     web.userCustomActions.inBatch(batch).add(action);
                 });
 
-                batch.execute().then(_ => {
-
-                    super.scope_ended();
-                    resolve();
-
-                });
-
-            }).catch(e => {
-                super.scope_ended();
-                reject(e);
-            });
-        });
+            await batch.execute();
+            super.scope_ended();
+        } catch (err) {
+            super.scope_ended();
+            throw err;
+        }
     }
 }
+

@@ -5,13 +5,13 @@
   "main": "./lib/provisioning.js",
   "typings": "./lib/provisioning",
   "dependencies": {
-    "object.omit": "^3.0.0",
-    "xml-js": "^1.4.2",    
-    "@pnp/common": "^1.2.3",
-    "@pnp/logging": "^1.2.3",
+    "@pnp/common": "^1.2.7",
+    "@pnp/logging": "^1.2.7",
     "@pnp/nodejs": "^1.2.3",
-    "@pnp/odata": "^1.2.3",
-    "@pnp/sp": "^1.2.3"
+    "@pnp/odata": "^1.2.7",
+    "@pnp/sp": "^1.2.7",
+    "object.omit": "^3.0.0",
+    "xml-js": "^1.4.2"
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",

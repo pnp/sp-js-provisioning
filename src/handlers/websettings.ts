@@ -21,22 +21,23 @@ export class WebSettings extends HandlerBase {
      * @param {Web} web The web
      * @param {IWebSettings} settings The settings
      */
-    public ProvisionObjects(web: Web, settings: IWebSettings): Promise<void> {
+    public async ProvisionObjects(web: Web, settings: IWebSettings): Promise<void> {
         super.scope_started();
-        return new Promise<void>((resolve, reject) => {
-            Object.keys(settings)
-                .filter(key => typeof (settings[key]) === "string")
-                .forEach(key => {
-                    let value: string = <any>settings[key];
-                    settings[key] = replaceUrlTokens(value);
-                });
-            Promise.all([
+        Object.keys(settings)
+            .filter(key => typeof (settings[key]) === "string")
+            .forEach(key => {
+                let value: string = <any>settings[key];
+                settings[key] = replaceUrlTokens(value);
+            });
+        try {
+            await Promise.all([
                 web.rootFolder.update({ WelcomePage: settings.WelcomePage }),
                 web.update(omit(settings, "WelcomePage")),
-            ]).then(_ => {
-                super.scope_ended();
-                resolve();
-            }).catch(e => reject(e));
-        });
+            ]);
+            super.scope_ended();
+        } catch (err) {
+            super.scope_ended();
+            throw err;
+        }
     }
 }

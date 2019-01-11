@@ -27,6 +27,9 @@ export class PropertyBagEntries extends HandlerBase {
             if (Util.isNode()) {
                 Logger.write("PropertyBagEntries Handler not supported in Node.", LogLevel.Error);
                 reject();
+            } else if (!SP) {
+                Logger.write("JSOM is not supported on this page.", LogLevel.Error);
+                reject();
             } else {
                 web.get().then(({ ServerRelativeUrl }) => {
                     let ctx = new SP.ClientContext(ServerRelativeUrl),

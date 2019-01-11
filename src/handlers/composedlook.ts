@@ -20,20 +20,18 @@ export class ComposedLook extends HandlerBase {
      * @param {Web} web The web
      * @param {IComposedLook} object The Composed Look to provision
      */
-    public ProvisionObjects(web: Web, composedLook: IComposedLook): Promise<void> {
+    public async ProvisionObjects(web: Web, composedLook: IComposedLook): Promise<void> {
         super.scope_started();
-        return new Promise<void>((resolve, reject) => {
-            web.applyTheme(
+        try {
+            await web.applyTheme(
                 makeUrlRelative(replaceUrlTokens(composedLook.ColorPaletteUrl)),
                 makeUrlRelative(replaceUrlTokens(composedLook.FontSchemeUrl)),
                 composedLook.BackgroundImageUrl ? makeUrlRelative(replaceUrlTokens(composedLook.BackgroundImageUrl)) : null,
-                false).then(_ => {
-                    super.scope_ended();
-                    resolve();
-                }).catch(e => {
-                    super.scope_ended();
-                    reject(e);
-                });
-        });
+                false);
+            super.scope_ended();
+        } catch (err) {
+            super.scope_ended();
+            throw err;
+        }
     }
 }
