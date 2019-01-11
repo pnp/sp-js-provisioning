@@ -47,7 +47,7 @@ export class SiteFields extends HandlerBase {
             schemaXml = this.tokenHelper.replaceTokens(schemaXml);
             const schemaXmlJson = JSON.parse(xmljs.xml2json(schemaXml));
             const fieldAttributes = schemaXmlJson.elements[0].attributes;
-            super.log_info("processSiteField", `Processing site field ${fieldAttributes.DisplayName}`, { schemaXmlJson, schemaXml });
+            super.log_info("processSiteField", `Processing site field ${fieldAttributes.DisplayName}`);
             return await web.fields.createFieldAsXml(schemaXml);
         } catch (err) {
             throw err;
