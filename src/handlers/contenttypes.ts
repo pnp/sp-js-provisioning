@@ -83,14 +83,22 @@ export class ContentTypes extends HandlerBase {
         try {
             super.log_info("addContentType", `Processing field refs for content type ${contentType.Name}`, { data: contentTypeAddResult.data });
             const _contentType = this.jsomContext.web.get_contentTypes().getById(contentTypeAddResult.data.Id);
-            contentType.FieldRefs.forEach(fieldRef => {
+            const fieldLinks: SP.FieldLink[] = contentType.FieldRefs.map((fieldRef, i) => {
                 const siteField = this.jsomContext.web.get_fields().getByInternalNameOrTitle(fieldRef.Name);
                 const fieldLinkCreationInformation = new SP.FieldLinkCreationInformation();
                 fieldLinkCreationInformation.set_field(siteField);
-                _contentType.get_fieldLinks().add(fieldLinkCreationInformation);
+                const fieldLink = _contentType.get_fieldLinks().add(fieldLinkCreationInformation);
+                fieldLink.set_required(contentType.FieldRefs[i].Required);
+                fieldLink.set_hidden(contentType.FieldRefs[i].Hidden);
+                return fieldLink;
             });
             _contentType.update(true);
-            await ExecuteJsomQuery(this.jsomContext, [{ clientObject: _contentType }]);
+            await ExecuteJsomQuery(this.jsomContext, fieldLinks.map(fieldLink => ({ clientObject: fieldLink })));
+            // fieldLinks.forEach((fieldLink, i) => {
+            //     fieldLink.set_required(contentType.FieldRefs[i].Required);
+            //     fieldLink.set_hidden(contentType.FieldRefs[i].Hidden);
+            // });
+            // await ExecuteJsomQuery(this.jsomContext);
         } catch (err) {
             throw err;
         }
