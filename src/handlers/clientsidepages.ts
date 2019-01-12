@@ -53,7 +53,7 @@ export class ClientSidePages extends HandlerBase {
                     col.Controls.forEach(control => {
                         let controlJsonString = this.tokenHelper.replaceTokens(JSON.stringify(control));
                         control = JSON.parse(controlJsonString);
-                        super.log_info("processClientSidePage", `Adding ${control.Title} to client side page ${clientSidePage.Name}`, { controlJsonString });
+                        super.log_info("processClientSidePage", `Adding ${control.Title} to client side page ${clientSidePage.Name}`);
                         column.addControl(new ClientSideWebpart(control.Title, control.Description, control.ClientSideComponentProperties, control.ClientSideComponentId));
                     });
                 });
