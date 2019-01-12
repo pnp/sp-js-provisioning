@@ -32,7 +32,13 @@ export class ContentTypes extends HandlerBase {
         this.tokenHelper = new TokenHelper(context, this.config);
         super.scope_started();
         try {
-            await contentTypes.reduce((chain: any, contentType) => chain.then(() => this.processContentType(web, contentType)), Promise.resolve());
+            await contentTypes
+                .sort((a, b) => {
+                    if (a.ID < b.ID) { return -1; }
+                    if (a.ID > b.ID) { return 1; }
+                    return 0;
+                })
+                .reduce((chain: any, contentType) => chain.then(() => this.processContentType(web, contentType)), Promise.resolve());
         } catch (err) {
             super.scope_ended();
             throw err;
