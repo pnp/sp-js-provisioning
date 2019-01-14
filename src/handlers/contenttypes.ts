@@ -11,7 +11,7 @@ import { IContentType } from '../schema';
  */
 export class ContentTypes extends HandlerBase {
     private jsomContext: JsomContext;
-    private tokenHelper: TokenHelper;
+    private context: ProvisioningContext;
 
     /**
      * Creates a new instance of the ObjectSiteFields class
@@ -29,9 +29,13 @@ export class ContentTypes extends HandlerBase {
      */
     public async ProvisionObjects(web: Web, contentTypes: IContentType[], context: ProvisioningContext): Promise<void> {
         this.jsomContext = await initSpfxJsom(context.web.ServerRelativeUrl);
-        this.tokenHelper = new TokenHelper(context, this.config);
+        this.context = context;
         super.scope_started();
         try {
+            this.context.contentTypes = (await web.contentTypes.select('Id', 'Name').get<Array<{ Id: { StringValue: string }, Name: string }>>()).reduce((obj, l) => {
+                obj[l.Name] = l.Id.StringValue;
+                return obj;
+            }, {});
             await contentTypes
                 .sort((a, b) => {
                     if (a.ID < b.ID) { return -1; }
@@ -54,9 +58,16 @@ export class ContentTypes extends HandlerBase {
     private async processContentType(web: Web, contentType: IContentType): Promise<void> {
         try {
             super.log_info("processContentType", `Processing content type ${contentType.Name}`);
-            const contentTypeAddResult = await this.addContentType(web, contentType);
+            let contentTypeId = null;
+            if (this.context[contentType.Name]) {
+                contentTypeId = this.context[contentType.Name];
+                super.log_info("processContentType", `Updating existing content type ${contentType.Name} (${contentType.ID})`);
+            } else {
+                const contentTypeAddResult = await this.addContentType(web, contentType);
+                contentTypeId = contentTypeAddResult.data.Id;
+            }
             if (contentType.FieldRefs) {
-                await this.processContentTypeFieldRefs(web, contentType, contentTypeAddResult);
+                await this.processContentTypeFieldRefs(web, contentType, contentTypeId);
             }
         } catch (err) {
             throw err;
@@ -71,8 +82,9 @@ export class ContentTypes extends HandlerBase {
      */
     private async addContentType(web: Web, contentType: IContentType): Promise<ContentTypeAddResult> {
         try {
-            super.log_info("addContentType", `Adding content type ${contentType.Name}`);
+            super.log_info("addContentType", `Adding content type ${contentType.Name} (${contentType.ID})`);
             return await web.contentTypes.add(contentType.ID, contentType.Name, contentType.Description, contentType.Group);
+
         } catch (err) {
             throw err;
         }
@@ -83,12 +95,12 @@ export class ContentTypes extends HandlerBase {
      *
      * @param {Web} web The web
      * @param {IContentType} contentType Content type
-     * @param {ContentTypeAddResult} contentTypeAddResult Content type add result
+     * @param {string} contentTypeId Content type id
      */
-    private async processContentTypeFieldRefs(web: Web, contentType: IContentType, contentTypeAddResult: ContentTypeAddResult): Promise<void> {
+    private async processContentTypeFieldRefs(web: Web, contentType: IContentType, contentTypeId: string): Promise<void> {
         try {
             super.log_info("processContentTypeFieldRefs", `Processing field refs for content type ${contentType.Name}`);
-            const _contentType = this.jsomContext.web.get_contentTypes().getById(contentTypeAddResult.data.Id);
+            const _contentType = this.jsomContext.web.get_contentTypes().getById(contentTypeId);
             const fieldLinks: SP.FieldLink[] = contentType.FieldRefs.map((fieldRef, i) => {
                 const siteField = this.jsomContext.web.get_fields().getByInternalNameOrTitle(fieldRef.Name);
                 const fieldLinkCreationInformation = new SP.FieldLinkCreationInformation();

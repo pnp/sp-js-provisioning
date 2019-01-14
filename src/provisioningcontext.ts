@@ -4,6 +4,7 @@
 export class ProvisioningContext {
     public web = null;
     public lists: { [key: string]: string } = {};
+    public contentTypes: { [key: string]: string } = {};
 
     /**
      * Creates a new instance of the ProvisioningContext class
