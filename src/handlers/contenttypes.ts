@@ -58,11 +58,8 @@ export class ContentTypes extends HandlerBase {
     private async processContentType(web: Web, contentType: IContentType): Promise<void> {
         try {
             super.log_info("processContentType", `Processing content type ${contentType.Name}`);
-            let contentTypeId = null;
-            if (this.context.contentTypes[contentType.Name]) {
-                contentTypeId = this.context[contentType.Name];
-                super.log_info("processContentType", `Updating existing content type ${contentType.Name} (${contentType.ID})`);
-            } else {
+            let contentTypeId = this.context.contentTypes[contentType.Name];
+            if (!contentTypeId) {
                 const contentTypeAddResult = await this.addContentType(web, contentType);
                 contentTypeId = contentTypeAddResult.data.Id;
             }
