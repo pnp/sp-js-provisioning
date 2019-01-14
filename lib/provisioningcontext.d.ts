@@ -6,6 +6,9 @@ export declare class ProvisioningContext {
     lists: {
         [key: string]: string;
     };
+    siteFields: {
+        [key: string]: string;
+    };
     contentTypes: {
         [key: string]: string;
     };

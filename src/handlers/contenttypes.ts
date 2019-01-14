@@ -94,13 +94,13 @@ export class ContentTypes extends HandlerBase {
      */
     private async processContentTypeFieldRefs(contentType: IContentType, contentTypeId: string): Promise<void> {
         try {
-            super.log_info("processContentTypeFieldRefs", `Processing field refs for content type ${contentType.Name} (${contentType.ID})`);
             const _contentType = this.jsomContext.web.get_contentTypes().getById(contentTypeId);
             _contentType.set_description(contentType.Description);
             _contentType.set_group(contentType.Group);
-            const fieldLinks: SP.FieldLink[] = contentType.FieldRefs.map((fieldRef, i) => {
-                super.log_info("processContentTypeFieldRefs", `Processing field ref ${fieldRef.Name} for content type ${contentType.Name} (${contentType.ID})`);
-                const siteField = this.jsomContext.web.get_fields().getByInternalNameOrTitle(fieldRef.Name);
+            const fieldRefNames = contentType.FieldRefs.map(fieldRef => fieldRef.Name);
+            super.log_info("processContentTypeFieldRefs", `Processing field refs for content type ${contentType.Name} (${contentType.ID})`, { fieldRefs: fieldRefNames });
+            const fieldLinks: SP.FieldLink[] = fieldRefNames.map((fieldRef, i) => {
+                const siteField = this.jsomContext.web.get_fields().getByInternalNameOrTitle(fieldRef);
                 const fieldLinkCreationInformation = new SP.FieldLinkCreationInformation();
                 fieldLinkCreationInformation.set_field(siteField);
                 const fieldLink = _contentType.get_fieldLinks().add(fieldLinkCreationInformation);

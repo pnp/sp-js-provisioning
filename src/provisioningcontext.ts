@@ -4,6 +4,7 @@
 export class ProvisioningContext {
     public web = null;
     public lists: { [key: string]: string } = {};
+    public siteFields: { [key: string]: string } = {};
     public contentTypes: { [key: string]: string } = {};
 
     /**

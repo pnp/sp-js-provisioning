@@ -6,6 +6,7 @@ import { IProvisioningConfig } from "../provisioningconfig";
  * Describes the Site Fields Object Handler
  */
 export declare class SiteFields extends HandlerBase {
+    private context;
     private tokenHelper;
     /**
      * Creates a new instance of the ObjectSiteFields class
