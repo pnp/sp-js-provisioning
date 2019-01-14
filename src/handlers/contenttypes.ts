@@ -99,13 +99,17 @@ export class ContentTypes extends HandlerBase {
             _contentType.set_group(contentType.Group);
             const fieldRefNames = contentType.FieldRefs.map(fieldRef => fieldRef.Name);
             super.log_info("processContentTypeFieldRefs", `Processing field refs for content type ${contentType.Name} (${contentType.ID})`, { fieldRefs: fieldRefNames });
-            const fieldLinks: SP.FieldLink[] = fieldRefNames.map((fieldRef, i) => {
-                const siteField = this.jsomContext.web.get_fields().getByInternalNameOrTitle(fieldRef);
+            const fieldLinks: SP.FieldLink[] = fieldRefNames.map((fieldRefName, i) => {
+                const siteField = this.jsomContext.web.get_fields().getByInternalNameOrTitle(fieldRefName);
                 const fieldLinkCreationInformation = new SP.FieldLinkCreationInformation();
                 fieldLinkCreationInformation.set_field(siteField);
                 const fieldLink = _contentType.get_fieldLinks().add(fieldLinkCreationInformation);
-                fieldLink.set_required(contentType.FieldRefs[i].Required);
-                fieldLink.set_hidden(contentType.FieldRefs[i].Hidden);
+                if(contentType.FieldRefs[i].hasOwnProperty("Required")) {
+                    fieldLink.set_required(contentType.FieldRefs[i].Required);
+                }
+                if(contentType.FieldRefs[i].hasOwnProperty("Hidden")) {
+                    fieldLink.set_hidden(contentType.FieldRefs[i].Hidden);                    
+                }
                 return fieldLink;
             });
             _contentType.update(false);
