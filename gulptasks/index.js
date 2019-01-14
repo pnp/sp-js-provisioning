@@ -5,3 +5,4 @@ require("./package.js");
 require("./test.js");
 require("./docs.js");
 require("./publish.js");
+require("./watch.js");

@@ -31,11 +31,13 @@ devDependencies:
   gulp-sourcemaps: 2.6.1
   gulp-tslint: 8.1.2
   gulp-util: 3.0.8
+  gulp-watch: 5.0.1
   jsdoc: 3.5.5
   merge: 1.2.0
   merge2: 1.2.3
   mocha: 3.5.3
   node-fetch: 1.7.3
+  run-sequence: 2.2.1
   semver: 5.4.1
   ts-loader: 2.3.7
   tslint: 5.9.1
@@ -536,6 +538,22 @@ packages:
     optional: true
     resolution:
       integrity: sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
+  /ansi-colors/1.1.0:
+    dependencies:
+      ansi-wrap: 0.1.0
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha512-SFKX67auSNoVR38N3L+nvsPjOE0bybKTYbkf5tRvushrAPQ9V75huw0ZxBkKVeRU9kqH3d6HA4xTckbwZ4ixmA==
+  /ansi-cyan/0.1.1:
+    dependencies:
+      ansi-wrap: 0.1.0
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-U4rlKK+JgvKK4w2G8vF0VtJgmHM=
   /ansi-gray/0.1.1:
     dependencies:
       ansi-wrap: 0.1.0
@@ -543,6 +561,14 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-KWLPVOyXksSFEKPetSRDaGHvclE=
+  /ansi-red/0.1.1:
+    dependencies:
+      ansi-wrap: 0.1.0
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-jGOPnRCAgAo1PJwoyKgcpHBdlGw=
   /ansi-regex/2.1.1:
     engines:
       node: '>=0.10.0'
@@ -572,6 +598,13 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-qCJQ3bABXponyoLoLqYDu/pF768=
+  /anymatch/1.3.2:
+    dependencies:
+      micromatch: 2.3.11
+      normalize-path: 2.1.1
+    dev: true
+    resolution:
+      integrity: sha512-0XNayC8lTHQ2OI8aljNCN3sSx6hsr/1+rlcDAotXJR7C1oZZHCNsfpbKwMjRA3Uqb5tF1Rae2oloTr4xpq+WjA==
   /anymatch/2.0.0:
     dependencies:
       micromatch: 3.1.10
@@ -589,10 +622,18 @@ packages:
     dev: true
     resolution:
       integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==
+  /arr-diff/1.1.0:
+    dependencies:
+      arr-flatten: 1.1.0
+      array-slice: 0.2.3
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-aHwydYFjWI/vfeezb6vklesaOZo=
   /arr-diff/2.0.0:
     dependencies:
       arr-flatten: 1.1.0
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -608,6 +649,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-L3hKV5R/p5o81R7O02IGnwpDmkp6E982XhtbuwSe3O4qOtMMMtodicASA1Cny2U+aCXcNpml+m4dPsvsJ3jatg==
+  /arr-union/2.1.0:
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-IPnqtexw9cfSFbEHexw5Fh0pLH0=
   /arr-union/3.1.0:
     dev: true
     engines:
@@ -625,6 +672,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-p5SvDAWrF1KEbudTofIRoFugxE8=
+  /array-slice/0.2.3:
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-3Tz7gO15c6dRF82sabC5nshhhvU=
   /array-slice/1.1.0:
     dev: true
     engines:
@@ -645,7 +698,6 @@ packages:
     resolution:
       integrity: sha1-r2rId6Jcx/dOBYiUdThY39sk/bY=
   /array-unique/0.2.1:
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -1209,7 +1261,6 @@ packages:
       expand-range: 1.8.2
       preserve: 0.2.0
       repeat-element: 1.1.3
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -1466,9 +1517,19 @@ packages:
     dev: true
     resolution:
       integrity: sha1-EgYBU3qRbSmUD5NNo7SNWFo5IT0=
+  /clone-buffer/1.0.0:
+    dev: true
+    engines:
+      node: '>= 0.10'
+    resolution:
+      integrity: sha1-4+JbIHrE5wGvch4staFnksrD3Fg=
   /clone-stats/0.0.1:
     resolution:
       integrity: sha1-uI+UqCzzi4eR1YBG6kAprYjKmdE=
+  /clone-stats/1.0.0:
+    dev: true
+    resolution:
+      integrity: sha1-s3gt/4u1R04Yuba/D9/ngvh3doA=
   /clone/0.2.0:
     dev: true
     resolution:
@@ -1478,6 +1539,20 @@ packages:
       node: '>=0.8'
     resolution:
       integrity: sha1-2jCcwmPfFZlMaIypAheco8fNfH4=
+  /clone/2.1.2:
+    dev: true
+    engines:
+      node: '>=0.8'
+    resolution:
+      integrity: sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
+  /cloneable-readable/1.1.2:
+    dependencies:
+      inherits: 2.0.3
+      process-nextick-args: 2.0.0
+      readable-stream: 2.3.6
+    dev: true
+    resolution:
+      integrity: sha512-Bq6+4t+lbM8vhTs/Bef5c5AdEMtapp/iFb6+s4/Hh9MVTt8OLKH7ZOOZSCT+Ys7hsHvqv0GuMPJ1lnQJVHvxpg==
   /co/4.6.0:
     dev: true
     engines:
@@ -2150,7 +2225,6 @@ packages:
   /expand-brackets/0.1.5:
     dependencies:
       is-posix-bracket: 0.1.1
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -2172,7 +2246,6 @@ packages:
   /expand-range/1.8.2:
     dependencies:
       fill-range: 2.2.4
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -2185,6 +2258,14 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-l+gBqgUt8CRU3kawK/YhZCzchQI=
+  /extend-shallow/1.1.4:
+    dependencies:
+      kind-of: 1.1.0
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-Gda/lN/AnXa6cR85uHLSH/TdkHE=
   /extend-shallow/2.0.1:
     dependencies:
       is-extendable: 0.1.1
@@ -2207,7 +2288,6 @@ packages:
   /extglob/0.3.2:
     dependencies:
       is-extglob: 1.0.0
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -2239,6 +2319,16 @@ packages:
       '0': node >=0.6.0
     resolution:
       integrity: sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
+  /fancy-log/1.3.2:
+    dependencies:
+      ansi-gray: 0.1.1
+      color-support: 1.1.3
+      time-stamp: 1.1.0
+    dev: true
+    engines:
+      node: '>= 0.10'
+    resolution:
+      integrity: sha1-9BEl49hPLn2JpD0G2VjI94vha+E=
   /fancy-log/1.3.3:
     dependencies:
       ansi-gray: 0.1.1
@@ -2277,7 +2367,6 @@ packages:
     resolution:
       integrity: sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=
   /filename-regex/2.0.1:
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -2289,7 +2378,6 @@ packages:
       randomatic: 3.1.1
       repeat-element: 1.1.3
       repeat-string: 1.6.1
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -2355,6 +2443,14 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-Wb+1DNkF9g18OUzT2ayqtOatk04=
+  /first-chunk-stream/2.0.0:
+    dependencies:
+      readable-stream: 2.3.6
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-G97NuOCDwGZLkZRVgVd6Q6nzHXA=
   /flagged-respawn/1.0.1:
     dev: true
     engines:
@@ -2369,7 +2465,6 @@ packages:
   /for-own/0.1.5:
     dependencies:
       for-in: 1.0.2
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -2470,7 +2565,6 @@ packages:
     dependencies:
       glob-parent: 2.0.0
       is-glob: 2.0.1
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -2478,7 +2572,6 @@ packages:
   /glob-parent/2.0.0:
     dependencies:
       is-glob: 2.0.1
-    dev: false
     resolution:
       integrity: sha1-gTg9ctsFT8zPUzbaqQLxgvbtuyg=
   /glob-parent/3.1.0:
@@ -2794,6 +2887,23 @@ packages:
       node: '>=0.10'
     resolution:
       integrity: sha1-AFTh50RQLifATBh8PsxQXdVLu08=
+  /gulp-watch/5.0.1:
+    dependencies:
+      ansi-colors: 1.1.0
+      anymatch: 1.3.2
+      chokidar: 2.0.4
+      fancy-log: 1.3.2
+      glob-parent: 3.1.0
+      object-assign: 4.1.1
+      path-is-absolute: 1.0.1
+      plugin-error: 1.0.1
+      readable-stream: 2.3.6
+      slash: 1.0.0
+      vinyl: 2.2.0
+      vinyl-file: 2.0.0
+    dev: true
+    resolution:
+      integrity: sha512-HnTSBdzAOFIT4wmXYPDUn783TaYAq9bpaN05vuZNP5eni3z3aRx0NAKbjhhMYtcq76x4R1wf4oORDGdlrEjuog==
   /gulp/3.9.1:
     dependencies:
       archy: 1.0.0
@@ -3139,7 +3249,6 @@ packages:
     resolution:
       integrity: sha512-2eis5WqQGV7peooDyLmNEPUrps9+SXX5c9pL3xEB+4e9HnGuDa7mB7kHxHw4CbqS9k1T2hOH3miL8n8WtiYVtg==
   /is-dotfile/1.0.3:
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -3147,7 +3256,6 @@ packages:
   /is-equal-shallow/0.1.3:
     dependencies:
       is-primitive: 2.0.0
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -3165,7 +3273,6 @@ packages:
     resolution:
       integrity: sha512-arnXMxT1hhoKo9k1LZdmlNyJdDDfy2v0fXjFlmok4+i8ul/6WlbVge9bhM74OpNPQPMGUToDtz+KXa1PneJxOA==
   /is-extglob/1.0.0:
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -3200,7 +3307,6 @@ packages:
   /is-glob/2.0.1:
     dependencies:
       is-extglob: 1.0.0
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -3223,7 +3329,6 @@ packages:
   /is-number/2.1.0:
     dependencies:
       kind-of: 3.2.2
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -3237,7 +3342,6 @@ packages:
     resolution:
       integrity: sha1-JP1iAaR4LPUFYcgQJ2r8fRLXEZU=
   /is-number/4.0.0:
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -3272,13 +3376,11 @@ packages:
     resolution:
       integrity: sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==
   /is-posix-bracket/0.1.1:
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-MzTceXdDaOkvAW5vvAqI9c1ua8Q=
   /is-primitive/2.0.0:
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -3539,6 +3641,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-GsCSexFADNQUr8T5HPJvayTjvPIfoyJPtLQBwn5a4WZQchcrPMPMAWcC1AzJVRDKyD6ZPROPAxgv6rfHViO4uQ==
+  /kind-of/1.1.0:
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-FAo9LUGjbS78+pN3tiwk+ElaXEQ=
   /kind-of/3.2.2:
     dependencies:
       is-buffer: 1.1.6
@@ -3871,10 +3979,9 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-ea2eGWOqNxPcXv8dyERdSr/6FmzvWwzjMxpfGB/sbMccXoct+xY+YukPD+QTUZwyvK7BZwcr4m21WBOW41pAkg==
-  /math-random/1.0.1:
-    dev: false
+  /math-random/1.0.2:
     resolution:
-      integrity: sha1-izqsWIuKZuSXXjzepn97sylgH6w=
+      integrity: sha512-Bp2Bx2wFaUymE7pWi0bbldiheIXMvyzC3hRkT5YAv2qiqqJO5VB8KafgYgZmGCxkTmloLuAx3Jv2OmJ66990mg==
   /md5.js/1.3.5:
     dependencies:
       hash-base: 3.0.4
@@ -3941,7 +4048,6 @@ packages:
       object.omit: 2.0.1
       parse-glob: 3.0.4
       regex-cache: 0.4.4
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -4252,7 +4358,6 @@ packages:
     dependencies:
       for-own: 0.1.5
       is-extendable: 0.1.1
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -4431,7 +4536,6 @@ packages:
       is-dotfile: 1.0.3
       is-extglob: 1.0.0
       is-glob: 2.0.1
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -4569,6 +4673,29 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-9tXREJ4Z1j7fQo4L1X4Sd3YVM0s=
+  /plugin-error/0.1.2:
+    dependencies:
+      ansi-cyan: 0.1.1
+      ansi-red: 0.1.1
+      arr-diff: 1.1.0
+      arr-union: 2.1.0
+      extend-shallow: 1.1.4
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-O5uzM1zPAPQl4HQ34ZJ2ln2kes4=
+  /plugin-error/1.0.1:
+    dependencies:
+      ansi-colors: 1.1.0
+      arr-diff: 4.0.0
+      arr-union: 3.1.0
+      extend-shallow: 3.0.2
+    dev: true
+    engines:
+      node: '>= 0.10'
+    resolution:
+      integrity: sha512-L1zP0dk7vGweZME2i+EeakvUNqSrdiI3F91TwEoYiGrAfUXmVv6fJIq4g82PAXxNsWOp0J7ZqQy/3Szz0ajTxA==
   /posix-character-classes/0.1.1:
     dev: true
     engines:
@@ -4592,7 +4719,6 @@ packages:
     resolution:
       integrity: sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
   /preserve/0.2.0:
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -4689,8 +4815,7 @@ packages:
     dependencies:
       is-number: 4.0.0
       kind-of: 6.0.2
-      math-random: 1.0.1
-    dev: false
+      math-random: 1.0.2
     engines:
       node: '>= 0.10.0'
     resolution:
@@ -4826,7 +4951,6 @@ packages:
   /regex-cache/0.4.4:
     dependencies:
       is-equal-shallow: 0.1.3
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -4885,6 +5009,12 @@ packages:
       node: '>= 0.4'
     resolution:
       integrity: sha1-KbvZIHinOfC8zitO5B6DeVNSKSQ=
+  /replace-ext/1.0.0:
+    dev: true
+    engines:
+      node: '>= 0.10'
+    resolution:
+      integrity: sha1-3mMSg3P8v3w8z6TeWkgMRaZ5WOs=
   /request/2.88.0:
     dependencies:
       aws-sign2: 0.7.0
@@ -4986,6 +5116,16 @@ packages:
     dev: true
     resolution:
       integrity: sha512-ii4iagi25WusVoiC4B4lq7pbXfAp3D9v5CwfkY33vffw2+pkDjY1D8GaN7spsxvCSx8dkPqOZCEZyfxcmJG2IA==
+  /run-sequence/2.2.1:
+    dependencies:
+      chalk: 1.1.3
+      fancy-log: 1.3.3
+      plugin-error: 0.1.2
+    dev: true
+    engines:
+      node: '>= 0.8.0'
+    resolution:
+      integrity: sha512-qkzZnQWMZjcKbh3CNly2srtrkaO/2H/SI5f2eliMCapdRD3UhMrwjfOAZJAnZ2H8Ju4aBzFZkBGXUqFs9V0yxw==
   /safe-buffer/5.1.2:
     resolution:
       integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
@@ -5343,6 +5483,15 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-5xRDmFd9Uaa+0PoZlPoF9D/ZiO4=
+  /strip-bom-stream/2.0.0:
+    dependencies:
+      first-chunk-stream: 2.0.0
+      strip-bom: 2.0.0
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-+H217yYT9paKpUWr/h7HKLaoKco=
   /strip-bom-string/1.0.0:
     dev: true
     engines:
@@ -5362,7 +5511,6 @@ packages:
   /strip-bom/2.0.0:
     dependencies:
       is-utf8: 0.2.1
-    dev: false
     engines:
       node: '>=0.10.0'
     resolution:
@@ -5953,6 +6101,19 @@ packages:
       '0': node >=0.6.0
     resolution:
       integrity: sha1-OhBcoXBTr1XW4nDB+CiGguGNpAA=
+  /vinyl-file/2.0.0:
+    dependencies:
+      graceful-fs: 4.1.15
+      pify: 2.3.0
+      pinkie-promise: 2.0.1
+      strip-bom: 2.0.0
+      strip-bom-stream: 2.0.0
+      vinyl: 1.2.0
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-p+v1/779obfRjRQPyweyI++2dRo=
   /vinyl-fs/0.3.14:
     dependencies:
       defaults: 1.0.3
@@ -6025,6 +6186,19 @@ packages:
       node: '>= 0.9'
     resolution:
       integrity: sha1-XIgDbPVl5d8FVYv8kR+GVt8hiIQ=
+  /vinyl/2.2.0:
+    dependencies:
+      clone: 2.1.2
+      clone-buffer: 1.0.0
+      clone-stats: 1.0.0
+      cloneable-readable: 1.1.2
+      remove-trailing-separator: 1.1.0
+      replace-ext: 1.0.0
+    dev: true
+    engines:
+      node: '>= 0.10'
+    resolution:
+      integrity: sha512-MBH+yP0kC/GQ5GwBqrTPTzEfiiLjta7hTtvQtbxBgTeSXsmKQRQecjibMbxIXzVT3Y9KJK+drOz1/k+vsu8Nkg==
   /vm-browserify/0.0.4:
     dependencies:
       indexof: 0.0.1
@@ -6269,12 +6443,14 @@ specifiers:
   gulp-tslint: 8.1.2
   gulp-typescript: ^3.2.2
   gulp-util: 3.0.8
+  gulp-watch: ^5.0.1
   jsdoc: 3.5.5
   merge: 1.2.0
   merge2: ^1.0.2
   mocha: 3.5.3
   node-fetch: 1.7.3
   object.omit: ^3.0.0
+  run-sequence: ^2.2.1
   semver: 5.4.1
   spfx-jsom: ^0.6.0
   ts-loader: ^2.3.7

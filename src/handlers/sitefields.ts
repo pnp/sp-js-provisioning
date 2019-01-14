@@ -53,10 +53,11 @@ export class SiteFields extends HandlerBase {
             schemaXml = this.tokenHelper.replaceTokens(schemaXml);
             const schemaXmlJson = JSON.parse(xmljs.xml2json(schemaXml));
             const { DisplayName, Name } = schemaXmlJson.elements[0].attributes;
-            super.log_info("processSiteField", `Processing site field ${DisplayName}`);
             if (this.context.siteFields[Name]) {
+                super.log_info("processSiteField", `Updating site field ${DisplayName}`);
                 return await web.fields.getByInternalNameOrTitle(Name).update({ SchemaXml: schemaXml });
             } else {
+                super.log_info("processSiteField", `Adding site field ${DisplayName}`);
                 return await web.fields.createFieldAsXml(schemaXml);
             }
         } catch (err) {

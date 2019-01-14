@@ -1,3 +1,4 @@
+import { IContentType } from "./schema";
 /**
  * Describes the Provisioning Context
  */
@@ -10,7 +11,7 @@ export declare class ProvisioningContext {
         [key: string]: string;
     };
     contentTypes: {
-        [key: string]: string;
+        [key: string]: IContentType;
     };
     /**
      * Creates a new instance of the ProvisioningContext class

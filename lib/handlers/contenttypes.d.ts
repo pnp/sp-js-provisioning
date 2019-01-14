@@ -36,10 +36,10 @@ export declare class ContentTypes extends HandlerBase {
      */
     private addContentType(web, contentType);
     /**
-     * Adding content type field refs
-     *
-     * @param {IContentType} contentType Content type
-     * @param {string} contentTypeId Content type id
-     */
-    private processContentTypeFieldRefs(contentType, contentTypeId);
+ * Adding content type field refs
+ *
+ * @param {IContentType} contentType Content type
+ * @param {SP.ContentType} spContentType Content type
+ */
+    private processContentTypeFieldRefs(contentType, spContentType);
 }
