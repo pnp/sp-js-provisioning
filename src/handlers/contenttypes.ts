@@ -64,7 +64,7 @@ export class ContentTypes extends HandlerBase {
                 contentTypeId = contentTypeAddResult.data.Id;
             }
             if (contentType.FieldRefs) {
-                await this.processContentTypeFieldRefs(web, contentType, contentTypeId);
+                await this.processContentTypeFieldRefs(contentType, contentTypeId);
             }
         } catch (err) {
             throw err;
@@ -89,11 +89,10 @@ export class ContentTypes extends HandlerBase {
     /**
      * Adding content type field refs
      *
-     * @param {Web} web The web
      * @param {IContentType} contentType Content type
      * @param {string} contentTypeId Content type id
      */
-    private async processContentTypeFieldRefs(web: Web, contentType: IContentType, contentTypeId: string): Promise<void> {
+    private async processContentTypeFieldRefs(contentType: IContentType, contentTypeId: string): Promise<void> {
         try {
             super.log_info("processContentTypeFieldRefs", `Processing field refs for content type ${contentType.Name} (${contentType.ID})`);
             const _contentType = this.jsomContext.web.get_contentTypes().getById(contentTypeId);
