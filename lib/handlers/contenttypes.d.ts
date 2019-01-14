@@ -8,7 +8,7 @@ import { IContentType } from '../schema';
  */
 export declare class ContentTypes extends HandlerBase {
     private jsomContext;
-    private tokenHelper;
+    private context;
     /**
      * Creates a new instance of the ObjectSiteFields class
      */
@@ -40,7 +40,7 @@ export declare class ContentTypes extends HandlerBase {
      *
      * @param {Web} web The web
      * @param {IContentType} contentType Content type
-     * @param {ContentTypeAddResult} contentTypeAddResult Content type add result
+     * @param {string} contentTypeId Content type id
      */
-    private processContentTypeFieldRefs(web, contentType, contentTypeAddResult);
+    private processContentTypeFieldRefs(web, contentType, contentTypeId);
 }

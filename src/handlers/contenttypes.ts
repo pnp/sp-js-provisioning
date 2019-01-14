@@ -59,6 +59,7 @@ export class ContentTypes extends HandlerBase {
         try {
             super.log_info("processContentType", `Processing content type ${contentType.Name}`);
             let contentTypeId = null;
+            console.log(this.context.contentTypes, contentType);
             if (this.context.contentTypes[contentType.Name]) {
                 contentTypeId = this.context[contentType.Name];
                 super.log_info("processContentType", `Updating existing content type ${contentType.Name} (${contentType.ID})`);
