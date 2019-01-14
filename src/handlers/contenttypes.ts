@@ -98,9 +98,10 @@ export class ContentTypes extends HandlerBase {
      */
     private async processContentTypeFieldRefs(web: Web, contentType: IContentType, contentTypeId: string): Promise<void> {
         try {
-            super.log_info("processContentTypeFieldRefs", `Processing field refs for content type ${contentType.Name}`);
+            super.log_info("processContentTypeFieldRefs", `Processing field refs for content type ${contentType.Name} (${contentType.ID})`);
             const _contentType = this.jsomContext.web.get_contentTypes().getById(contentTypeId);
             const fieldLinks: SP.FieldLink[] = contentType.FieldRefs.map((fieldRef, i) => {
+                super.log_info("processContentTypeFieldRefs", `Processing field ref ${fieldRef.Name} for content type ${contentType.Name} (${contentType.ID})`);
                 const siteField = this.jsomContext.web.get_fields().getByInternalNameOrTitle(fieldRef.Name);
                 const fieldLinkCreationInformation = new SP.FieldLinkCreationInformation();
                 fieldLinkCreationInformation.set_field(siteField);
@@ -109,10 +110,10 @@ export class ContentTypes extends HandlerBase {
                 fieldLink.set_hidden(contentType.FieldRefs[i].Hidden);
                 return fieldLink;
             });
-            _contentType.update(true);
+            _contentType.update(false);
             await ExecuteJsomQuery(this.jsomContext, fieldLinks.map(fieldLink => ({ clientObject: fieldLink })));
         } catch ({ sender, args }) {
-            super.log_info("processContentTypeFieldRefs", `Failed to process field refs for content type ${contentType.Name}`, { message: args.get_message() });
+            super.log_info("processContentTypeFieldRefs", `Failed to process field refs for content type ${contentType.Name} (${contentType.ID})`, { error: args.get_message() });
         }
     }
 }
