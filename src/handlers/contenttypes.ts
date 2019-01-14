@@ -59,7 +59,6 @@ export class ContentTypes extends HandlerBase {
         try {
             super.log_info("processContentType", `Processing content type ${contentType.Name}`);
             let contentTypeId = null;
-            console.log(this.context.contentTypes, contentType);
             if (this.context.contentTypes[contentType.Name]) {
                 contentTypeId = this.context[contentType.Name];
                 super.log_info("processContentType", `Updating existing content type ${contentType.Name} (${contentType.ID})`);
@@ -85,7 +84,6 @@ export class ContentTypes extends HandlerBase {
         try {
             super.log_info("addContentType", `Adding content type ${contentType.Name} (${contentType.ID})`);
             return await web.contentTypes.add(contentType.ID, contentType.Name, contentType.Description, contentType.Group);
-
         } catch (err) {
             throw err;
         }
@@ -113,8 +111,8 @@ export class ContentTypes extends HandlerBase {
             });
             _contentType.update(true);
             await ExecuteJsomQuery(this.jsomContext, fieldLinks.map(fieldLink => ({ clientObject: fieldLink })));
-        } catch (error) {
-            super.log_info("processContentTypeFieldRefs", `Failed to process field refs for content type ${contentType.Name}`);
+        } catch ({ sender, args }) {
+            super.log_info("processContentTypeFieldRefs", `Failed to process field refs for content type ${contentType.Name}`, { message: args.get_message() });
         }
     }
 }
