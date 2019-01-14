@@ -96,6 +96,8 @@ export class ContentTypes extends HandlerBase {
         try {
             super.log_info("processContentTypeFieldRefs", `Processing field refs for content type ${contentType.Name} (${contentType.ID})`);
             const _contentType = this.jsomContext.web.get_contentTypes().getById(contentTypeId);
+            _contentType.set_description(contentType.Description);
+            _contentType.set_group(contentType.Group);
             const fieldLinks: SP.FieldLink[] = contentType.FieldRefs.map((fieldRef, i) => {
                 super.log_info("processContentTypeFieldRefs", `Processing field ref ${fieldRef.Name} for content type ${contentType.Name} (${contentType.ID})`);
                 const siteField = this.jsomContext.web.get_fields().getByInternalNameOrTitle(fieldRef.Name);
