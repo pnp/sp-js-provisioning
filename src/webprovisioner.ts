@@ -39,7 +39,7 @@ export class WebProvisioner {
      * @param {string[]} handlers A set of handlers we want to apply
      * @param {Function} progressCallback Callback for progress updates
      */
-    public async applyTemplate(template: Schema, handlers: string[], progressCallback?: (msg: string) => void): Promise<any> {
+    public async applyTemplate(template: Schema, handlers?: string[], progressCallback?: (msg: string) => void): Promise<any> {
         await this.onSetup();
 
         let operations = Object.getOwnPropertyNames(template)
