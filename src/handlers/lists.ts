@@ -175,7 +175,6 @@ export class Lists extends HandlerBase {
      */
     private async processFieldRef(web: Web, lc: IList, fieldRef: IListInstanceFieldRef): Promise<void> {
         const list = web.lists.getByTitle(lc.Title);
-
         try {
             await list.fields.getById(fieldRef.ID).update({ Hidden: fieldRef.Hidden, Required: fieldRef.Required, Title: fieldRef.DisplayName });
             super.log_info('processFieldRef', `Field '${fieldRef.ID}' updated for list ${lc.Title}.`);
