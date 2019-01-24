@@ -1,7 +1,9 @@
 import { HandlerBase } from "./handlerbase";
 import { IPropertyBagEntry } from "../schema";
 import * as Util from "../util";
-import { Web, Logger, LogLevel } from "sp-pnp-js";
+import { Logger, LogLevel } from "@pnp/logging";
+import { Web } from "@pnp/sp";
+import { IProvisioningConfig} from "../provisioningconfig";
 
 /**
  * Describes the PropertyBagEntries Object Handler
@@ -9,9 +11,11 @@ import { Web, Logger, LogLevel } from "sp-pnp-js";
 export class PropertyBagEntries extends HandlerBase {
     /**
      * Creates a new instance of the PropertyBagEntries class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor() {
-        super("PropertyBagEntries");
+    constructor(config: IProvisioningConfig) {
+        super("PropertyBagEntries", config);
     }
 
     /**
@@ -25,6 +29,9 @@ export class PropertyBagEntries extends HandlerBase {
         return new Promise<any>((resolve, reject) => {
             if (Util.isNode()) {
                 Logger.write("PropertyBagEntries Handler not supported in Node.", LogLevel.Error);
+                reject();
+            } else if (this.config.spfxContext) {
+                Logger.write("PropertyBagEntries Handler not supported in SPFx.", LogLevel.Error);
                 reject();
             } else {
                 web.get().then(({ ServerRelativeUrl }) => {

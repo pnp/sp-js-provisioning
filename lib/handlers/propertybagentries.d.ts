@@ -1,14 +1,17 @@
 import { HandlerBase } from "./handlerbase";
 import { IPropertyBagEntry } from "../schema";
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
+import { IProvisioningConfig } from "../provisioningconfig";
 /**
  * Describes the PropertyBagEntries Object Handler
  */
 export declare class PropertyBagEntries extends HandlerBase {
     /**
      * Creates a new instance of the PropertyBagEntries class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor();
+    constructor(config: IProvisioningConfig);
     /**
      * Provisioning property bag entries
      *

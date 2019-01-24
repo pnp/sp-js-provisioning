@@ -1,12 +1,21 @@
-export function ReplaceTokens(str: string): string {
-    return str.replace(/{sitecollection}/g, _spPageContextInfo.siteAbsoluteUrl)
-        .replace(/{site}/g, `${_spPageContextInfo.webAbsoluteUrl}`)
-        .replace(/{wpgallery}/g, `${_spPageContextInfo.siteAbsoluteUrl}/_catalogs/wp`)
+
+import { IProvisioningConfig } from "../provisioningconfig";
+
+export function replaceUrlTokens(str: string, config: IProvisioningConfig): string {
+    let siteAbsoluteUrl = null;
+    if (config.spfxContext) {
+        siteAbsoluteUrl = config.spfxContext.pageContext.site.absoluteUrl;
+    } else if (window.hasOwnProperty("_spPageContextInfo")) {
+        siteAbsoluteUrl = _spPageContextInfo.siteAbsoluteUrl;
+    }
+    return str
+        .replace(/{sitecollection}/g, siteAbsoluteUrl)
+        .replace(/{wpgallery}/g, `${siteAbsoluteUrl}/_catalogs/wp`)
         .replace(/{hosturl}/g, `${window.location.protocol}//${window.location.host}:${window.location.port}`)
-        .replace(/{themegallery}/g, `${_spPageContextInfo.siteAbsoluteUrl}/_catalogs/theme/15`);
+        .replace(/{themegallery}/g, `${siteAbsoluteUrl}/_catalogs/theme/15`);
 }
 
-export function MakeUrlRelative(absUrl: string): string {
+export function makeUrlRelative(absUrl: string): string {
     return absUrl.replace(`${document.location.protocol}//${document.location.hostname}`, "");
 }
 
@@ -23,3 +32,4 @@ export function base64EncodeString(str: string): string {
 export function isNode(): boolean {
     return typeof window === "undefined";
 }
+

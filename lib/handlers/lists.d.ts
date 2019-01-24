@@ -1,23 +1,27 @@
-import { HandlerBase } from "./handlerbase";
-import { IList } from "../schema";
-import { Web } from "sp-pnp-js";
+import { HandlerBase } from './handlerbase';
+import { IList } from '../schema';
+import { Web } from '@pnp/sp';
+import { ProvisioningContext } from '../provisioningcontext';
+import { IProvisioningConfig } from '../provisioningconfig';
 /**
  * Describes the Lists Object Handler
  */
 export declare class Lists extends HandlerBase {
-    private lists;
-    private tokenRegex;
+    private tokenHelper;
+    private context;
     /**
      * Creates a new instance of the Lists class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor();
+    constructor(config: IProvisioningConfig);
     /**
      * Provisioning lists
      *
      * @param {Web} web The web
      * @param {Array<IList>} lists The lists to provision
      */
-    ProvisionObjects(web: Web, lists: IList[]): Promise<void>;
+    ProvisionObjects(web: Web, lists: IList[], context: ProvisioningContext): Promise<void>;
     /**
      * Processes a list
      *
@@ -48,7 +52,7 @@ export declare class Lists extends HandlerBase {
      * @param {Web} web The web
      * @param {IList} list The pnp list
      */
-    private processFields(web, list);
+    private processListFields(web, list);
     /**
      * Processes a field for a lit
      *
@@ -63,7 +67,7 @@ export declare class Lists extends HandlerBase {
    * @param {Web} web The web
    * @param {IList} list The pnp list
    */
-    private processFieldRefs(web, list);
+    private processListFieldRefs(web, list);
     /**
      *
      * Processes a field ref for a list
@@ -79,7 +83,7 @@ export declare class Lists extends HandlerBase {
      * @param web The web
      * @param lc The list configuration
      */
-    private processViews(web, lc);
+    private processListViews(web, lc);
     /**
      * Processes a view for a list
      *
@@ -95,10 +99,4 @@ export declare class Lists extends HandlerBase {
      * @param {IListView} lvc The view configuration
      */
     private processViewFields(view, lvc);
-    /**
-     * Replaces tokens in field xml
-     *
-     * @param {string} fieldXml The field xml
-     */
-    private replaceFieldXmlTokens(fieldXml);
 }

@@ -1,15 +1,15 @@
 // use of relative paths to the modules
-import { default as pnp, Logger, LogLevel } from "sp-pnp-js";
+import { sp } from "@pnp/sp";
+import { getGUID } from "@pnp/common";
 import { WebProvisioner } from "../src/webprovisioner";
 import { default as template } from "../sample-schemas/all-simple";
 
 export function Example() {
 
-    pnp.sp.web.webs.add(`Provisioning Debug ${Date.now().toLocaleString()}`, pnp.util.getGUID()).then(war => {
-
+    sp.web.webs.add(`Provisioning Debug ${Date.now().toLocaleString()}`, getGUID()).then(war => {
         let provisioner = new WebProvisioner(war.web);
 
-        provisioner.applyTemplate(template).then(_ => {
+        provisioner.applyTemplate(template).then(() => {
 
             console.log("Template Applied, checking work...");
 

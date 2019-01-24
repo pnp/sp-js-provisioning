@@ -1,7 +1,9 @@
 import { HandlerBase } from "./handlerbase";
 import { INavigation, INavigationNode } from "../schema";
-import { Web, NavigationNodes, Util } from "sp-pnp-js";
-import { ReplaceTokens } from "../util";
+import { Web, NavigationNodes } from "@pnp/sp";
+import { isArray } from "@pnp/common";
+import { replaceUrlTokens } from "../util";
+import { IProvisioningConfig } from "../provisioningconfig";
 
 /**
  * Describes the Navigation Object Handler
@@ -9,9 +11,11 @@ import { ReplaceTokens } from "../util";
 export class Navigation extends HandlerBase {
     /**
      * Creates a new instance of the Navigation class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor() {
-        super("Navigation");
+    constructor(config: IProvisioningConfig) {
+        super("Navigation", config);
     }
 
     /**
@@ -19,65 +23,63 @@ export class Navigation extends HandlerBase {
      *
      * @param {Navigation} navigation The navigation to provision
      */
-    public ProvisionObjects(web: Web, navigation: INavigation): Promise<void> {
+    public async ProvisionObjects(web: Web, navigation: INavigation): Promise<void> {
         super.scope_started();
-        return new Promise<void>((resolve, reject) => {
-            let promises = [];
-            if (Util.isArray(navigation.QuickLaunch)) {
-                promises.push(this.processNavTree(web.navigation.quicklaunch, navigation.QuickLaunch));
+        let promises = [];
+        if (isArray(navigation.QuickLaunch)) {
+            promises.push(this.processNavTree(web.navigation.quicklaunch, navigation.QuickLaunch));
+        }
+        if (isArray(navigation.TopNavigationBar)) {
+            promises.push(this.processNavTree(web.navigation.topNavigationBar, navigation.TopNavigationBar));
+        }
+        try {
+            await Promise.all(promises);
+            super.scope_ended();
+        } catch (err) {
+            super.scope_ended();
+            throw err;
+        }
+    }
+
+    private async processNavTree(target: NavigationNodes, nodes: INavigationNode[]): Promise<void> {
+        try {
+            const existingNodes = await target.get();
+            await this.deleteExistingNodes(target);
+            await nodes.reduce((chain: any, node) => chain.then(() => this.processNode(target, node, existingNodes)), Promise.resolve());
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    private async processNode(target: NavigationNodes, node: INavigationNode, existingNodes: any[]): Promise<void> {
+        let existingNode = existingNodes.filter(n => n.Title === node.Title);
+        if (existingNode.length === 1 && node.IgnoreExisting !== true) {
+            node.Url = existingNode[0].Url;
+        }
+        try {
+            const result = await target.add(node.Title, replaceUrlTokens(node.Url, this.config));
+            if (isArray(node.Children)) {
+                await this.processNavTree(result.node.children, node.Children);
             }
-            if (Util.isArray(navigation.TopNavigationBar)) {
-                promises.push(this.processNavTree(web.navigation.topNavigationBar, navigation.TopNavigationBar));
-            }
-            Promise.all(promises).then(() => {
-                super.scope_ended();
-                resolve();
-            }).catch(e => {
-                super.scope_ended();
-                reject(e);
-            });
-        });
+        } catch (err) {
+            throw err;
+        }
     }
 
-    private processNavTree(target: NavigationNodes, nodes: INavigationNode[]): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            target.get().then(existingNodes => {
-                this.deleteExistingNodes(target).then(() => {
-                    nodes.reduce((chain, node) => chain.then(_ => this.processNode(target, node, existingNodes)), Promise.resolve()).then(resolve, reject);
-                }, reject);
-            });
-        });
+    private async deleteExistingNodes(target: NavigationNodes) {
+        try {
+            const existingNodes = await target.get();
+            await existingNodes.reduce((chain: Promise<void>, n: any) => chain.then(() => this.deleteNode(target, n.Id)), Promise.resolve());
+        } catch (err) {
+            throw err;
+        }
     }
 
-    private processNode(target: NavigationNodes, node: INavigationNode, existingNodes: any[]): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            let existingNode = existingNodes.filter(n => n.Title === node.Title);
-            if (existingNode.length === 1 && node.IgnoreExisting !== true) {
-                node.Url = existingNode[0].Url;
-            }
-            target.add(node.Title, ReplaceTokens(node.Url)).then(result => {
-                if (Util.isArray(node.Children)) {
-                    this.processNavTree(result.node.children, node.Children).then(resolve, reject);
-                } else {
-                    resolve();
-                }
-            }, reject);
-        });
-    }
-
-    private deleteExistingNodes(target: NavigationNodes) {
-        return new Promise<void>((resolve, reject) => {
-            target.get().then(existingNodes => {
-                existingNodes.reduce((chain: Promise<void>, n: any) => chain.then(_ => this.deleteNode(target, n.Id)), Promise.resolve()).then(() => {
-                    resolve();
-                }, reject);
-            });
-        });
-    }
-
-    private deleteNode(target: NavigationNodes, id: number): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            target.getById(id).delete().then(resolve, reject);
-        });
+    private async deleteNode(target: NavigationNodes, id: number): Promise<void> {
+        try {
+            await target.getById(id).delete();
+        } catch (err) {
+            throw err;
+        }
     }
 }

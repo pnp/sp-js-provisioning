@@ -1,7 +1,8 @@
 import { IComposedLook } from "../schema";
 import { HandlerBase } from "./handlerbase";
-import { Web } from "sp-pnp-js";
-import { ReplaceTokens, MakeUrlRelative } from "../util";
+import { Web } from "@pnp/sp";
+import { replaceUrlTokens, makeUrlRelative } from "../util";
+import { IProvisioningConfig} from "../provisioningconfig";
 
 /**
  * Describes the Composed Look Object Handler
@@ -10,8 +11,8 @@ export class ComposedLook extends HandlerBase {
     /**
      * Creates a new instance of the ObjectComposedLook class
      */
-    constructor() {
-        super("ComposedLook");
+    constructor(config: IProvisioningConfig) {
+        super("ComposedLook", config);
     }
 
     /**
@@ -20,20 +21,18 @@ export class ComposedLook extends HandlerBase {
      * @param {Web} web The web
      * @param {IComposedLook} object The Composed Look to provision
      */
-    public ProvisionObjects(web: Web, composedLook: IComposedLook): Promise<void> {
+    public async ProvisionObjects(web: Web, composedLook: IComposedLook): Promise<void> {
         super.scope_started();
-        return new Promise<void>((resolve, reject) => {
-            web.applyTheme(
-                MakeUrlRelative(ReplaceTokens(composedLook.ColorPaletteUrl)),
-                MakeUrlRelative(ReplaceTokens(composedLook.FontSchemeUrl)),
-                composedLook.BackgroundImageUrl ? MakeUrlRelative(ReplaceTokens(composedLook.BackgroundImageUrl)) : null,
-                false).then(_ => {
-                    super.scope_ended();
-                    resolve();
-                }).catch(e => {
-                    super.scope_ended();
-                    reject(e);
-                });
-        });
+        try {
+            await web.applyTheme(
+                makeUrlRelative(replaceUrlTokens(composedLook.ColorPaletteUrl, this.config)),
+                makeUrlRelative(replaceUrlTokens(composedLook.FontSchemeUrl, this.config)),
+                composedLook.BackgroundImageUrl ? makeUrlRelative(replaceUrlTokens(composedLook.BackgroundImageUrl, this.config)) : null,
+                false);
+            super.scope_ended();
+        } catch (err) {
+            super.scope_ended();
+            throw err;
+        }
     }
 }

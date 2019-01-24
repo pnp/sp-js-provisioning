@@ -1,12 +1,7 @@
 declare var require: any;
-import {
-    setup,
-    Logger,
-    LogLevel,
-    ConsoleListener,
-    NodeFetchClient,
-    default as pnp, Web
-} from "sp-pnp-js";
+import { sp, Web } from "@pnp/sp";
+import { Logger, LogLevel, ConsoleListener } from "@pnp/logging";
+import { SPFetchClient } from "@pnp/nodejs";
 
 // setup the connection to SharePoint using the settings file, you can
 // override any of the values as you want here, just be sure not to commit
@@ -17,10 +12,12 @@ import {
 let settings = require("../../settings.js");
 
 // configure your node options
-setup({
-    fetchClientFactory: () => {
-        return new NodeFetchClient(settings.testing.siteUrl, settings.testing.clientId, settings.testing.clientSecret);
-    }
+sp.setup({
+    sp: {
+        fetchClientFactory: () => {
+            return new SPFetchClient(settings.testing.siteUrl, settings.testing.clientId, settings.testing.clientSecret);
+        },
+    },
 });
 
 // setup console logger
@@ -29,7 +26,7 @@ Logger.activeLogLevel = LogLevel.Verbose;
 
 import { Example } from "./example";
 
-cleanUpAllSubsites().then(_ => {
+cleanUpAllSubsites().then(() => {
 
     // importing the example debug scenario and running it
     // adding your debugging to other files and importing them will keep them out of git
@@ -49,7 +46,7 @@ function cleanUpAllSubsites(): Promise<void> {
 
     return new Promise<void>((resolve, reject) => {
 
-        pnp.sp.site.rootWeb.webs.select("Title").get().then((w) => {
+        sp.site.rootWeb.webs.select("Title").get().then((w) => {
             return Promise.all(w.map((element: any) => {
                 console.log(element["odata.id"]);
                 let web = new Web(element["odata.id"], "");
@@ -57,14 +54,14 @@ function cleanUpAllSubsites(): Promise<void> {
                     return Promise.all(sw.map((value) => {
                         console.log(value["odata.id"]);
                         let web2 = new Web(value["odata.id"], "");
-                        return web2.delete().catch(e => {});
+                        return web2.delete().catch(e => { console.error("unable to delete web"); });
                     }));
-                }).then(() => { web.delete(); }).catch(e => {});
+                }).then(() => { web.delete(); }).catch(e => { console.error("unable to delete web"); });
             }));
 
         }).catch(e => {
             reject(e);
-        }).then(_ => {
+        }).then(() => {
             resolve();
         });
     });

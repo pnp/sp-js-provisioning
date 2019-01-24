@@ -1,21 +1,27 @@
 import { HandlerBase } from "./handlerbase";
 import { IFile } from "../schema";
-import { Web } from "sp-pnp-js";
+import { Web } from "@pnp/sp";
+import { ProvisioningContext } from "../provisioningcontext";
+import { IProvisioningConfig } from "../provisioningconfig";
 /**
  * Describes the Features Object Handler
  */
 export declare class Files extends HandlerBase {
+    private tokenHelper;
     /**
      * Creates a new instance of the Files class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor();
+    constructor(config: IProvisioningConfig);
     /**
      * Provisioning Files
      *
      * @param {Web} web The web
      * @param {IFile[]} files The files  to provision
+     * @param {ProvisioningContext} context Provisioning context
      */
-    ProvisionObjects(web: Web, files: IFile[]): Promise<void>;
+    ProvisionObjects(web: Web, files: IFile[], context: ProvisioningContext): Promise<void>;
     /**
      * Get blob for a file
      *
@@ -26,7 +32,7 @@ export declare class Files extends HandlerBase {
      * Procceses a file
      *
      * @param {Web} web The web
-     * @param {IFile} file The file
+     * @param {IFile} file The fileAddError
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
     private processFile(web, file, webServerRelativeUrl);
@@ -49,15 +55,15 @@ export declare class Files extends HandlerBase {
     /**
      * Fetches web part contents
      *
-     * @param {IWebPart[]} webParts Web parts
-     * @param {Function} cb Callback function that takes index of the the webpart and the retrieved XML
+     * @param {Array<IWebPart>} webParts Web parts
+     * @param {Function} callbackFunc Callback function that takes index of the the webpart and the retrieved XML
      */
     private fetchWebPartContents;
     /**
      * Processes page list views
      *
      * @param {Web} web The web
-     * @param {IWebPart[]} webParts Web parts
+     * @param {Array<IWebPart>} webParts Web parts
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
     private processPageListViews(web, webParts, fileServerRelativeUrl);
@@ -76,5 +82,12 @@ export declare class Files extends HandlerBase {
      * @param {File} pnpFile The PnP file
      * @param {Object} properties The properties to set
      */
-    private processProperties(web, pnpFile, properties);
+    private processProperties(web, pnpFile, file);
+    /**
+    * Replaces tokens in a string, e.g. {site}
+    *
+    * @param {string} str The string
+    * @param {SP.ClientContext} ctx Client context
+    */
+    private replaceWebPartXmlTokens(str, ctx);
 }
