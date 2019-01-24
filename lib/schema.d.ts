@@ -1,3 +1,4 @@
+import { CanvasColumnFactorType } from "@pnp/sp";
 export interface Schema {
     Navigation?: INavigation;
     CustomActions?: ICustomAction[];
@@ -7,9 +8,46 @@ export interface Schema {
     Lists?: IList[];
     Files?: IFile[];
     PropertyBagEntries?: IPropertyBagEntry[];
+    ClientSidePages?: IClientSidePage[];
+    SiteFields?: string[];
+    ContentTypes: IContentType[];
     [key: string]: any;
 }
 export default Schema;
+export interface IFieldRef {
+    ID: string;
+    Name?: string;
+    Required?: boolean;
+    Hidden?: boolean;
+}
+export interface IContentType {
+    ID: string;
+    Name: string;
+    Description: string;
+    Group: string;
+    FieldRefs: IFieldRef[];
+}
+export interface IClientSideControl {
+    Title: string;
+    Description?: string;
+    ClientSideComponentId: string;
+    ClientSideComponentProperties?: any;
+}
+export interface IClientSidePageColumn {
+    Factor: CanvasColumnFactorType;
+    Controls: IClientSideControl[];
+}
+export interface IClientSidePageSection {
+    Columns: IClientSidePageColumn[];
+}
+export interface IClientSidePage {
+    Name: string;
+    Title: string;
+    LibraryTitle?: string;
+    PageLayoutType?: string;
+    CommentsDisabled?: boolean;
+    Sections?: IClientSidePageSection[];
+}
 export interface IFeature {
     id: string;
     deactivate: boolean;
@@ -133,11 +171,8 @@ export interface IList {
         [key: string]: string | boolean | number;
     };
 }
-export interface IListInstanceFieldRef {
-    ID: string;
+export interface IListInstanceFieldRef extends IFieldRef {
     DisplayName?: string;
-    Required?: boolean;
-    Hidden?: boolean;
 }
 export interface IContentTypeBinding {
     ContentTypeID: string;

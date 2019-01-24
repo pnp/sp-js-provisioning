@@ -1,16 +1,25 @@
 import { Web } from "@pnp/sp";
 import { Logger, LogLevel } from "@pnp/logging";
 import { ProvisioningContext } from "../provisioningcontext";
+import { IProvisioningConfig } from "../provisioningconfig";
 
 /**
  * Describes the Object Handler Base
  */
 export class HandlerBase {
+    public config: IProvisioningConfig = {};
+    private name: string;
 
     /**
      * Creates a new instance of the ObjectHandlerBase class
+     *
+     * @param {string} name Name
+     * @param {IProvisioningConfig} config Config
      */
-    constructor(private name: string) {}
+    constructor(name: string, config: IProvisioningConfig = {}) {
+        this.name = name;
+        this.config = config;
+    }
 
     /**
      * Provisioning objects
@@ -24,13 +33,25 @@ export class HandlerBase {
      * Writes to Logger when scope has started
      */
     public scope_started() {
-        Logger.write(`${this.name}: Code execution scope started`);
+        this.log_info("ProvisionObjects", "Code execution scope started");
     }
 
     /**
      * Writes to Logger when scope has stopped
      */
     public scope_ended() {
-        Logger.write(`${this.name}: Code execution scope stopped`);
+        this.log_info("ProvisionObjects", "Code execution scope ended");
+    }
+
+    /**
+     * Writes to Logger
+     *
+     * @param {string} scope Scope
+     * @param {string} message Message
+     * @param {any} data Data
+     */
+    public log_info(scope: string, message: string, data?: any) {
+        let prefix = (this.config.logging && this.config.logging.prefix) ? `${this.config.logging.prefix} ` : "";
+        Logger.log({ message: `${prefix}(${this.name}): ${scope}: ${message}`, data: data, level: LogLevel.Info });
     }
 }

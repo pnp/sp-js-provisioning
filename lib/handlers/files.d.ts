@@ -2,20 +2,24 @@ import { HandlerBase } from "./handlerbase";
 import { IFile } from "../schema";
 import { Web } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
+import { IProvisioningConfig } from "../provisioningconfig";
 /**
  * Describes the Features Object Handler
  */
 export declare class Files extends HandlerBase {
-    private context;
+    private tokenHelper;
     /**
      * Creates a new instance of the Files class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor();
+    constructor(config: IProvisioningConfig);
     /**
      * Provisioning Files
      *
      * @param {Web} web The web
      * @param {IFile[]} files The files  to provision
+     * @param {ProvisioningContext} context Provisioning context
      */
     ProvisionObjects(web: Web, files: IFile[], context: ProvisioningContext): Promise<void>;
     /**
@@ -23,7 +27,7 @@ export declare class Files extends HandlerBase {
      *
      * @param {IFile} file The file
      */
-    private getFileBlob;
+    private getFileBlob(file);
     /**
      * Procceses a file
      *
@@ -31,7 +35,7 @@ export declare class Files extends HandlerBase {
      * @param {IFile} file The fileAddError
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      */
-    private processFile;
+    private processFile(web, file, webServerRelativeUrl);
     /**
      * Remove exisiting webparts if specified
      *
@@ -39,7 +43,7 @@ export declare class Files extends HandlerBase {
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      * @param {boolean} shouldRemove Should web parts be removed
      */
-    private removeExistingWebParts;
+    private removeExistingWebParts(webServerRelativeUrl, fileServerRelativeUrl, shouldRemove);
     /**
      * Processes web parts
      *
@@ -47,7 +51,7 @@ export declare class Files extends HandlerBase {
      * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
-    private processWebParts;
+    private processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl);
     /**
      * Fetches web part contents
      *
@@ -62,7 +66,7 @@ export declare class Files extends HandlerBase {
      * @param {Array<IWebPart>} webParts Web parts
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
-    private processPageListViews;
+    private processPageListViews(web, webParts, fileServerRelativeUrl);
     /**
      * Processes page list view
      *
@@ -70,7 +74,7 @@ export declare class Files extends HandlerBase {
      * @param {any} listView List view
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
-    private processPageListView;
+    private processPageListView(web, listView, fileServerRelativeUrl);
     /**
      * Process list item properties for the file
      *
@@ -78,12 +82,12 @@ export declare class Files extends HandlerBase {
      * @param {File} pnpFile The PnP file
      * @param {Object} properties The properties to set
      */
-    private processProperties;
+    private processProperties(web, pnpFile, file);
     /**
     * Replaces tokens in a string, e.g. {site}
     *
     * @param {string} str The string
     * @param {SP.ClientContext} ctx Client context
     */
-    private replaceWebPartXmlTokens;
+    private replaceWebPartXmlTokens(str, ctx);
 }

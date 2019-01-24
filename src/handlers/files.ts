@@ -6,18 +6,22 @@ import { combine, isArray } from "@pnp/common";
 import { Logger, LogLevel } from "@pnp/logging";
 import { replaceUrlTokens } from "../util";
 import { ProvisioningContext } from "../provisioningcontext";
+import { IProvisioningConfig} from "../provisioningconfig";
+import { TokenHelper } from "../util/tokenhelper";
 
 /**
  * Describes the Features Object Handler
  */
 export class Files extends HandlerBase {
-    private context: ProvisioningContext;
+    private tokenHelper: TokenHelper;
 
     /**
      * Creates a new instance of the Files class
+     *
+     * @param {IProvisioningConfig} config Provisioning config
      */
-    constructor() {
-        super("Files");
+    constructor(config: IProvisioningConfig) {
+        super("Files", config);
     }
 
     /**
@@ -25,16 +29,20 @@ export class Files extends HandlerBase {
      *
      * @param {Web} web The web
      * @param {IFile[]} files The files  to provision
+     * @param {ProvisioningContext} context Provisioning context
      */
     public async ProvisionObjects(web: Web, files: IFile[], context: ProvisioningContext): Promise<void> {
-        this.context = context;
+        this.tokenHelper = new TokenHelper(context, this.config);
         super.scope_started();
         if (typeof window === "undefined") {
             throw "Files Handler not supported in Node.";
         }
+        if (this.config.spfxContext) {
+            throw "Files Handler not supported in SPFx.";
+        }
         const { ServerRelativeUrl } = await web.get();
         try {
-            await files.reduce((chain, file) => chain.then(_ => this.processFile(web, file, ServerRelativeUrl)), Promise.resolve());
+            await files.reduce((chain: any, file) => chain.then(() => this.processFile(web, file, ServerRelativeUrl)), Promise.resolve());
             super.scope_ended();
         } catch (err) {
             super.scope_ended();
@@ -47,7 +55,7 @@ export class Files extends HandlerBase {
      * @param {IFile} file The file
      */
     private async getFileBlob(file: IFile): Promise<Blob> {
-        const fileSrcWithoutTokens = replaceUrlTokens(this.context.replaceTokens(file.Src));
+        const fileSrcWithoutTokens = replaceUrlTokens(this.tokenHelper.replaceTokens(file.Src), this.config);
         const response = await fetch(fileSrcWithoutTokens, { credentials: "include", method: "GET" });
         const fileContents = await response.text();
         const blob = new Blob([fileContents], { type: "text/plain" });
@@ -130,7 +138,7 @@ export class Files extends HandlerBase {
                     webPartManager = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
                 await this.fetchWebPartContents(file.WebParts, (index, xml) => { file.WebParts[index].Contents.Xml = xml; });
                 file.WebParts.forEach(wp => {
-                    const webPartXml = this.context.replaceTokens(this.replaceWebPartXmlTokens(wp.Contents.Xml, clientContext));
+                    const webPartXml = this.tokenHelper.replaceTokens(this.replaceWebPartXmlTokens(wp.Contents.Xml, clientContext));
                     const webPartDef = webPartManager.importWebPart(webPartXml);
                     const webPartInstance = webPartDef.get_webPart();
                     Logger.log({ data: { webPartXml }, level: LogLevel.Info, message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}` });
@@ -164,7 +172,7 @@ export class Files extends HandlerBase {
                 return (() => {
                     return new Promise<any>(async (_res, _rej) => {
                         if (wp.Contents.FileSrc) {
-                            const fileSrc = replaceUrlTokens(this.context.replaceTokens(wp.Contents.FileSrc));
+                            const fileSrc = replaceUrlTokens(this.tokenHelper.replaceTokens(wp.Contents.FileSrc), this.config);
                             Logger.log({ data: null, level: LogLevel.Info, message: `Retrieving contents from file '${fileSrc}'.` });
                             const response = await fetch(fileSrc, { credentials: "include", method: "GET" });
                             const xml = await response.text();
@@ -223,7 +231,7 @@ export class Files extends HandlerBase {
                 let listViewWebParts = webParts.filter(wp => wp.ListView);
                 if (listViewWebParts.length > 0) {
                     listViewWebParts
-                        .reduce((chain, wp) => chain.then(_ => this.processPageListView(web, wp.ListView, fileServerRelativeUrl)), Promise.resolve())
+                        .reduce((chain: any, wp) => chain.then(() => this.processPageListView(web, wp.ListView, fileServerRelativeUrl)), Promise.resolve())
                         .then(() => {
                             Logger.log({
                                 data: {},
@@ -268,7 +276,7 @@ export class Files extends HandlerBase {
                         view.update(settings)
                             .then(() => {
                                 view.fields.removeAll()
-                                    .then(_ => {
+                                    .then(() => {
                                         listView.View.ViewFields.reduce((chain, viewField) => chain.then(() => view.fields.add(viewField)), Promise.resolve())
                                             .then(resolve)
                                             .catch(err => {

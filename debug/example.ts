@@ -9,7 +9,7 @@ export function Example() {
     sp.web.webs.add(`Provisioning Debug ${Date.now().toLocaleString()}`, getGUID()).then(war => {
         let provisioner = new WebProvisioner(war.web);
 
-        provisioner.applyTemplate(template).then(_ => {
+        provisioner.applyTemplate(template).then(() => {
 
             console.log("Template Applied, checking work...");
 

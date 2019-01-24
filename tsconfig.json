@@ -1,28 +1,36 @@
 {
     "compilerOptions": {
-        "target": "es2015",
-        "module": "commonjs",
-        "jsx": "react",
-        "declaration": false,
-        "sourceMap": true,
-        "removeComments": false,
-        "typeRoots": [
-            "./node_modules/@types"
-        ],
-        "types": [
-            "sharepoint",
-            "node"
-        ],
-        "noImplicitAny": false,
-        "allowUnreachableCode": false,
-        "forceConsistentCasingInFileNames": true,
-        "moduleResolution": "node",
-        "noImplicitThis": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "pretty": true
+      "target": "es5",
+      "forceConsistentCasingInFileNames": true,
+      "module": "esnext",
+      "moduleResolution": "node",
+      "jsx": "react",
+      "declaration": true,
+      "sourceMap": true,
+      "experimentalDecorators": true,
+      "skipLibCheck": true,
+      "outDir": "lib",
+      "typeRoots": [
+        "./node_modules/@types",
+        "./node_modules/@microsoft"
+      ],
+      "types": [
+        "es6-promise",
+        "webpack-env",
+        "sharepoint"
+      ],
+      "lib": [
+        "es5",
+        "dom",
+        "es2015.collection"
+      ]
     },
     "include": [
-        "src/**/*"
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "node_modules",
+      "lib"
     ]
-}
+  }
+  

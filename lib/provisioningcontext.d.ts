@@ -1,12 +1,20 @@
+import { IContentType } from "./schema";
 /**
  * Describes the Provisioning Context
  */
 export declare class ProvisioningContext {
-    lists: Array<any>;
-    tokenRegex: RegExp;
+    web: any;
+    lists: {
+        [key: string]: string;
+    };
+    siteFields: {
+        [key: string]: string;
+    };
+    contentTypes: {
+        [key: string]: IContentType;
+    };
     /**
      * Creates a new instance of the ProvisioningContext class
      */
-    constructor(lists?: Array<any>, tokenRegex?: RegExp);
-    replaceTokens(str: string): string;
+    constructor();
 }
