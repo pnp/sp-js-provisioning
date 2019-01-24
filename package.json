@@ -1,5 +1,5 @@
 {
-  "name": "pnp-js-provisioning",
+  "name": "sp-js-provisioning",
   "version": "0.9.26",
   "description": "A reusable JavaScript library targeting SharePoint provisioning.",
   "main": "./lib/index.js",
