@@ -27,7 +27,7 @@ export declare class WebProvisioner {
      * @param {string[]} handlers A set of handlers we want to apply
      * @param {Function} progressCallback Callback for progress updates
      */
-    applyTemplate(template: Schema, handlers: string[], progressCallback?: (msg: string) => void): Promise<any>;
+    applyTemplate(template: Schema, handlers?: string[], progressCallback?: (msg: string) => void): Promise<any>;
     /**
     * Sets up the web provisioner
     *

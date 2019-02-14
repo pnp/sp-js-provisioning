@@ -10,7 +10,7 @@ export interface Schema {
     PropertyBagEntries?: IPropertyBagEntry[];
     ClientSidePages?: IClientSidePage[];
     SiteFields?: string[];
-    ContentTypes: IContentType[];
+    ContentTypes?: IContentType[];
     [key: string]: any;
 }
 export default Schema;
