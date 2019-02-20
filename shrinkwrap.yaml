@@ -1,9 +1,9 @@
 dependencies:
-  '@pnp/common': 1.2.7
-  '@pnp/logging': 1.2.7
+  '@pnp/common': 1.2.9
+  '@pnp/logging': 1.2.9
   '@pnp/nodejs': 1.2.7
-  '@pnp/odata': 1.2.7
-  '@pnp/sp': 1.2.7
+  '@pnp/odata': 1.2.9
+  '@pnp/sp': 1.2.9
   gulp-typescript: 3.2.2
   object.omit: 3.0.0
   spfx-jsom: 0.6.0
@@ -83,13 +83,13 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-LREmTlKz8Mmvc+OfxAjluxEZEb1R+Rhn/yy9WiEAhpjhR/TwNm0z2+6O40xYEGpuvE76AsYaOTBD3/X/H9cVkw==
-  /@microsoft/load-themed-styles/1.8.53:
+  /@microsoft/load-themed-styles/1.8.60:
     dev: false
     resolution:
-      integrity: sha512-knlhWjiWEQFrIaHqpSyI9arU+fQ7KCRfQuekVkczjTHwdb1K8ynxrBd1TmZFFz1cwlfVxtb06qmMv4GCNBDuYQ==
+      integrity: sha512-ANHSycOYKAndbp1H0IwqDCG1g1JIRxaG0eL6YyOHYSndY4YLHaf0Ek8Qyhx9p66pVXUrqKK1ntyh6YZNUfgn6Q==
   /@microsoft/microsoft-graph-client/1.1.0:
     dependencies:
-      es6-promise: 4.2.5
+      es6-promise: 4.2.6
       isomorphic-fetch: 2.2.1
     dev: false
     resolution:
@@ -271,19 +271,19 @@ packages:
     dev: true
     resolution:
       integrity: sha512-bdozNnQXIKZgT3fjCcOYSZSpH7zuh+Turv8uQxzXTj5G8AzgTJ/X3GnrYDbliXKgefL8LJeIj4vwdrOnt1J+Ng==
-  /@pnp/common/1.2.7:
+  /@pnp/common/1.2.9:
     dependencies:
       adal-angular: 1.0.17
       tslib: 1.9.3
     dev: false
     resolution:
-      integrity: sha512-4tja4zjAHhNZwhkcAhG8MPInFHIlspb7jz/Sk/wCbNCrobNSBGt9hoSvMBAOxYIhUinflCOWmGhk3Xw6vk8EXg==
-  /@pnp/logging/1.2.7:
+      integrity: sha512-wVu8yJZvdnN99hhpmHxhK0HbUVMg61y8o8vC2w3MK+nql65GH9YaxkDQotNSKlYjDakzG/HYa8cZW3TIaCFPcg==
+  /@pnp/logging/1.2.9:
     dependencies:
       tslib: 1.9.3
     dev: false
     resolution:
-      integrity: sha512-3OlO5o7dfP7q0bAfeZ6sHn3BBYfPM3rpw0w+aZGju84MjM7YcdLS2U5JlXMjb0eKwyA0kZOZeJNLt0l0vuGKrA==
+      integrity: sha512-JNxoHkPhPnnC1PHnU+wQVkDkaBzrskDvLHn7bq84Uz+ppZEnKp0IuOxvmkAPMwD1NVP5qRbbiBh7dIHu8b9rNw==
   /@pnp/nodejs/1.2.7:
     dependencies:
       adal-node: 0.1.28
@@ -296,25 +296,25 @@ packages:
       '@pnp/logging': 1.2.7
     resolution:
       integrity: sha512-dJ7Ou1c+zct/cVLK3RMwWyluOdJO3xVpPB0gLKarF4IekIxG5Ank5sp9Xc9inyldToyGa20pRAGIJc5ssgSwAg==
-  /@pnp/odata/1.2.7:
+  /@pnp/odata/1.2.9:
     dependencies:
       tslib: 1.9.3
     dev: false
     peerDependencies:
-      '@pnp/common': 1.2.7
-      '@pnp/logging': 1.2.7
+      '@pnp/common': 1.2.9
+      '@pnp/logging': 1.2.9
     resolution:
-      integrity: sha512-7hgSZcC0mZd+6YaFWxT6l3QPu3HS2DknIECx/64YHEqF+0qXX6Tcg9Rtn7lsVt6kG3VXSnGnN0A5pCG6VaT5ag==
-  /@pnp/sp/1.2.7:
+      integrity: sha512-mE4bY5PQXxNYJIyh5Mgqda4AeX5DWEjT9NuUH7G05JOKwV51DbUX+UPIIy7AqBXDjo05S3QvOJw6+4OfeMQuZQ==
+  /@pnp/sp/1.2.9:
     dependencies:
       tslib: 1.9.3
     dev: false
     peerDependencies:
-      '@pnp/common': 1.2.7
-      '@pnp/logging': 1.2.7
-      '@pnp/odata': 1.2.7
+      '@pnp/common': 1.2.9
+      '@pnp/logging': 1.2.9
+      '@pnp/odata': 1.2.9
     resolution:
-      integrity: sha512-shhqPNYBRV7jEO1TLtRzGk/Czd43WFJTqH19Gll2dt9MmTUzLj7Pyc9ioEsSXp6GdjtQ0Qz9e2hVX9UZboLxJQ==
+      integrity: sha512-O+V/IrI/dqDtc/d42HsTlPbqNqLut6/UiTkWwuZMwbhJeNmb9S/CyygTaa2luyvVw2UaVa1x70zdoslxU0Itew==
   /@types/adal-angular/1.0.1:
     dev: false
     resolution:
@@ -357,33 +357,37 @@ packages:
   /@types/node/8.10.39:
     resolution:
       integrity: sha512-rE7fktr02J8ybFf6eysife+WF+L4sAHWzw09DgdCebEu+qDwMvv4zl6Bc+825ttGZP73kCKxa3dhJOoGJ8+5mA==
+  /@types/node/8.10.40:
+    dev: false
+    resolution:
+      integrity: sha512-RRSjdwz63kS4u7edIwJUn8NqKLLQ6LyqF/X4+4jp38MBT3Vwetewi2N4dgJEshLbDwNgOJXNYoOwzVZUSSLhkQ==
   /@types/node/8.5.8:
     resolution:
       integrity: sha512-8KmlRxwbKZfjUHFIt3q8TF5S2B+/E5BaAoo/3mgc5h6FJzqxXkCK/VMetO+IRDtwtU6HUvovHMBn+XRj7SV9Qg==
-  /@types/prop-types/15.5.8:
+  /@types/prop-types/15.5.9:
     dev: false
     resolution:
-      integrity: sha512-3AQoUxQcQtLHsK25wtTWIoIpgYjH3vSDroZOUr7PpCHw/jLY1RB9z9E8dBT/OSmwStVgkRNvdh+ZHNiomRieaw==
+      integrity: sha512-Nha5b+jmBI271jdTMwrHiNXM+DvThjHOfyZtMX9kj/c/LUj2xiLHsG/1L3tJ8DjAoQN48cHwUwtqBotjyXaSdQ==
   /@types/react-dom/16.0.5:
     dependencies:
-      '@types/node': 8.10.39
-      '@types/react': 16.7.18
+      '@types/node': 8.10.40
+      '@types/react': 16.8.4
     dev: false
     resolution:
       integrity: sha512-ony2hEYlGXCLWNAWWgbsHR7qVvDbeMRFc5b43+7dhj3n+zXzxz81HV9Yjpc3JD8vLCiwYoSLqFCI6bD0+0zG2Q==
   /@types/react/16.4.2:
     dependencies:
-      csstype: 2.6.0
+      csstype: 2.6.2
     dev: false
     resolution:
       integrity: sha512-oVcVteCDNiVc/fkDjowRfAZQDEOR76j3CJ3FvwXNvfV6zJguhghy1lMgpAzYox+9AZsWch+JPV6Imml3wvIUeg==
-  /@types/react/16.7.18:
+  /@types/react/16.8.4:
     dependencies:
-      '@types/prop-types': 15.5.8
-      csstype: 2.6.0
+      '@types/prop-types': 15.5.9
+      csstype: 2.6.2
     dev: false
     resolution:
-      integrity: sha512-Tx4uu3ppK53/iHk6VpamMP3f3ahfDLEVt3ZQc8TFm30a1H3v9lMsCntBREswZIW/SKrvJjkb3Hq8UwO6GREBng==
+      integrity: sha512-Mpz1NNMJvrjf0GcDqiK8+YeOydXfD8Mgag3UtqQ5lXYTsMnOiHcKmO48LiSWMb1rSHB9MV/jlgyNzeAVxWMZRQ==
   /@types/requirejs/2.1.29:
     dev: false
     resolution:
@@ -416,7 +420,7 @@ packages:
       integrity: sha512-4/EtO6Ns7kNtKxC+6InShwVQeNQEDT5H8Ex7m/i4OrT9i7csje4YwBQPkkpm31qJwEZEyD7bbAwyLezI63sLhg==
   /@uifabric/styling/5.37.0/react-dom@16.3.2+react@16.3.2:
     dependencies:
-      '@microsoft/load-themed-styles': 1.8.53
+      '@microsoft/load-themed-styles': 1.8.60
       '@uifabric/merge-styles': 5.17.1
       '@uifabric/utilities': /@uifabric/utilities/5.34.2/react-dom@16.3.2+react@16.3.2
       tslib: 1.9.3
@@ -427,7 +431,7 @@ packages:
   /@uifabric/utilities/5.34.2/react-dom@16.3.2+react@16.3.2:
     dependencies:
       '@uifabric/merge-styles': 5.17.1
-      prop-types: 15.6.2
+      prop-types: 15.7.2
       react: 16.3.2
       react-dom: /react-dom/16.3.2/react@16.3.2
       tslib: 1.9.3
@@ -1723,10 +1727,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-oUnjmWpy0niI3x/mPL8dVEI1l7MnG3+HHyRPHf+YFSbK+svOhXpmSOcDURUh2aOCgl2grzrOPt1nHLuCVFULLw==
-  /csstype/2.6.0:
+  /csstype/2.6.2:
     dev: false
     resolution:
-      integrity: sha512-by8hi8BlLbowQq0qtkx54d9aN73R9oUW20HISpka5kmgsR9F7nnxgfsemuR2sdCKZh+CDNf5egW9UZMm4mgJRg==
+      integrity: sha512-Rl7PvTae0pflc1YtxtKbiSqq20Ts6vpIYOD5WBafl4y123DyHUeLrRdQP66sQW8/6gmX8jrYJLXwNeMqYVJcow==
   /d/1.0.0:
     dependencies:
       es5-ext: 0.10.46
@@ -2074,10 +2078,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-OaU1hHjgJf+b0NzsxCg7NdIYERD6Hy/PEmFLTjw+b65scuisG3Kt4QoTvJ66BBkPZ581gr0kpoVzKnxniM8nng==
-  /es6-promise/4.2.5:
+  /es6-promise/4.2.6:
     dev: false
     resolution:
-      integrity: sha512-n6wvpdE43VFtJq+lUDYDBFUwV8TZbuGXLV4D6wKafg13ldznKsyEvatubnmUe31zcvelSzOHF+XbaT+Bl9ObDg==
+      integrity: sha512-aRVgGdnmW2OiySVPUC9e6m+plolMAJKjZnQlCwNSuK5yQ0JN61DZSO1X1Ufd1foqWRAlig0rhduTCHe7sVtK5Q==
   /es6-set/0.1.5:
     dependencies:
       d: 1.0.0
@@ -4380,12 +4384,12 @@ packages:
       integrity: sha1-h6EKxMFpS9Lhy/U1kaZhQftd10c=
   /office-ui-fabric-react/5.131.0/react-dom@16.3.2+react@16.3.2:
     dependencies:
-      '@microsoft/load-themed-styles': 1.8.53
+      '@microsoft/load-themed-styles': 1.8.60
       '@uifabric/icons': /@uifabric/icons/5.8.0/react-dom@16.3.2+react@16.3.2
       '@uifabric/merge-styles': 5.17.1
       '@uifabric/styling': /@uifabric/styling/5.37.0/react-dom@16.3.2+react@16.3.2
       '@uifabric/utilities': /@uifabric/utilities/5.34.2/react-dom@16.3.2+react@16.3.2
-      prop-types: 15.6.2
+      prop-types: 15.7.2
       react: 16.3.2
       react-dom: /react-dom/16.3.2/react@16.3.2
       tslib: 1.9.3
@@ -4750,13 +4754,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-nolQXZ/4L+bP/UGlkfaIujX9BKxGwmQ9OT4mOt5yvy8iK1h3wqTEJCijzGANTCCl9nWjY41juyAn2K3Q1hLLTg==
-  /prop-types/15.6.2:
+  /prop-types/15.7.2:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
+      react-is: 16.8.2
     dev: false
     resolution:
-      integrity: sha512-3pboPvLiWD7dkI3qf3KbUe6hKFKa52w+AE0VCqECtf+QHAKgOL37tTaNCnuX1nAAQ4ZhyP+kYVKf8rLmJ/feDQ==
+      integrity: sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
   /prr/1.0.1:
     dev: true
     resolution:
@@ -4838,7 +4843,7 @@ packages:
       fbjs: 0.8.17
       loose-envify: 1.4.0
       object-assign: 4.1.1
-      prop-types: 15.6.2
+      prop-types: 15.7.2
       react: 16.3.2
     deprecated: 'This version of react-dom/server contains a minor vulnerability. Please update react-dom to 16.3.3 or 16.4.2+. Learn more: https://fb.me/cve-2018-6341'
     dev: false
@@ -4847,12 +4852,16 @@ packages:
       react: ^16.0.0
     resolution:
       integrity: sha512-MMPko3zYncNrz/7gG17wJWUREZDvskZHXOwbttzl0F0L3wDmToyuETuo/r8Y5yvDejwYcRyWI1lvVBjLJWFwKA==
+  /react-is/16.8.2:
+    dev: false
+    resolution:
+      integrity: sha512-D+NxhSR2HUCjYky1q1DwpNUD44cDpUXzSmmFyC3ug1bClcU/iDNy0YNn1iwme28fn+NFhpA13IndOd42CrFb+Q==
   /react/16.3.2:
     dependencies:
       fbjs: 0.8.17
       loose-envify: 1.4.0
       object-assign: 4.1.1
-      prop-types: 15.6.2
+      prop-types: 15.7.2
     dev: false
     engines:
       node: '>=0.10.0'
@@ -6416,11 +6425,11 @@ shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
 specifiers:
   '@microsoft/sp-tslint-rules': ^1.7.1
-  '@pnp/common': ^1.2.7
-  '@pnp/logging': ^1.2.7
+  '@pnp/common': ^1.2.9
+  '@pnp/logging': ^1.2.9
   '@pnp/nodejs': ^1.2.3
-  '@pnp/odata': ^1.2.7
-  '@pnp/sp': ^1.2.7
+  '@pnp/odata': ^1.2.9
+  '@pnp/sp': ^1.2.9
   '@types/chai': ^4.0.4
   '@types/chai-as-promised': ^7.1.0
   '@types/es6-promise': 0.0.33
