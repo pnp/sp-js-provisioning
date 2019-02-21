@@ -17,12 +17,12 @@ export class TokenHelper {
     ) { }
 
     public replaceTokens(str: string) {
-        let m;
+        let m: RegExpExecArray;
         while ((m = this.tokenRegex.exec(str)) !== null) {
             if (m.index === this.tokenRegex.lastIndex) {
                 this.tokenRegex.lastIndex++;
             }
-            m.forEach((match) => {
+            m.forEach((match: string) => {
                 let [tokenKey, tokenValue] = match.replace(/[\{\}]/g, "").split(":");
                 switch (tokenKey) {
                     case "listid": {

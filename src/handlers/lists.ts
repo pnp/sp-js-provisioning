@@ -33,6 +33,10 @@ export class Lists extends HandlerBase {
         this.tokenHelper = new TokenHelper(this.context, this.config);
         super.scope_started();
         try {
+            this.context.lists = (await web.lists.select('Id', 'Title').get<Array<{ Id: String, Title: string }>>()).reduce((obj, l) => {
+                obj[l.Title] = l.Id;
+                return obj;
+            }, {});
             await lists.reduce((chain: any, list) => chain.then(() => this.processList(web, list)), Promise.resolve());
             await lists.reduce((chain: any, list) => chain.then(() => this.processListFields(web, list)), Promise.resolve());
             await lists.reduce((chain: any, list) => chain.then(() => this.processListFieldRefs(web, list)), Promise.resolve());
@@ -57,6 +61,7 @@ export class Lists extends HandlerBase {
     private async processList(web: Web, lc: IList): Promise<void> {
         super.log_info('processList', `Processing list ${lc.Title}`);
         const listEnsureResult = await web.lists.ensure(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
+        this.context.lists[listEnsureResult.data.Title] = listEnsureResult.data.Id;
         if (lc.ContentTypeBindings) {
             await this.processContentTypeBindings(lc, listEnsureResult.list, lc.ContentTypeBindings, lc.RemoveExistingContentTypes);
         }
