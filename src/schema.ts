@@ -1,5 +1,6 @@
-import { CanvasColumnFactor, IClientSideWebPartData } from "@pnp/sp";
+import { CanvasColumnFactor, ClientSidePageLayoutType } from "@pnp/sp";
 export interface Schema {
+    Version?: string;
     Navigation?: INavigation;
     CustomActions?: ICustomAction[];
     ComposedLook?: IComposedLook;
@@ -48,6 +49,7 @@ export interface IClientSidePageSection {
 export interface IClientSidePage {
     Name: string;
     Title: string;
+    PageLayoutType: ClientSidePageLayoutType;
     CommentsDisabled?: boolean;
     Sections?: IClientSidePageSection[];
 }

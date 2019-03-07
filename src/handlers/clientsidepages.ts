@@ -1,6 +1,6 @@
 import { IClientSidePage } from "../schema";
 import { HandlerBase } from "./handlerbase";
-import { Web, ClientSideWebpart, ClientSidePageComponent, ClientSideWebpartPropertyTypes } from "@pnp/sp";
+import { Web, ClientSideWebpart, ClientSidePageComponent, ClientSidePage } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
 import { IProvisioningConfig } from "../provisioningconfig";
 import { TokenHelper } from '../util/tokenhelper';
@@ -30,7 +30,7 @@ export class ClientSidePages extends HandlerBase {
         super.scope_started();
         try {
             const partDefinitions = await web.getClientSideWebParts();
-            await clientSidePages.reduce((chain: any, clientSidePage) => chain.then(() => this.processClientSidePage(web, clientSidePage, partDefinitions)), Promise.resolve());
+            await clientSidePages.reduce((chain: Promise<any>, clientSidePage) => chain.then(() => this.processClientSidePage(clientSidePage, partDefinitions)), Promise.resolve());
         } catch (err) {
             super.scope_ended();
             throw err;
@@ -40,15 +40,14 @@ export class ClientSidePages extends HandlerBase {
     /**
      * Provision a client side page
      *
-     * @param {Web} web The web
      * @param {IClientSidePage} clientSidePage Cient side page
      * @param {ClientSidePageComponent[]} partDefinitions Cient side web parts
      */
-    private async processClientSidePage(web: Web, { Name, Title, Sections, CommentsDisabled }: IClientSidePage, partDefinitions: ClientSidePageComponent[]) {
-        super.log_info("processClientSidePage", `Processing client side page ${Name}`);
-        const page = await web.addClientSidePage(Name, Title);
-        if (Sections) {
-            Sections.forEach(s => {
+    private async processClientSidePage(clientSidePage: IClientSidePage, partDefinitions: ClientSidePageComponent[]) {
+        super.log_info("processClientSidePage", `Processing client side page ${clientSidePage.Name}`);
+        const page = await ClientSidePage.create(null, clientSidePage.Name, clientSidePage.Title, clientSidePage.PageLayoutType);
+        if (clientSidePage.Sections) {
+            clientSidePage.Sections.forEach(s => {
                 const section = page.addSection();
                 s.Columns.forEach(col => {
                     const column = section.addColumn(col.Factor);
@@ -59,11 +58,11 @@ export class ClientSidePages extends HandlerBase {
                                 const part = ClientSideWebpart
                                     .fromComponentDef(partDef)
                                     .setProperties<any>(JSON.parse(this.tokenHelper.replaceTokens(JSON.stringify(control.Properties))));
-                                super.log_info("processClientSidePage", `Adding ${partDef.Name} to client side page ${Name}`);
+                                super.log_info("processClientSidePage", `Adding ${partDef.Name} to client side page ${clientSidePage.Name}`);
                                 column.addControl(part);
                             } catch (error) {
                                 console.log(error);
-                                super.log_info("processClientSidePage", `Failed adding part ${partDef.Name} to client side page ${Name}`);
+                                super.log_info("processClientSidePage", `Failed adding part ${partDef.Name} to client side page ${clientSidePage.Name}`);
                             }
                         } else {
                             super.log_warn("processClientSidePage", `Client side web part with definition id ${control.Id} not found.`);
@@ -73,8 +72,8 @@ export class ClientSidePages extends HandlerBase {
             });
             await page.save();
         }
-        if (CommentsDisabled) {
-            super.log_info("processClientSidePage", `Disabling comments for client side page ${Name}`);
+        if (clientSidePage.CommentsDisabled) {
+            super.log_info("processClientSidePage", `Disabling comments for client side page ${clientSidePage.Name}`);
             await page.disableComments();
         }
     }
