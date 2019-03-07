@@ -58,7 +58,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/sharepoint/pnp-js-provisioning"
+    "url": "git://github.com/Puzzlepart/pnp-js-provisioning"
   },
   "author": {
     "name": "Microsoft and other contributors"
