@@ -1,4 +1,4 @@
-import { CanvasColumnFactorType } from "@pnp/sp";
+import { CanvasColumnFactor, IClientSideWebPartData } from "@pnp/sp";
 export interface Schema {
     Navigation?: INavigation;
     CustomActions?: ICustomAction[];
@@ -26,7 +26,7 @@ export interface IFieldRef {
 export interface IContentType {
     ID: string;
     Name: string;
-    Description: string; 
+    Description: string;
     Group: string;
     FieldRefs: IFieldRef[];
 }
@@ -39,8 +39,8 @@ export interface IClientSideControl {
 }
 
 export interface IClientSidePageColumn {
-    Factor: CanvasColumnFactorType;
-    Controls: IClientSideControl[];
+    Factor: CanvasColumnFactor;
+    Controls: IClientSideWebPartData[];
 }
 
 export interface IClientSidePageSection {
