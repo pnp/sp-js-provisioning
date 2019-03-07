@@ -32,15 +32,13 @@ export interface IContentType {
 }
 
 export interface IClientSideControl {
-    Title: string;
-    Description?: string;
-    ClientSideComponentId: string;
-    ClientSideComponentProperties?: any;
+    Id: string;
+    Properties: {[key: string]: any};
 }
 
 export interface IClientSidePageColumn {
     Factor: CanvasColumnFactor;
-    Controls: IClientSideWebPartData[];
+    Controls: IClientSideControl[];
 }
 
 export interface IClientSidePageSection {
@@ -50,8 +48,6 @@ export interface IClientSidePageSection {
 export interface IClientSidePage {
     Name: string;
     Title: string;
-    LibraryTitle?: string;
-    PageLayoutType?: string;
     CommentsDisabled?: boolean;
     Sections?: IClientSidePageSection[];
 }

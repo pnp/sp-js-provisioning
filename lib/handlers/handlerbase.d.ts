@@ -34,4 +34,12 @@ export declare class HandlerBase {
      * @param {any} data Data
      */
     log_info(scope: string, message: string, data?: any): void;
+    /**
+     * Writes to Logger
+     *
+     * @param {string} scope Scope
+     * @param {string} message Message
+     * @param {any} data Data
+     */
+    log_warn(scope: string, message: string, data?: any): void;
 }

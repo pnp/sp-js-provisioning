@@ -1,7 +1,7 @@
 // we need to import HandlerBase & TypedHash to avoid naming issues in ts transpile
 import { Schema } from "./schema";
 import { HandlerBase } from "./handlers/handlerbase";
-import { Web } from "@pnp/sp";
+import { sp, Web } from "@pnp/sp";
 import { TypedHash } from "@pnp/common";
 import { Logger, LogLevel, ConsoleListener } from "@pnp/logging";
 import { DefaultHandlerMap, DefaultHandlerSort } from "./handlers/exports";
@@ -24,6 +24,9 @@ export class WebProvisioner {
     constructor(private web: Web, public handlerSort: TypedHash<number> = DefaultHandlerSort) { }
 
     private async onSetup() {
+        if (this.config && this.config.spfxContext) {
+            sp.setup({ spfxContext: this.config.spfxContext });
+        }
         if (this.config && this.config.logging) {
             Logger.subscribe(new ConsoleListener());
             Logger.activeLogLevel = this.config.logging.activeLogLevel;

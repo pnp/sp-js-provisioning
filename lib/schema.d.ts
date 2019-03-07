@@ -1,4 +1,4 @@
-import { CanvasColumnFactor, IClientSideWebPartData } from "@pnp/sp";
+import { CanvasColumnFactor } from "@pnp/sp";
 export interface Schema {
     Navigation?: INavigation;
     CustomActions?: ICustomAction[];
@@ -28,14 +28,14 @@ export interface IContentType {
     FieldRefs: IFieldRef[];
 }
 export interface IClientSideControl {
-    Title: string;
-    Description?: string;
-    ClientSideComponentId: string;
-    ClientSideComponentProperties?: any;
+    Id: string;
+    Properties: {
+        [key: string]: any;
+    };
 }
 export interface IClientSidePageColumn {
     Factor: CanvasColumnFactor;
-    Controls: IClientSideWebPartData[];
+    Controls: IClientSideControl[];
 }
 export interface IClientSidePageSection {
     Columns: IClientSidePageColumn[];
@@ -43,8 +43,6 @@ export interface IClientSidePageSection {
 export interface IClientSidePage {
     Name: string;
     Title: string;
-    LibraryTitle?: string;
-    PageLayoutType?: string;
     CommentsDisabled?: boolean;
     Sections?: IClientSidePageSection[];
 }

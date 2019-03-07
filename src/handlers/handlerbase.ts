@@ -54,4 +54,16 @@ export class HandlerBase {
         let prefix = (this.config.logging && this.config.logging.prefix) ? `${this.config.logging.prefix} ` : "";
         Logger.log({ message: `${prefix}(${this.name}): ${scope}: ${message}`, data: data, level: LogLevel.Info });
     }
+
+    /**
+     * Writes to Logger
+     *
+     * @param {string} scope Scope
+     * @param {string} message Message
+     * @param {any} data Data
+     */
+    public log_warn(scope: string, message: string, data?: any) {
+        let prefix = (this.config.logging && this.config.logging.prefix) ? `${this.config.logging.prefix} ` : "";
+        Logger.log({ message: `${prefix}(${this.name}): ${scope}: ${message}`, data: data, level: LogLevel.Warning });
+    }
 }
