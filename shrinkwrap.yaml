@@ -1,9 +1,9 @@
 dependencies:
-  '@pnp/common': 1.2.10-3
-  '@pnp/logging': 1.2.10-3
-  '@pnp/nodejs': 1.2.10-3
-  '@pnp/odata': 1.2.10-3
-  '@pnp/sp': 1.2.10-3
+  '@pnp/common': 1.2.10-5
+  '@pnp/logging': 1.2.10-5
+  '@pnp/nodejs': 1.2.10-5
+  '@pnp/odata': 1.2.10-5
+  '@pnp/sp': 1.2.10-5
   gulp-typescript: 3.2.2
   object.omit: 3.0.0
   spfx-jsom: 0.6.0
@@ -271,20 +271,20 @@ packages:
     dev: true
     resolution:
       integrity: sha512-bdozNnQXIKZgT3fjCcOYSZSpH7zuh+Turv8uQxzXTj5G8AzgTJ/X3GnrYDbliXKgefL8LJeIj4vwdrOnt1J+Ng==
-  /@pnp/common/1.2.10-3:
+  /@pnp/common/1.2.10-5:
     dependencies:
       adal-angular: 1.0.17
       tslib: 1.9.3
     dev: false
     resolution:
-      integrity: sha512-rRGYmU1IQ7xXrFVFGTt19MThDSjqrLVkrU+bDYUAKPHwkj/oJQFRljlY6J3dmjXtzNaoRzC8p8yjtvHW7Y3H1Q==
-  /@pnp/logging/1.2.10-3:
+      integrity: sha512-KOFzJVJT/g65SIeB9Ze+8B26l4ZJF7/gPfJe9704+FN7GNyO6GWwlopKgiJdNs/4iNRTZA376hHmRZL/AQgb1Q==
+  /@pnp/logging/1.2.10-5:
     dependencies:
       tslib: 1.9.3
     dev: false
     resolution:
-      integrity: sha512-SsqojamykgENatytPGXCEKDUKJqgbfL76D0KNnu3q8It275ZPtG8tbZADXxT+JGXpkc/Gs7y7e7b/xfAubsBww==
-  /@pnp/nodejs/1.2.10-3:
+      integrity: sha512-oi7wGaiABMnOETl1zoSf/8xNTKUG4eI8cYzYF3akCU9q1ES7T7CjkRuMDbgZMQuAMHj9FiJ5rJbrGTOAvoZ8rQ==
+  /@pnp/nodejs/1.2.10-5:
     dependencies:
       adal-node: 0.1.28
       jsonwebtoken: 8.3.0
@@ -292,29 +292,29 @@ packages:
       tslib: 1.9.3
     dev: false
     peerDependencies:
-      '@pnp/common': 1.2.10-3
-      '@pnp/logging': 1.2.10-3
+      '@pnp/common': 1.2.10-5
+      '@pnp/logging': 1.2.10-5
     resolution:
-      integrity: sha512-MH+27HaAMaQhVz0O9sNIsG/UFoAv+yoImYiTT0LM+3JwelB73Hxxnb1Awz0rX40OqaXjri4KOrAL2OuWKmrkPw==
-  /@pnp/odata/1.2.10-3:
+      integrity: sha512-X9KHKGE7v7bQW5GAVdlvemuem5T5en/GKuOsTz7srgtA0DXcG+Hddwny3Agm2dO/8NlwHMZqYY7PHd9Ko8zm6w==
+  /@pnp/odata/1.2.10-5:
     dependencies:
       tslib: 1.9.3
     dev: false
     peerDependencies:
-      '@pnp/common': 1.2.10-3
-      '@pnp/logging': 1.2.10-3
+      '@pnp/common': 1.2.10-5
+      '@pnp/logging': 1.2.10-5
     resolution:
-      integrity: sha512-7kp6O4pmks/CpHHRM4le61kqjztcDT6t/2bUgLP1RAKEfSWcJjl4Rg3T7PLxWF2xd2j8UUmmHZ1Buh5qMucsdA==
-  /@pnp/sp/1.2.10-3:
+      integrity: sha512-YgiCGpd4JzpZBZdrtasfUc7PIEOhP5krP053iWqpezsKnhZnz/uAQTnXGsg4iRS10Tq8TrZRCEYlJhUa5WPwNA==
+  /@pnp/sp/1.2.10-5:
     dependencies:
       tslib: 1.9.3
     dev: false
     peerDependencies:
-      '@pnp/common': 1.2.10-3
-      '@pnp/logging': 1.2.10-3
-      '@pnp/odata': 1.2.10-3
+      '@pnp/common': 1.2.10-5
+      '@pnp/logging': 1.2.10-5
+      '@pnp/odata': 1.2.10-5
     resolution:
-      integrity: sha512-7E1zawG270R8W24XJy5uGzcETezmxTyrOMP6h78CHpFiO0hlBeSNcM8nzt1Y+j/fT+TFX4ntHc/ZRLkV6gbq3w==
+      integrity: sha512-Vnc8AQsX0geBGd3fy16I0FZ95TYHzFXIAjUAhY693vQ+g+jc5IEjZrfu8dB3jIEWN3ZG0RtwoDf2aSg3WsbdDw==
   /@types/adal-angular/1.0.1:
     dev: false
     resolution:
@@ -6437,11 +6437,11 @@ shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
 specifiers:
   '@microsoft/sp-tslint-rules': ^1.7.1
-  '@pnp/common': ^1.2.10-3
-  '@pnp/logging': ^1.2.10-3
-  '@pnp/nodejs': ^1.2.10-3
-  '@pnp/odata': ^1.2.10-3
-  '@pnp/sp': ^1.2.10-3
+  '@pnp/common': ^1.2.10-5
+  '@pnp/logging': ^1.2.10-5
+  '@pnp/nodejs': ^1.2.10-5
+  '@pnp/odata': ^1.2.10-5
+  '@pnp/sp': ^1.2.10-5
   '@types/chai': ^4.0.4
   '@types/chai-as-promised': ^7.1.0
   '@types/es6-promise': 0.0.33
