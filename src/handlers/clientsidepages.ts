@@ -30,7 +30,7 @@ export class ClientSidePages extends HandlerBase {
         super.scope_started();
         try {
             const partDefinitions = await web.getClientSideWebParts();
-            await clientSidePages.reduce((chain: Promise<any>, clientSidePage) => chain.then(() => this.processClientSidePage(clientSidePage, partDefinitions)), Promise.resolve());
+            await clientSidePages.reduce((chain: Promise<any>, clientSidePage) => chain.then(() => this.processClientSidePage(web, clientSidePage, partDefinitions)), Promise.resolve());
         } catch (err) {
             super.scope_ended();
             throw err;
@@ -40,12 +40,13 @@ export class ClientSidePages extends HandlerBase {
     /**
      * Provision a client side page
      *
+     * @param {Web} web The web
      * @param {IClientSidePage} clientSidePage Cient side page
      * @param {ClientSidePageComponent[]} partDefinitions Cient side web parts
      */
-    private async processClientSidePage(clientSidePage: IClientSidePage, partDefinitions: ClientSidePageComponent[]) {
+    private async processClientSidePage(web: Web, clientSidePage: IClientSidePage, partDefinitions: ClientSidePageComponent[]) {
         super.log_info("processClientSidePage", `Processing client side page ${clientSidePage.Name}`);
-        const page = await ClientSidePage.create(null, clientSidePage.Name, clientSidePage.Title, clientSidePage.PageLayoutType);
+        const page = await ClientSidePage.create(web, clientSidePage.Name, clientSidePage.Title, clientSidePage.PageLayoutType);
         if (clientSidePage.Sections) {
             clientSidePage.Sections.forEach(s => {
                 const section = page.addSection();
