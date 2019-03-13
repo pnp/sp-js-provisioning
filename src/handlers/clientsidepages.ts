@@ -34,7 +34,7 @@ export class ClientSidePages extends HandlerBase {
         } catch (error) {
             console.log(error);
             super.scope_ended();
-            throw err;
+            throw error;
         }
     }
 
