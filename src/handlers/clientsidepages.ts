@@ -31,7 +31,8 @@ export class ClientSidePages extends HandlerBase {
         try {
             const partDefinitions = await web.getClientSideWebParts();
             await clientSidePages.reduce((chain: Promise<any>, clientSidePage) => chain.then(() => this.processClientSidePage(web, clientSidePage, partDefinitions)), Promise.resolve());
-        } catch (err) {
+        } catch (error) {
+            console.log(error);
             super.scope_ended();
             throw err;
         }
@@ -71,6 +72,7 @@ export class ClientSidePages extends HandlerBase {
                     });
                 });
             });
+            super.log_info("processClientSidePage", `Saving client side page ${clientSidePage.Name}`);
             await page.save();
         }
         if (clientSidePage.CommentsDisabled) {

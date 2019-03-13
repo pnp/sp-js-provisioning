@@ -31,7 +31,19 @@ export class TokenHelper {
                         }
                     }
                         break;
+                    case "webid": {
+                        if (this.context.web.Id) {
+                            str = str.replace(match, this.context.web.Id);
+                        }
+                    }
+                        break;
                     case "siteid": {
+                        if (this.context.web.Id) {
+                            str = str.replace(match, this.context.web.Id);
+                        }
+                    }
+                        break;
+                    case "sitecollectionid": {
                         if (this.context.web.Id) {
                             str = str.replace(match, this.context.web.Id);
                         }

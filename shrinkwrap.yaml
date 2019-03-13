@@ -1,9 +1,9 @@
 dependencies:
-  '@pnp/common': 1.2.10-5
-  '@pnp/logging': 1.2.10-5
-  '@pnp/nodejs': 1.2.10-5
-  '@pnp/odata': 1.2.10-5
-  '@pnp/sp': 1.2.10-5
+  '@pnp/common': 1.3.0
+  '@pnp/logging': 1.3.0
+  '@pnp/nodejs': 1.3.0
+  '@pnp/odata': 1.3.0
+  '@pnp/sp': 1.3.0
   gulp-typescript: 3.2.2
   object.omit: 3.0.0
   spfx-jsom: 0.6.0
@@ -271,20 +271,20 @@ packages:
     dev: true
     resolution:
       integrity: sha512-bdozNnQXIKZgT3fjCcOYSZSpH7zuh+Turv8uQxzXTj5G8AzgTJ/X3GnrYDbliXKgefL8LJeIj4vwdrOnt1J+Ng==
-  /@pnp/common/1.2.10-5:
+  /@pnp/common/1.3.0:
     dependencies:
       adal-angular: 1.0.17
       tslib: 1.9.3
     dev: false
     resolution:
-      integrity: sha512-KOFzJVJT/g65SIeB9Ze+8B26l4ZJF7/gPfJe9704+FN7GNyO6GWwlopKgiJdNs/4iNRTZA376hHmRZL/AQgb1Q==
-  /@pnp/logging/1.2.10-5:
+      integrity: sha512-Sjua2Nh/zdiVV1oFXE7YujNh79p5iEkSSINFEm5t1esA7fZOeTxiwGc9Tb4R9Nov0lww+fsvLMGSIywov3EJBA==
+  /@pnp/logging/1.3.0:
     dependencies:
       tslib: 1.9.3
     dev: false
     resolution:
-      integrity: sha512-oi7wGaiABMnOETl1zoSf/8xNTKUG4eI8cYzYF3akCU9q1ES7T7CjkRuMDbgZMQuAMHj9FiJ5rJbrGTOAvoZ8rQ==
-  /@pnp/nodejs/1.2.10-5:
+      integrity: sha512-9xUpjV7gBTWMQ0KapZP8B2ax+jZzXZw0AGCnQCBzggGp5mwjudzY96gWxgOW4qZue32sdaGrlo/0iTpDTHOqQQ==
+  /@pnp/nodejs/1.3.0:
     dependencies:
       adal-node: 0.1.28
       jsonwebtoken: 8.3.0
@@ -292,29 +292,29 @@ packages:
       tslib: 1.9.3
     dev: false
     peerDependencies:
-      '@pnp/common': 1.2.10-5
-      '@pnp/logging': 1.2.10-5
+      '@pnp/common': 1.3.0
+      '@pnp/logging': 1.3.0
     resolution:
-      integrity: sha512-X9KHKGE7v7bQW5GAVdlvemuem5T5en/GKuOsTz7srgtA0DXcG+Hddwny3Agm2dO/8NlwHMZqYY7PHd9Ko8zm6w==
-  /@pnp/odata/1.2.10-5:
+      integrity: sha512-jvRc8RiP5Z5XenlS1dzxjn5x+elNS6H9XDnjvpFw1gSLmVkmGF13rsnytXh/75LCCOMkvoodmd7oqo/kIr1lBQ==
+  /@pnp/odata/1.3.0:
     dependencies:
       tslib: 1.9.3
     dev: false
     peerDependencies:
-      '@pnp/common': 1.2.10-5
-      '@pnp/logging': 1.2.10-5
+      '@pnp/common': 1.3.0
+      '@pnp/logging': 1.3.0
     resolution:
-      integrity: sha512-YgiCGpd4JzpZBZdrtasfUc7PIEOhP5krP053iWqpezsKnhZnz/uAQTnXGsg4iRS10Tq8TrZRCEYlJhUa5WPwNA==
-  /@pnp/sp/1.2.10-5:
+      integrity: sha512-lUbW3eA13VaVmDc/ScvAyJuJZdR2/g32EhOE2QvwzWkVY6LDWbCGJth0D5HYVDkekZGH56JsJhNIx38qiX4RkQ==
+  /@pnp/sp/1.3.0:
     dependencies:
       tslib: 1.9.3
     dev: false
     peerDependencies:
-      '@pnp/common': 1.2.10-5
-      '@pnp/logging': 1.2.10-5
-      '@pnp/odata': 1.2.10-5
+      '@pnp/common': 1.3.0
+      '@pnp/logging': 1.3.0
+      '@pnp/odata': 1.3.0
     resolution:
-      integrity: sha512-Vnc8AQsX0geBGd3fy16I0FZ95TYHzFXIAjUAhY693vQ+g+jc5IEjZrfu8dB3jIEWN3ZG0RtwoDf2aSg3WsbdDw==
+      integrity: sha512-7/7wnUH1piqumeX+QFS9BNiuDg1tXX4/Z1vxbIKGvjmbLcIBh+PmsUmmf+TG8MXI0JQO/AeD6iXRhgLXTz+WBQ==
   /@types/adal-angular/1.0.1:
     dev: false
     resolution:
@@ -362,10 +362,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-RRSjdwz63kS4u7edIwJUn8NqKLLQ6LyqF/X4+4jp38MBT3Vwetewi2N4dgJEshLbDwNgOJXNYoOwzVZUSSLhkQ==
-  /@types/node/8.10.43:
+  /@types/node/8.10.44:
     dev: false
     resolution:
-      integrity: sha512-5m5W13HR2k3cu88mpzlnPBBv5+GyMHtj4F0P83RG4mqoC0AYVYHVMHfF3SgwKNtqEZiZQASMxU92QsLEekKcnw==
+      integrity: sha512-HY3SK7egERHGUfY8p6ztXIEQWcIPHouYhCGcLAPQin7gE2G/fALFz+epnMwcxKUS6aKqTVoAFdi+t1llQd3xcw==
   /@types/node/8.5.8:
     resolution:
       integrity: sha512-8KmlRxwbKZfjUHFIt3q8TF5S2B+/E5BaAoo/3mgc5h6FJzqxXkCK/VMetO+IRDtwtU6HUvovHMBn+XRj7SV9Qg==
@@ -489,7 +489,7 @@ packages:
       integrity: sha1-bpNuDkH5HTsqiOf/ypwvb29WLMQ=
   /adal-node/0.1.28:
     dependencies:
-      '@types/node': 8.10.43
+      '@types/node': 8.10.44
       async: 2.6.2
       date-utils: 1.2.21
       jws: 3.2.1
@@ -6437,11 +6437,11 @@ shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
 specifiers:
   '@microsoft/sp-tslint-rules': ^1.7.1
-  '@pnp/common': ^1.2.10-5
-  '@pnp/logging': ^1.2.10-5
-  '@pnp/nodejs': ^1.2.10-5
-  '@pnp/odata': ^1.2.10-5
-  '@pnp/sp': ^1.2.10-5
+  '@pnp/common': ^1.3.0
+  '@pnp/logging': ^1.3.0
+  '@pnp/nodejs': ^1.3.0
+  '@pnp/odata': ^1.3.0
+  '@pnp/sp': ^1.3.0
   '@types/chai': ^4.0.4
   '@types/chai-as-promised': ^7.1.0
   '@types/es6-promise': 0.0.33
