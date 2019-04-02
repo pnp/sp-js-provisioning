@@ -4,6 +4,7 @@ import { Web, ClientSideWebpart, ClientSidePageComponent, ClientSidePage } from 
 import { ProvisioningContext } from "../provisioningcontext";
 import { IProvisioningConfig } from "../provisioningconfig";
 import { TokenHelper } from '../util/tokenhelper';
+import { replaceUrlTokens } from "../util";
 
 /**
  * Describes the Composed Look Object Handler
@@ -57,9 +58,11 @@ export class ClientSidePages extends HandlerBase {
                         const [partDef] = partDefinitions.filter(c => c.Id.toLowerCase().indexOf(control.Id.toLowerCase()) !== -1);
                         if (partDef) {
                             try {
+                                let properties = this.tokenHelper.replaceTokens(JSON.stringify(control.Properties));
+                                properties = replaceUrlTokens(properties, this.config);
                                 const part = ClientSideWebpart
                                     .fromComponentDef(partDef)
-                                    .setProperties<any>(JSON.parse(this.tokenHelper.replaceTokens(JSON.stringify(control.Properties))));
+                                    .setProperties<any>(JSON.parse(properties));
                                 super.log_info("processClientSidePage", `Adding ${partDef.Name} to client side page ${clientSidePage.Name}`);
                                 column.addControl(part);
                             } catch (error) {

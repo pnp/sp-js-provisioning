@@ -1,4 +1,4 @@
-import { CanvasColumnFactor, ClientSidePageLayoutType } from "@pnp/sp";
+// import { CanvasColumnFactor, ClientSidePageLayoutType } from "@pnp/sp";
 export interface Schema {
     Version?: string;
     Navigation?: INavigation;
@@ -38,7 +38,7 @@ export interface IClientSideControl {
 }
 
 export interface IClientSidePageColumn {
-    Factor: CanvasColumnFactor;
+    Factor: any;
     Controls: IClientSideControl[];
 }
 
@@ -49,7 +49,7 @@ export interface IClientSidePageSection {
 export interface IClientSidePage {
     Name: string;
     Title: string;
-    PageLayoutType: ClientSidePageLayoutType;
+    PageLayoutType: any;
     CommentsDisabled?: boolean;
     Sections?: IClientSidePageSection[];
 }
