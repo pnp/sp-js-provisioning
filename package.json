@@ -61,7 +61,7 @@
     "url": "git://github.com/Puzzlepart/pnp-js-provisioning"
   },
   "author": {
-    "name": "Microsoft and other contributors"
+    "name": "@olemp"
   },
   "license": "MIT",
   "keywords": [
@@ -75,7 +75,7 @@
     "Patterns & Practices"
   ],
   "bugs": {
-    "url": "https://github.com/pnp/sp-js-provisioning/issues"
+    "url": "https://github.com/Puzzlepart/pnp-js-provisioning/issues"
   },
-  "homepage": "https://github.com/pnp/sp-js-provisioning"
+  "homepage": "https://github.com/Puzzlepart/pnp-js-provisioning"
 }

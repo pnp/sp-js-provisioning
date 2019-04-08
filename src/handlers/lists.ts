@@ -209,15 +209,26 @@ export class Lists extends HandlerBase {
      */
     private async processView(web: Web, lc: IList, lvc: IListView): Promise<void> {
         super.log_info('processView', `Processing view ${lvc.Title} for list ${lc.Title}.`);
-        let view = web.lists.getByTitle(lc.Title).views.getByTitle(lvc.Title);
+        let existingView = web.lists.getByTitle(lc.Title).views.getByTitle(lvc.Title);
+        let viewExists = false;
         try {
-            await view.get();
-            await view.update(lvc.AdditionalSettings);
-            await this.processViewFields(view, lvc);
+            await existingView.get();
+            viewExists = true;
+        } catch (err) { }
+        try {
+            if (viewExists) {
+                super.log_info('processView', `View ${lvc.Title} for list ${lc.Title} already exists, updating.`);
+                await existingView.update(lvc.AdditionalSettings);
+                super.log_info('processView', `View ${lvc.Title} successfully updated for list ${lc.Title}.`);
+                await this.processViewFields(existingView, lvc);
+            } else {
+                super.log_info('processView', `View ${lvc.Title} for list ${lc.Title} doesn't exists, creating.`);
+                const result = await web.lists.getByTitle(lc.Title).views.add(lvc.Title, lvc.PersonalView, lvc.AdditionalSettings);
+                super.log_info('processView', `View ${lvc.Title} added successfully to list ${lc.Title}.`);
+                await this.processViewFields(result.view, lvc);
+            }
         } catch (err) {
-            const result = await web.lists.getByTitle(lc.Title).views.add(lvc.Title, lvc.PersonalView, lvc.AdditionalSettings);
-            super.log_info('processView', `View ${lvc.Title} added successfully to list ${lc.Title}.`);
-            await this.processViewFields(result.view, lvc);
+            super.log_info('processViewFields', `Failed to process view for view ${lvc.Title}.`);
         }
     }
 
