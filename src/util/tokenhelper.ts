@@ -6,7 +6,7 @@ import { IProvisioningConfig } from "../provisioningconfig";
  * Describes the Token Helper
  */
 export class TokenHelper {
-    private tokenRegex = /{[a-z]*:[ÆØÅæøåA-za-z ]*}/g;
+    private tokenRegex = /{[a-z]*:[ÆØÅæøåA-za-z| ]*}/g;
 
     /**
      * Creates a new instance of the TokenHelper class
