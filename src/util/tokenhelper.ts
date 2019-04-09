@@ -31,6 +31,12 @@ export class TokenHelper {
                         }
                     }
                         break;
+                    case "listviewid": {
+                        if (this.context.listViews[tokenValue]) {
+                            str = str.replace(match, this.context.listViews[tokenValue]);
+                        }
+                    }
+                        break;
                     case "webid": {
                         if (this.context.web.Id) {
                             str = str.replace(match, this.context.web.Id);

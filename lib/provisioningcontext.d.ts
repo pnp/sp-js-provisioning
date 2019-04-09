@@ -7,6 +7,9 @@ export declare class ProvisioningContext {
     lists: {
         [key: string]: string;
     };
+    listViews: {
+        [key: string]: string;
+    };
     siteFields: {
         [key: string]: string;
     };

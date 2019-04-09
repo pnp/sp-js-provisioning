@@ -198,6 +198,10 @@ export class Lists extends HandlerBase {
         if (lc.Views) {
             await lc.Views.reduce((chain: any, view) => chain.then(() => this.processView(web, lc, view)), Promise.resolve());
         }
+        this.context.listViews = (await web.lists.getByTitle(lc.Title).views.select('Id', 'Title').get<Array<{ Id: string, Title: string }>>()).reduce((obj, view) => {
+            obj[view.Title] = view.Id;
+            return obj;
+        }, this.context.listViews);
     }
 
     /**

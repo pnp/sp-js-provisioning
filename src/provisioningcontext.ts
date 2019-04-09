@@ -6,6 +6,7 @@ import {IContentType} from "./schema";
 export class ProvisioningContext {
     public web = null;
     public lists: { [key: string]: string } = {};
+    public listViews: { [key: string]: string } = {};
     public siteFields: { [key: string]: string } = {};
     public contentTypes: { [key: string]: IContentType } = {};
 
