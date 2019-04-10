@@ -54,7 +54,7 @@
     "yargs": "9.0.1"
   },
   "scripts": {
-    "test": "gulp test"
+    "postversion": "gulp build && npm publish"
   },
   "repository": {
     "type": "git",

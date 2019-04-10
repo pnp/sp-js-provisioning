@@ -60,10 +60,8 @@ export class ClientSidePages extends HandlerBase {
                             try {
                                 let properties = this.tokenHelper.replaceTokens(JSON.stringify(control.Properties));
                                 properties = replaceUrlTokens(properties, this.config);
-                                const part = ClientSideWebpart
-                                    .fromComponentDef(partDef)
-                                    .setProperties<any>(JSON.parse(properties));
-                                super.log_info("processClientSidePage", `Adding ${partDef.Name} to client side page ${clientSidePage.Name}`);
+                                const part = ClientSideWebpart.fromComponentDef(partDef).setProperties<any>(JSON.parse(properties));
+                                super.log_info("processClientSidePage", `Adding ${partDef.Name} to client side page ${clientSidePage.Name}`, { properties });
                                 column.addControl(part);
                             } catch (error) {
                                 console.log(error);
