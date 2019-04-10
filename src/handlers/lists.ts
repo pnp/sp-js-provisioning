@@ -60,10 +60,16 @@ export class Lists extends HandlerBase {
      */
     private async processList(web: Web, lc: IList): Promise<void> {
         super.log_info('processList', `Processing list ${lc.Title}`);
-        const listEnsureResult = await web.lists.ensure(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
-        this.context.lists[listEnsureResult.data.Title] = listEnsureResult.data.Id;
+        let list: List;
+        if (this.context.lists[lc.Title]) {
+            const listEnsure = await web.lists.ensure(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
+            list = listEnsure.list;
+        } else {
+            let listAdd = await web.lists.add(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
+            this.context.lists[listAdd.data.Title] = listAdd.data.Id;
+        }
         if (lc.ContentTypeBindings) {
-            await this.processContentTypeBindings(lc, listEnsureResult.list, lc.ContentTypeBindings, lc.RemoveExistingContentTypes);
+            await this.processContentTypeBindings(lc, list, lc.ContentTypeBindings, lc.RemoveExistingContentTypes);
         }
     }
 
