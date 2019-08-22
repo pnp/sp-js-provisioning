@@ -1,3 +1,4 @@
+import { JsomContext } from "spfx-jsom";
 import { HandlerBase } from "./handlerbase";
 import { Web } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
@@ -7,8 +8,8 @@ import { IContentType } from '../schema';
  * Describes the Content Types Object Handler
  */
 export declare class ContentTypes extends HandlerBase {
-    private jsomContext;
-    private context;
+    jsomContext: JsomContext;
+    context: ProvisioningContext;
     /**
      * Creates a new instance of the ObjectSiteFields class
      */

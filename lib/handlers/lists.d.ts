@@ -3,12 +3,13 @@ import { IList } from '../schema';
 import { Web } from '@pnp/sp';
 import { ProvisioningContext } from '../provisioningcontext';
 import { IProvisioningConfig } from '../provisioningconfig';
+import { TokenHelper } from '../util/tokenhelper';
 /**
  * Describes the Lists Object Handler
  */
 export declare class Lists extends HandlerBase {
-    private tokenHelper;
-    private context;
+    tokenHelper: TokenHelper;
+    context: ProvisioningContext;
     /**
      * Creates a new instance of the Lists class
      *

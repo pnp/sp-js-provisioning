@@ -3,15 +3,14 @@ import { HandlerBase } from "./handlerbase";
 import { Web, ContentTypeAddResult } from "@pnp/sp";
 import { ProvisioningContext } from "../provisioningcontext";
 import { IProvisioningConfig } from "../provisioningconfig";
-import { TokenHelper } from '../util/tokenhelper';
 import { IContentType } from '../schema';
 
 /**
  * Describes the Content Types Object Handler
  */
 export class ContentTypes extends HandlerBase {
-    private jsomContext: JsomContext;
-    private context: ProvisioningContext;
+    public jsomContext: JsomContext;
+    public context: ProvisioningContext;
 
     /**
      * Creates a new instance of the ObjectSiteFields class
@@ -28,7 +27,7 @@ export class ContentTypes extends HandlerBase {
      * @param {ProvisioningContext} context Provisioning context
      */
     public async ProvisionObjects(web: Web, contentTypes: IContentType[], context: ProvisioningContext): Promise<void> {
-        this.jsomContext = await initSpfxJsom(context.web.ServerRelativeUrl);
+        this.jsomContext = (await initSpfxJsom(context.web.ServerRelativeUrl)).jsomContext;
         this.context = context;
         super.scope_started();
         try {

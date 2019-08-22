@@ -10,8 +10,8 @@ import { TokenHelper } from '../util/tokenhelper';
  * Describes the Lists Object Handler
  */
 export class Lists extends HandlerBase {
-    private tokenHelper: TokenHelper;
-    private context: ProvisioningContext;
+    public tokenHelper: TokenHelper;
+    public context: ProvisioningContext;
 
     /**
      * Creates a new instance of the Lists class
@@ -62,10 +62,13 @@ export class Lists extends HandlerBase {
         super.log_info('processList', `Processing list ${lc.Title}`);
         let list: List;
         if (this.context.lists[lc.Title]) {
+            super.log_info('processList', `List ${lc.Title} already exists. Ensuring...`);
             const listEnsure = await web.lists.ensure(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
             list = listEnsure.list;
         } else {
+            super.log_info('processList', `List ${lc.Title} doesn't exist. Creating...`);
             let listAdd = await web.lists.add(lc.Title, lc.Description, lc.Template, lc.ContentTypesEnabled, lc.AdditionalSettings);
+            list = listAdd.list;
             this.context.lists[listAdd.data.Title] = listAdd.data.Id;
         }
         if (lc.ContentTypeBindings) {
@@ -82,6 +85,7 @@ export class Lists extends HandlerBase {
      * @param {boolean} removeExisting Remove existing content type bindings
      */
     private async processContentTypeBindings(lc: IList, list: List, contentTypeBindings: IContentTypeBinding[], removeExisting: boolean): Promise<any> {
+        super.log_info('processContentTypeBindings', `Processing content types for list ${lc.Title}.`);
         await contentTypeBindings.reduce((chain, ct) => chain.then(() => this.processContentTypeBinding(lc, list, ct.ContentTypeID)), Promise.resolve());
         if (removeExisting) {
             let promises = [];
@@ -92,6 +96,8 @@ export class Lists extends HandlerBase {
                 if (shouldRemove) {
                     super.log_info('processContentTypeBindings', `Removing content type ${ContentTypeId} from list ${lc.Title}`);
                     promises.push(list.contentTypes.getById(ContentTypeId).delete());
+                } else {
+                    super.log_info('processContentTypeBindings', `Skipping removal of content type ${ContentTypeId} from list ${lc.Title}`);
                 }
             });
             await Promise.all(promises);
@@ -107,6 +113,7 @@ export class Lists extends HandlerBase {
      */
     private async processContentTypeBinding(lc: IList, list: List, contentTypeID: string): Promise<any> {
         try {
+            super.log_info('processContentTypeBinding', `Adding content Type ${contentTypeID} to list ${lc.Title}.`);
             await list.contentTypes.addAvailableContentType(contentTypeID);
             super.log_info('processContentTypeBinding', `Content Type ${contentTypeID} added successfully to list ${lc.Title}.`);
         } catch (err) {
@@ -248,7 +255,7 @@ export class Lists extends HandlerBase {
      * @param {any} view The pnp view
      * @param {IListView} lvc The view configuration
      */
-    private async processViewFields(view, lvc: IListView): Promise<void> {
+    private async processViewFields(view: any, lvc: IListView): Promise<void> {
         try {
             super.log_info('processViewFields', `Processing view fields for view ${lvc.Title}.`);
             await view.fields.removeAll();
