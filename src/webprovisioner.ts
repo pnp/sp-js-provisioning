@@ -25,7 +25,10 @@ export class WebProvisioner {
 
     private async onSetup() {
         if (this.config && this.config.spfxContext) {
-            sp.setup({ spfxContext: this.config.spfxContext });
+            sp.setup({
+                spfxContext: this.config.spfxContext,
+                ...(this.config.spConfiguration || {})
+            });
         }
         if (this.config && this.config.logging) {
             Logger.subscribe(new ConsoleListener());
@@ -43,18 +46,20 @@ export class WebProvisioner {
      * @param {Function} progressCallback Callback for progress updates
      */
     public async applyTemplate(template: Schema, handlers?: string[], progressCallback?: (msg: string) => void): Promise<any> {
+        Logger.log({ message: `${this.config.logging.prefix} (WebProvisioner): (applyTemplate): Applying template to web`, data: { handlers }, level: LogLevel.Info });
         await this.onSetup();
 
-        let operations = Object.getOwnPropertyNames(template)
-            .sort((name1: string, name2: string) => {
-                let sort1 = this.handlerSort.hasOwnProperty(name1) ? this.handlerSort[name1] : 99;
-                let sort2 = this.handlerSort.hasOwnProperty(name2) ? this.handlerSort[name2] : 99;
-                return sort1 - sort2;
-            });
+        let operations = Object.getOwnPropertyNames(template).sort((name1: string, name2: string) => {
+            let sort1 = this.handlerSort.hasOwnProperty(name1) ? this.handlerSort[name1] : 99;
+            let sort2 = this.handlerSort.hasOwnProperty(name2) ? this.handlerSort[name2] : 99;
+            return sort1 - sort2;
+        });
 
         if (handlers) {
             operations = operations.filter(op => handlers.indexOf(op) !== -1);
         }
+
+        operations = operations.filter(name => this.handlerMap[name]);
 
         try {
             await operations.reduce((chain: any, name: string) => {
@@ -76,7 +81,8 @@ export class WebProvisioner {
     *
     * @param {IProvisioningConfig} config Provisioning config
     */
-    public setup(config: IProvisioningConfig) {
+    public setup(config: IProvisioningConfig): WebProvisioner {
         this.config = config;
+        return this;
     }
 }

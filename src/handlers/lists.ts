@@ -1,16 +1,24 @@
+import { List, Web } from '@pnp/sp';
+import initSpfxJsom, { ExecuteJsomQuery, JsomContext } from "spfx-jsom";
 import * as xmljs from 'xml-js';
-import { HandlerBase } from './handlerbase';
-import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from '../schema';
-import { Web, List } from '@pnp/sp';
-import { ProvisioningContext } from '../provisioningcontext';
 import { IProvisioningConfig } from '../provisioningconfig';
+import { ProvisioningContext } from '../provisioningcontext';
+import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from '../schema';
 import { TokenHelper } from '../util/tokenhelper';
+import { HandlerBase } from './handlerbase';
+
+export interface ISPField {
+    Id: string;
+    InternalName: string;
+    SchemaXml: string;
+}
 
 /**
  * Describes the Lists Object Handler
  */
 export class Lists extends HandlerBase {
     public tokenHelper: TokenHelper;
+    public jsomContext: JsomContext;
     public context: ProvisioningContext;
 
     /**
@@ -29,6 +37,7 @@ export class Lists extends HandlerBase {
      * @param {Array<IList>} lists The lists to provision
      */
     public async ProvisionObjects(web: Web, lists: IList[], context: ProvisioningContext): Promise<void> {
+        this.jsomContext = (await initSpfxJsom(context.web.ServerRelativeUrl)).jsomContext;
         this.context = context;
         this.tokenHelper = new TokenHelper(this.context, this.config);
         super.scope_started();
@@ -154,8 +163,7 @@ export class Lists extends HandlerBase {
 
         // Looks like e.g. lookup fields can't be updated, so we'll need to re-create the field
         try {
-            let field = await list.fields.getById(fieldAttr.ID);
-            await field.delete();
+            await list.fields.getById(fieldAttr.ID).delete();
             super.log_info('processField', `Field ${fieldName} (${fieldDisplayName}) successfully deleted from list ${lc.Title}.`);
         } catch (err) {
             super.log_info('processField', `Field ${fieldName} (${fieldDisplayName}) does not exist in list ${lc.Title}.`);
@@ -175,11 +183,21 @@ export class Lists extends HandlerBase {
    * Processes field refs for a list
    *
    * @param {Web} web The web
-   * @param {IList} list The pnp list
+   * @param {IList} lc The list configuration
    */
-    private async processListFieldRefs(web: Web, list: IList): Promise<any> {
-        if (list.FieldRefs) {
-            await list.FieldRefs.reduce((chain: any, fieldRef) => chain.then(() => this.processFieldRef(web, list, fieldRef)), Promise.resolve());
+    private async processListFieldRefs(web: Web, lc: IList): Promise<any> {
+        if (lc.FieldRefs) {
+            super.log_info('processListFieldRefs', `Retrieving fields for list ${lc.Title} and web.`);
+            let list = web.lists.getByTitle(lc.Title);
+            let [listFields, webFields] = await Promise.all([
+                list.fields.select('Id', 'InternalName', 'SchemaXml').usingCaching().get<ISPField[]>(),
+                web.fields.select('Id', 'InternalName', 'SchemaXml').usingCaching().get<ISPField[]>(),
+            ]);
+            super.log_info('processListFieldRefs', `Fields for list ${lc.Title} and web retrieved. Processing field refs.`);
+            await
+                await lc.FieldRefs.reduce((chain: any, fieldRef) => {
+                    return chain.then(() => this.processFieldRef(list, lc, fieldRef, listFields, webFields));
+                }, Promise.resolve());
         }
     }
 
@@ -187,25 +205,31 @@ export class Lists extends HandlerBase {
      *
      * Processes a field ref for a list
      *
-     * @param {Web} web The web
+     * @param {List} list The list
      * @param {IList} lc The list configuration
      * @param {IListInstanceFieldRef} fieldRef The list field ref
+     * @param {any[]} listFields The list fields
+     * @param {any[]} webFields The web fields
      */
-    private async processFieldRef(web: Web, lc: IList, fieldRef: IListInstanceFieldRef): Promise<void> {
-        const list = web.lists.getByTitle(lc.Title);
-        try {
+    private async processFieldRef(list: List, lc: IList, fieldRef: IListInstanceFieldRef, listFields: ISPField[], webFields: ISPField[]): Promise<void> {
+        let [listFld] = listFields.filter(f => f.Id == fieldRef.ID);
+        let [webFld] = webFields.filter(f => f.Id == fieldRef.ID);
+        super.log_info('processFieldRef', `Processing field ref '${fieldRef.ID}' for list ${lc.Title}.`);
+        if (listFld) {
             await list.fields.getById(fieldRef.ID).update({ Hidden: fieldRef.Hidden, Required: fieldRef.Required, Title: fieldRef.DisplayName });
             super.log_info('processFieldRef', `Field '${fieldRef.ID}' updated for list ${lc.Title}.`);
-        } catch (err) {
-            super.log_info('processFieldRef', `Failed to update field '${fieldRef.ID}' for list ${lc.Title}.`);
+        } else if (webFld) {
+            let fieldAddResult = await list.fields.createFieldAsXml(webFld.SchemaXml);
+            fieldAddResult.field.update({ Title: fieldRef.DisplayName, Required: fieldRef.Required, Hidden: fieldRef.Hidden });
+            super.log_info('processFieldRef', `Field '${fieldRef.ID}' added from web.`);
         }
     }
 
     /**
      * Processes views for a list
      *
-     * @param web The web
-     * @param lc The list configuration
+     * @param {Web} web The web
+     * @param {IList} lc The list configuration
      */
     private async processListViews(web: Web, lc: IList): Promise<any> {
         if (lc.Views) {

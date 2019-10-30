@@ -31,15 +31,15 @@ export class ContentTypes extends HandlerBase {
         this.context = context;
         super.scope_started();
         try {
-            this.context.contentTypes = (await web.contentTypes.select('Id', 'Name', 'FieldLinks').expand('FieldLinks').get<Array<any>>()).reduce((obj, contentType) => {
+            this.context.contentTypes = (await web.contentTypes.select('Id', 'Name', 'FieldLinks').expand('FieldLinks').get<any[]>()).reduce((obj, contentType) => {
                 obj[contentType.Name] = {
                     ID: contentType.Id.StringValue,
                     Name: contentType.Name,
-                    FieldRefs: contentType.FieldLinks.map(fl => ({
-                        ID: fl.Id,
-                        Name: fl.Name,
-                        Required: fl.Required,
-                        Hidden: fl.Hidden,
+                    FieldRefs: contentType.FieldLinks.map((fieldLink: any) => ({
+                        ID: fieldLink.Id,
+                        Name: fieldLink.Name,
+                        Required: fieldLink.Required,
+                        Hidden: fieldLink.Hidden,
                     })),
                 };
                 return obj;

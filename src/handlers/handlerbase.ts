@@ -1,7 +1,7 @@
-import { Web } from "@pnp/sp";
-import { Logger, LogLevel } from "@pnp/logging";
-import { ProvisioningContext } from "../provisioningcontext";
-import { IProvisioningConfig } from "../provisioningconfig";
+import { Web } from '@pnp/sp';
+import { Logger, LogLevel } from '@pnp/logging';
+import { ProvisioningContext } from '../provisioningcontext';
+import { IProvisioningConfig } from '../provisioningconfig';
 
 /**
  * Describes the Object Handler Base
@@ -33,14 +33,14 @@ export class HandlerBase {
      * Writes to Logger when scope has started
      */
     public scope_started() {
-        this.log_info("ProvisionObjects", "Code execution scope started");
+        this.log_info('ProvisionObjects', 'Code execution scope started');
     }
 
     /**
      * Writes to Logger when scope has stopped
      */
     public scope_ended() {
-        this.log_info("ProvisionObjects", "Code execution scope ended");
+        this.log_info('ProvisionObjects', 'Code execution scope ended');
     }
 
     /**
@@ -51,8 +51,8 @@ export class HandlerBase {
      * @param {any} data Data
      */
     public log_info(scope: string, message: string, data?: any) {
-        let prefix = (this.config.logging && this.config.logging.prefix) ? `${this.config.logging.prefix} ` : "";
-        Logger.log({ message: `${prefix}(${this.name}): ${scope}: ${message}`, data: data, level: LogLevel.Info });
+        let prefix = (this.config.logging && this.config.logging.prefix) ? `${this.config.logging.prefix} ` : '';
+        Logger.log({ message: `${prefix}(${this.name}): (${scope}): ${message}`, data: data, level: LogLevel.Info });
     }
 
     /**
@@ -63,7 +63,7 @@ export class HandlerBase {
      * @param {any} data Data
      */
     public log_warn(scope: string, message: string, data?: any) {
-        let prefix = (this.config.logging && this.config.logging.prefix) ? `${this.config.logging.prefix} ` : "";
-        Logger.log({ message: `${prefix}(${this.name}): ${scope}: ${message}`, data: data, level: LogLevel.Warning });
+        let prefix = (this.config.logging && this.config.logging.prefix) ? `${this.config.logging.prefix} ` : '';
+        Logger.log({ message: `${prefix}(${this.name}): (${scope}): ${message}`, data: data, level: LogLevel.Warning });
     }
 }

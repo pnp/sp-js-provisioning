@@ -1,5 +1,7 @@
-// import { CanvasColumnFactor, ClientSidePageLayoutType } from "@pnp/sp";
+import { TypedHash } from '@pnp/common';
+
 export interface Schema {
+    Parameters?: TypedHash<string>;
     Version?: string;
     Navigation?: INavigation;
     CustomActions?: ICustomAction[];
