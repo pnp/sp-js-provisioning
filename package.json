@@ -1,6 +1,6 @@
 {
   "name": "sp-js-provisioning",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A reusable JavaScript library targeting SharePoint provisioning.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -56,6 +56,7 @@
   "scripts": {
     "build": "gulp build",
     "package": "gulp package",
+    "watch": "tsc --watch",
     "postversion": "gulp build && npm publish"
   },
   "repository": {
