@@ -1,5 +1,7 @@
 
 import { IProvisioningConfig } from "../provisioningconfig";
+import * as xmljs from 'xml-js';
+import { TypedHash } from '@pnp/common';
 
 export function replaceUrlTokens(str: string, config: IProvisioningConfig): string {
     let siteAbsoluteUrl = null;
@@ -37,3 +39,9 @@ export function isNode(): boolean {
     return typeof window === "undefined";
 }
 
+export function addFieldAttributes(schemaXml: string, attributes: TypedHash<any>) {
+    const fieldXmlJson = JSON.parse(xmljs.xml2json(schemaXml));
+    fieldXmlJson.elements[0].attributes = { ...fieldXmlJson.elements[0].attributes, ...attributes };
+    schemaXml = xmljs.json2xml(fieldXmlJson);
+    return schemaXml;
+}

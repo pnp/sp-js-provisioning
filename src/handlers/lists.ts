@@ -1,11 +1,12 @@
 import { List, Web } from '@pnp/sp';
-import initSpfxJsom, { ExecuteJsomQuery, JsomContext } from "spfx-jsom";
+import initSpfxJsom, { JsomContext } from "spfx-jsom";
 import * as xmljs from 'xml-js';
 import { IProvisioningConfig } from '../provisioningconfig';
 import { ProvisioningContext } from '../provisioningcontext';
 import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from '../schema';
 import { TokenHelper } from '../util/tokenhelper';
 import { HandlerBase } from './handlerbase';
+import { addFieldAttributes } from '../util';
 
 export interface ISPField {
     Id: string;
@@ -152,14 +153,14 @@ export class Lists extends HandlerBase {
      */
     private async processField(web: Web, lc: IList, fieldXml: string): Promise<any> {
         const list = web.lists.getByTitle(lc.Title);
-        const fXmlJson = JSON.parse(xmljs.xml2json(fieldXml));
-        const fieldAttr = fXmlJson.elements[0].attributes;
+        const fieldXmlJson = JSON.parse(xmljs.xml2json(fieldXml));
+        const fieldAttr = fieldXmlJson.elements[0].attributes;
         const fieldName = fieldAttr.Name;
         const fieldDisplayName = fieldAttr.DisplayName;
 
         super.log_info('processField', `Processing field ${fieldName} (${fieldDisplayName}) for list ${lc.Title}.`);
-        fXmlJson.elements[0].attributes.DisplayName = fieldName;
-        fieldXml = xmljs.json2xml(fXmlJson);
+        fieldXmlJson.elements[0].attributes.DisplayName = fieldName;
+        fieldXml = xmljs.json2xml(fieldXmlJson);
 
         // Looks like e.g. lookup fields can't be updated, so we'll need to re-create the field
         try {
@@ -219,7 +220,9 @@ export class Lists extends HandlerBase {
             await list.fields.getById(fieldRef.ID).update({ Hidden: fieldRef.Hidden, Required: fieldRef.Required, Title: fieldRef.DisplayName });
             super.log_info('processFieldRef', `Field '${fieldRef.ID}' updated for list ${lc.Title}.`);
         } else if (webFld) {
-            let fieldAddResult = await list.fields.createFieldAsXml(webFld.SchemaXml);
+            super.log_info('processFieldRef', `Adding field '${fieldRef.ID}' to list ${lc.Title}.`);
+            let schemaXml = addFieldAttributes(webFld.SchemaXml, { DisplayName: fieldRef.Name, SourceID: `{${this.context.lists[lc.Title]}}` });
+            let fieldAddResult = await list.fields.createFieldAsXml(schemaXml);
             fieldAddResult.field.update({ Title: fieldRef.DisplayName, Required: fieldRef.Required, Hidden: fieldRef.Hidden });
             super.log_info('processFieldRef', `Field '${fieldRef.ID}' added from web.`);
         }
